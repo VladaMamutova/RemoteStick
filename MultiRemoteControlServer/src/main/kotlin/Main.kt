@@ -1,4 +1,4 @@
-package main
+package main.kotlin
 
 import javafx.application.Application
 import javafx.fxml.FXMLLoader.load
@@ -8,7 +8,7 @@ import javafx.scene.Scene
 
 // Главный класс приложения JavaFX наследуется от javafx.application.Application
 class Main : Application() {
-    private val layout = "resources/Main.fxml"
+    private val layout = "../resources/Main.fxml"
 
     override fun start(stage: Stage?) {
         // Stage представляет пользовательский интерфейс,
