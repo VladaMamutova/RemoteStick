@@ -20,6 +20,9 @@ class Main : Application() {
         stage?.width = 300.0
         stage?.height = 250.0
         stage?.show() // Отображаем окно на экране.
+
+        val m = RemoteControlManager()
+        println("External IP: ${m.getCurrentIP()}")
     }
 
     companion object { // для создания статического метода main, который должна увидеть JVM.
