@@ -1,19 +1,31 @@
 package main.kotlin
 
-import java.io.BufferedReader
-import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.net.InetAddress
-import java.net.MalformedURLException
-import java.net.URL
+import java.io.*
+import java.net.*
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.atomic.AtomicBoolean
 
-class RemoteControlManager {
-    private val inetAddress: InetAddress = InetAddress.getLocalHost()
 
-    init {
-        println("Host name: ${inetAddress.hostName}, " +
-                "Current IP address : ${inetAddress.hostAddress}")
+class RemoteControlManager: Runnable {
+    lateinit var server: ServerSocket
+
+    private val port: Int = 56000
+    lateinit var ipAddress: InetAddress
+
+    private val isServerAlive = AtomicBoolean(false) // thread-safe boolean
+
+    // Коды команд.
+    private val codeMsg: Byte = 1
+
+    private fun closeServer() {
+        if(!server.isClosed) {
+            try {
+                server.close()
+                println("Server stopped.")
+            } catch (ex: IOException) {
+                println("Server wasn't stopped.")
+            }
+        }
     }
 
     // Для получения адреса компьютера в локальной сети достаточно
@@ -74,5 +86,65 @@ class RemoteControlManager {
         }
 
         return result
+    }
+
+    override fun run() {
+        // Определяем внешний IP-адрес ПК.
+        ipAddress = InetAddress.getByName(getCurrentIP())
+
+        server = ServerSocket()
+        // Создаём конечную точку с IP-адресом и портом.
+        val socketAddress = InetSocketAddress("0.0.0.0", port)
+        server.reuseAddress = true
+        try {
+            server.bind(socketAddress) // Привязываем серверный сокет к настроенной конечной точке.
+            if (server.isBound) {
+                isServerAlive.set(true)
+
+                println("Server ${server.inetAddress.hostName}:$port started.")
+                println("Wait for connection...")
+                // Ждем соединение.
+                val handler: Socket = server.accept()
+
+                // Получаем поток чтения сокета.
+                val inputStream = DataInputStream(handler.getInputStream())
+
+                // Пока работа сервера не прекращена, получаем сообщения от клиента.
+                while (isServerAlive.get()) {
+                    if(inputStream.available() != 0) {
+                        when (inputStream.readByte()) {
+                            codeMsg -> { // Клиент отправил сообщение.
+                                val data = StringBuilder()
+                                val buffer = ByteArray(1024)
+                                var count: Int = inputStream.read(buffer) // Читаем данные сообщения.
+                                while (count != -1) {
+                                    data.append(buffer, 0, count)
+                                    count = inputStream.read(buffer)
+                                }
+
+                                if (data.isNotEmpty()) { // Преобразуем полученный набор байт в строку.
+                                    val message = String(buffer, StandardCharsets.UTF_8)
+                                    println(message)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Освобождаем сокет клиента.
+                handler.close()
+            }
+        } catch (ex: Exception) {
+            println(ex.message)
+            println(ex.printStackTrace())
+        }
+        finally {
+           closeServer()
+        }
+    }
+
+    fun stop() {
+        isServerAlive.compareAndSet(true, false)
+        closeServer()
     }
 }

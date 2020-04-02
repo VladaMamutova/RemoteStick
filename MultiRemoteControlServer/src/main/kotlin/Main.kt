@@ -3,12 +3,17 @@ package main.kotlin
 import javafx.application.Application
 import javafx.fxml.FXMLLoader.load
 import javafx.scene.Parent
-import javafx.stage.Stage
 import javafx.scene.Scene
+import javafx.stage.Stage
+import java.net.InetAddress
+import java.net.NetworkInterface
+import java.util.concurrent.atomic.AtomicBoolean
+
 
 // Главный класс приложения JavaFX наследуется от javafx.application.Application
 class Main : Application() {
-    private val layout = "../resources/Main.fxml"
+    private lateinit var serverThread : Thread
+    private lateinit var remoteControlManager: RemoteControlManager
 
     override fun start(stage: Stage?) {
         // Stage представляет пользовательский интерфейс,
@@ -21,11 +26,31 @@ class Main : Application() {
         stage?.height = 250.0
         stage?.show() // Отображаем окно на экране.
 
-        val m = RemoteControlManager()
-        println("External IP: ${m.getCurrentIP()}")
+        println("Host address: " + InetAddress.getLocalHost().hostAddress)
+        println("Host name: " + InetAddress.getLocalHost().hostName)
+        val n = NetworkInterface.getNetworkInterfaces()
+        while (n.hasMoreElements()) {
+            val e = n.nextElement()
+            val a = e.inetAddresses
+            while (a.hasMoreElements()) {
+                val addr = a.nextElement()
+                println("  " + addr.hostAddress)
+            }
+        }
+
+        remoteControlManager = RemoteControlManager()
+        println("External IP: ${remoteControlManager.getCurrentIP()}")
+        serverThread = Thread(remoteControlManager)
+        serverThread.start()
     }
 
+    override fun stop() {
+        remoteControlManager.stop()
+        super.stop()
+    }
     companion object { // для создания статического метода main, который должна увидеть JVM.
+        private const val layout = "../resources/Main.fxml"
+
         @JvmStatic
         fun main(args: Array<String>) {
             launch(Main::class.java) // Здесь вызывается метод start.
