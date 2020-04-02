@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="small_intent">8dp</dimen>
+    <dimen name="medium_intent">16dp</dimen>
+    <dimen name="body_text">20sp</dimen>
+</resources>
