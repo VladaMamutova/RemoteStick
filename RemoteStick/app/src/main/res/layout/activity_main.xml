@@ -7,39 +7,65 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-    <RelativeLayout android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  app:layout_constraintTop_toTopOf="parent"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  android:background="@color/lightGrey"
-                  android:padding="@dimen/medium_intent">
+    <RelativeLayout android:id="@+id/available_devices_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:background="@color/lightGrey"
+                    android:padding="@dimen/medium_intent">
 
         <ImageView android:id="@+id/available_devices_icon"
-                android:layout_width="wrap_content"
+                   android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:src="@drawable/ic_devices"
                    android:contentDescription="@string/available_devices_button"
                    android:tint="@color/darkGrey"
                    android:layout_marginEnd="@dimen/medium_intent"
-        android:layout_alignParentStart="true"/>
+                   android:layout_centerInParent="true"
+                   android:layout_alignParentStart="true"/>
 
         <TextView android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:text="@string/available_devices"
                   android:textSize="@dimen/body_text"
-                  android:layout_gravity="center"
-        android:layout_toEndOf="@+id/available_devices_icon"/>
+                  android:layout_centerInParent="true"
+                  android:layout_toEndOf="@+id/available_devices_icon"
+                  android:layout_toStartOf="@id/add_device_button"/>
 
-      <!--  <ImageButton
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:src="@android:drawable/ic_input_add"
-                   android:contentDescription="@string/add_device_icon"
-                   android:tint="@color/colorPrimary"
-                   android:background="@android:color/transparent"
-                   android:layout_alignParentEnd="true"/>-->
+        <ImageButton android:id="@+id/add_device_button"
+                     android:layout_width="wrap_content"
+                     android:layout_height="wrap_content"
+                     android:src="@android:drawable/ic_input_add"
+                     android:contentDescription="@string/add_device_icon"
+                     android:tint="@color/colorPrimary"
+                     android:background="@android:color/transparent"
+                     android:layout_centerInParent="true"
+                     android:layout_alignParentEnd="true"
+                     android:onClick="addDevice"/>
 
     </RelativeLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/device_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/available_devices_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_device"/>
+
+    <Button android:id="@+id/update_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="@dimen/small_intent"
+            android:layout_margin="@dimen/medium_intent"
+            android:text="Обновить"
+            android:textSize="@dimen/body_text"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:onClick="updateDevices"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

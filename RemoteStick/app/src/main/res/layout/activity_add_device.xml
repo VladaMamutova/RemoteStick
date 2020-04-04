@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:context=".AddDeviceActivity"
+        android:padding="@dimen/medium_intent"
+        android:layout_gravity="center">
+
+    <LinearLayout android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginBottom="@dimen/medium_intent">
+
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:text="@string/ip_address"
+                  android:textSize="@dimen/body_text"
+                  android:layout_marginEnd="@dimen/medium_intent"/>
+
+        <EditText android:id="@+id/edit_ip_address"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:inputType="number|numberDecimal"
+                  android:digits="0123456789."
+                  android:importantForAutofill="no"
+                  android:hint="@string/ip_address_example"/>
+
+    </LinearLayout>
+
+    <Button android:id="@+id/connect_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/small_intent"
+            android:text="@string/action_connect"
+            android:textSize="@dimen/body_text"
+            android:textColor="@android:color/white"
+            android:background="@color/colorPrimary"
+            android:onClick="connect"/>
+
+</LinearLayout>
