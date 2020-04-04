@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 // Главный класс приложения JavaFX наследуется от javafx.application.Application
 class Main : Application() {
-    private lateinit var serverThread : Thread
     private lateinit var remoteControlManager: RemoteControlManager
 
     override fun start(stage: Stage?) {
@@ -28,20 +27,11 @@ class Main : Application() {
 
         println("Host address: " + InetAddress.getLocalHost().hostAddress)
         println("Host name: " + InetAddress.getLocalHost().hostName)
-        val n = NetworkInterface.getNetworkInterfaces()
-        while (n.hasMoreElements()) {
-            val e = n.nextElement()
-            val a = e.inetAddresses
-            while (a.hasMoreElements()) {
-                val addr = a.nextElement()
-                println("  " + addr.hostAddress)
-            }
-        }
 
         remoteControlManager = RemoteControlManager()
         println("External IP: ${remoteControlManager.getCurrentIP()}")
-        serverThread = Thread(remoteControlManager)
-        serverThread.start()
+
+        Thread(remoteControlManager).start()
     }
 
     override fun stop() {

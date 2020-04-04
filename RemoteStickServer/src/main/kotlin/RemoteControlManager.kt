@@ -4,6 +4,7 @@ import java.io.*
 import java.net.*
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.thread
 
 
 class RemoteControlManager: Runnable {
@@ -106,12 +107,14 @@ class RemoteControlManager: Runnable {
                 // Ждем соединение.
                 val handler: Socket = server.accept()
 
-                // Получаем поток чтения сокета.
-                val inputStream = DataInputStream(handler.getInputStream())
 
                 // Пока работа сервера не прекращена, получаем сообщения от клиента.
                 while (isServerAlive.get()) {
-                    if(inputStream.available() != 0) {
+
+                    // Получаем поток чтения сокета.
+                    val inputStream = DataInputStream(handler.getInputStream())
+
+                    if (inputStream.available() != 0) {
                         when (inputStream.readByte()) {
                             codeMsg -> { // Клиент отправил сообщение.
                                 val data = StringBuilder()
