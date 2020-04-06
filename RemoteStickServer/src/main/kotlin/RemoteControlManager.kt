@@ -2,17 +2,14 @@ package main.kotlin
 
 import java.io.*
 import java.net.*
-import java.nio.charset.StandardCharsets
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 
 class RemoteControlManager: Runnable {
     lateinit var server: ServerSocket
-
     private val port: Int = 56000
-    lateinit var ipAddress: InetAddress
-
     private val isServerAlive = AtomicBoolean(false) // thread-safe boolean
 
     // Коды команд.
@@ -90,24 +87,27 @@ class RemoteControlManager: Runnable {
     }
 
     override fun run() {
-        // Определяем внешний IP-адрес ПК.
-        ipAddress = InetAddress.getByName(getCurrentIP())
-
         server = ServerSocket()
         // Создаём конечную точку с IP-адресом и портом.
-        val socketAddress = InetSocketAddress("0.0.0.0", port)
+        val socketAddress = InetSocketAddress(InetAddress.getLocalHost().hostAddress, port)
         server.reuseAddress = true
         try {
             server.bind(socketAddress) // Привязываем серверный сокет к настроенной конечной точке.
             if (server.isBound) {
                 isServerAlive.set(true)
 
-                println("Server ${server.inetAddress.hostName}:$port started.")
+                println("Server ${server.inetAddress.hostAddress}:$port started.")
                 println("Wait for connection...")
-                // Ждем соединение.
-                val handler: Socket = server.accept()
 
+                while (isServerAlive.get()) {
+                    // Ждем соединение.
+                    val client: Socket = server.accept()
 
+                    thread {
+                        runClientHandler(client)
+                    }
+                }
+                /*
                 // Пока работа сервера не прекращена, получаем сообщения от клиента.
                 while (isServerAlive.get()) {
 
@@ -135,14 +135,59 @@ class RemoteControlManager: Runnable {
                 }
 
                 // Освобождаем сокет клиента.
-                handler.close()
+                handler.close()*/
             }
         } catch (ex: Exception) {
             println(ex.message)
             println(ex.printStackTrace())
         }
         finally {
-           closeServer()
+            closeServer()
+        }
+    }
+
+    private fun runClientHandler(client : Socket) {
+        val reader = Scanner(client.getInputStream())
+        val writer: OutputStream = client.getOutputStream()
+
+        // Пока работа сервера не прекращена, получаем сообщения от клиента.
+        while (isServerAlive.get() && !client.isClosed) {
+            try {
+                var message = reader.nextLine()
+                val code = (message[0] - '0').toByte()
+                message = message.removeRange(0, 1)
+                when (code) {
+                    codeMsg -> { // Клиент отправил сообщение.
+                        println(message)
+                        writer.write((message + '\n').toByteArray(Charsets.UTF_8))
+                        /*  val data = StringBuilder()
+                        val buffer = ByteArray(1024)
+                        var count: Int = reader.(buffer) // Читаем данные сообщения.
+                        while (count != -1) {
+                            data.append(buffer, 0, count)
+                            count = inputStream.read(buffer)
+                        }
+
+                        if (data.isNotEmpty()) { // Преобразуем полученный набор байт в строку.
+                            val message = String(buffer, StandardCharsets.UTF_8)
+                            println(message)
+                        }*/
+                    }
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+        }
+
+        if (!client.isClosed) {
+            try {
+                // Освобождаем сокет клиента.
+                // Закрытие сокета приведёт также к закрытию потоков ввода и вывода.
+                client.close()
+                println("Client closed.")
+            } catch (ex: IOException) {
+                println("Client wasn't closed.")
+            }
         }
     }
 

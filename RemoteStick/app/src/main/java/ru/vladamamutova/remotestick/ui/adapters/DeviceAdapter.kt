@@ -1,4 +1,4 @@
-package ru.vladamamutova.remotestick.ui
+package ru.vladamamutova.remotestick.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.View

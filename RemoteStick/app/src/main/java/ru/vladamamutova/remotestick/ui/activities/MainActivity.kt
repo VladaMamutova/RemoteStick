@@ -1,14 +1,13 @@
-package ru.vladamamutova.remotestick
+package ru.vladamamutova.remotestick.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.StrictMode
-import android.os.StrictMode.ThreadPolicy
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.vladamamutova.remotestick.ui.DeviceAdapter
+import ru.vladamamutova.remotestick.R
+import ru.vladamamutova.remotestick.ui.adapters.DeviceAdapter
 import ru.vladamamutova.remotestick.utils.NetworkUtils
 import ru.vladamamutova.remotestick.utils.doAsync
 import java.net.SocketException

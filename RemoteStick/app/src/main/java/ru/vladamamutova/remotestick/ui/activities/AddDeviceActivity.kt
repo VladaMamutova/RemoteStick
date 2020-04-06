@@ -1,4 +1,4 @@
-package ru.vladamamutova.remotestick
+package ru.vladamamutova.remotestick.ui.activities
 
 import android.os.Bundle
 import android.os.StrictMode
@@ -7,6 +7,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import kotlinx.android.synthetic.main.activity_add_device.*
+import ru.vladamamutova.remotestick.R
+import ru.vladamamutova.remotestick.RemoteControlManager
 import ru.vladamamutova.remotestick.utils.InputUtils
 import java.net.InetAddress
 
@@ -26,13 +28,13 @@ class AddDeviceActivity : AppCompatActivity() {
     }
 
     fun connect(view: View) {
-/*
         val policy = ThreadPolicy.Builder()
             .permitAll().build()
         StrictMode.setThreadPolicy(policy)
-*/
 
-        val manager = RemoteControlManager(InetAddress.getByName(edit_ip_address.text.toString()))
-        manager.execute()
+        val manager = RemoteControlManager(
+            InetAddress.getByName(edit_ip_address.text.toString())
+        )
+        manager.run()
     }
 }
