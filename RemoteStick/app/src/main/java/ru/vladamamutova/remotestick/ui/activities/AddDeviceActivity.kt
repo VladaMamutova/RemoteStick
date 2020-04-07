@@ -1,5 +1,6 @@
 package ru.vladamamutova.remotestick.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
@@ -28,13 +29,16 @@ class AddDeviceActivity : AppCompatActivity() {
     }
 
     fun connect(view: View) {
-        val policy = ThreadPolicy.Builder()
+        /*val policy = ThreadPolicy.Builder()
             .permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
         val manager = RemoteControlManager(
             InetAddress.getByName(edit_ip_address.text.toString())
         )
-        manager.run()
+        manager.run()*/
+
+        val intent = Intent(this, ControlActivity::class.java)
+        startActivity(intent)
     }
 }

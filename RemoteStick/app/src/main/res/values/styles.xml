@@ -8,4 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CustomTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@android:color/transparent</item>
+        <item name="tabIndicatorHeight">0dp</item>
+        <item name="tabIconTint">@color/violet_tab_selector</item>
+        <item name="tabBackground">@drawable/tab_bar_background</item>
+        <item name="android:theme">@style/UnselectableItemTheme</item>
+    </style>
+
+    <!--Тема для элементов, у которых нет эффекта пульсации при касании-->
+    <style name="UnselectableItemTheme">
+        <item name="colorControlHighlight">@android:color/transparent</item>
+    </style>
 </resources>

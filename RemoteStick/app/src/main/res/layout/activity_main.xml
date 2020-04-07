@@ -5,7 +5,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.activities.MainActivity">
+        tools:context=".ui.activities.MainActivity"
+        android:background="@android:color/white">
 
     <RelativeLayout android:id="@+id/available_devices_header"
                     android:layout_width="match_parent"
@@ -13,7 +14,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@color/lightGrey"
+                    android:background="@color/lightBackground"
                     android:padding="@dimen/medium_intent">
 
         <ImageView android:id="@+id/available_devices_icon"

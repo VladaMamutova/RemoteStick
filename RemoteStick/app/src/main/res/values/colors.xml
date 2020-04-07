@@ -3,6 +3,12 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="lightGrey">#ECEFF1</color>
+    <color name="lightBackground">#F1F1F1</color>
+    <color name="lightGrey">#E0E0E0</color>
+    <color name="grey">#BDBDBD</color>
     <color name="darkGrey">#616161</color>
+    <color name="green">#51DF79</color>
+    <color name="blue">#51C5DF</color>
+    <color name="violet">#A151DF</color>
+    <color name="pink">#DF51AF</color>
 </resources>
