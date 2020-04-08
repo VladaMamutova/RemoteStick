@@ -32,11 +32,14 @@ class NetworkUtils {
 
                 val prefix = ipString.substring(0, ipString.lastIndexOf(".") + 1)
 
-                for (i in 0..254) {
+                for (i in 1..254) {
                     val testIp = prefix + i.toString()
                     val address: InetAddress = InetAddress.getByName(testIp)
-                    if (address.isReachable(100))
-                        localDevices.add(Device(address.canonicalHostName, testIp))
+                    if (address.isReachable(100)) {
+                        if (address.hostAddress != ipString) {
+                            localDevices.add(Device(address.canonicalHostName, testIp))
+                        }
+                    }
                 }
             } catch (t: Throwable) {
             }

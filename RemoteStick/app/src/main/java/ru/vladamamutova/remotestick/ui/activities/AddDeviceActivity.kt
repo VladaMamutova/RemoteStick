@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import kotlinx.android.synthetic.main.activity_add_device.*
@@ -29,16 +30,16 @@ class AddDeviceActivity : AppCompatActivity() {
     }
 
     fun connect(view: View) {
-        /*val policy = ThreadPolicy.Builder()
+        val policy = ThreadPolicy.Builder()
             .permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val manager = RemoteControlManager(
-            InetAddress.getByName(edit_ip_address.text.toString())
-        )
-        manager.run()*/
+        val manager = RemoteControlManager()
+        val response = manager.pingServer(InetAddress.getByName(edit_ip_address.text.toString()))
+        Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
+        //manager.run()
 
-        val intent = Intent(this, ControlActivity::class.java)
-        startActivity(intent)
+        /*val intent = Intent(this, ControlActivity::class.java)
+        startActivity(intent)*/
     }
 }

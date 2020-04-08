@@ -13,7 +13,9 @@ class RemoteControlManager: Runnable {
     private val isServerAlive = AtomicBoolean(false) // thread-safe boolean
 
     // Коды команд.
-    private val codeMsg: Byte = 1
+    private val codeOk: Byte = 1
+    private val codeError: Byte = 2
+    private val codeMessage: Byte = 3
 
     private fun closeServer() {
         if(!server.isClosed) {
@@ -150,17 +152,27 @@ class RemoteControlManager: Runnable {
         val reader = Scanner(client.getInputStream())
         val writer: OutputStream = client.getOutputStream()
 
+        try {
+            writer.write((codeOk.toString()
+                    + server.inetAddress.hostName
+                    + '\n').toByteArray(Charsets.UTF_8))
+        }
+        catch (e : Exception) {
+            e.printStackTrace()
+        }
+
         // Пока работа сервера не прекращена, получаем сообщения от клиента.
         while (isServerAlive.get() && !client.isClosed) {
             try {
-                var message = reader.nextLine()
-                val code = (message[0] - '0').toByte()
-                message = message.removeRange(0, 1)
-                when (code) {
-                    codeMsg -> { // Клиент отправил сообщение.
-                        println(message)
-                        writer.write((message + '\n').toByteArray(Charsets.UTF_8))
-                        /*  val data = StringBuilder()
+                if (reader.hasNextLine()) {
+                    var message = reader.nextLine()
+                    val code = (message[0] - '0').toByte()
+                    message = message.removeRange(0, 1)
+                    when (code) {
+                        codeMessage -> { // Клиент отправил сообщение.
+                            println(message)
+                            writer.write((message + '\n').toByteArray(Charsets.UTF_8))
+                            /*  val data = StringBuilder()
                         val buffer = ByteArray(1024)
                         var count: Int = reader.(buffer) // Читаем данные сообщения.
                         while (count != -1) {
@@ -172,10 +184,11 @@ class RemoteControlManager: Runnable {
                             val message = String(buffer, StandardCharsets.UTF_8)
                             println(message)
                         }*/
+                        }
                     }
                 }
-            } catch (ex: Exception) {
-                ex.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
 
