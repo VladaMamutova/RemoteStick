@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.activity_add_device.*
 import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.RemoteControlManager
 import ru.vladamamutova.remotestick.utils.InputUtils
+import java.lang.Exception
 import java.net.InetAddress
 
 
@@ -30,16 +31,28 @@ class AddDeviceActivity : AppCompatActivity() {
     }
 
     fun connect(view: View) {
-        val policy = ThreadPolicy.Builder()
-            .permitAll().build()
+        val policy = ThreadPolicy.Builder().permitAll().build()
         StrictMode.setThreadPolicy(policy)
 
-        val manager = RemoteControlManager()
-        val response = manager.pingServer(InetAddress.getByName(edit_ip_address.text.toString()))
-        Toast.makeText(this, response, Toast.LENGTH_SHORT).show()
-        //manager.run()
+        val response = RemoteControlManager.pingServer(
+            InetAddress.getByName(edit_ip_address.text.toString())
+        )
 
-        /*val intent = Intent(this, ControlActivity::class.java)
-        startActivity(intent)*/
+        if (response.isNotEmpty()) {
+            try {
+                RemoteControlManager.myInstance.connect(this,
+                    InetAddress.getByName(edit_ip_address.text.toString()))
+
+                Toast.makeText(this, "Подключено к $response", Toast.LENGTH_SHORT).show()
+
+                RemoteControlManager.myInstance.run()
+
+                val intent = Intent(this, ControlActivity::class.java)
+                startActivity(intent)
+            }
+            catch (ex : Exception) {
+                Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }

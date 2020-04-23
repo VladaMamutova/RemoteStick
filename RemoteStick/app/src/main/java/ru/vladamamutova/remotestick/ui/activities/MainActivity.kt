@@ -34,17 +34,6 @@ class MainActivity : AppCompatActivity() {
                     deviceAdapter.setData(NetworkUtils.localDevices())
                 }
             }
-
-          /*  val manager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-            val connectionInfo = manager.connectionInfo
-            val ipAddress = connectionInfo.ipAddress
-            val ip = InetAddress.getByAddress(ByteBuffer
-                .allocate(4)
-                .order(ByteOrder.LITTLE_ENDIAN)
-                .putInt(ipAddress)
-                .array())
-                .hostAddress*/
-
         } catch (e: SocketException) {
             e.printStackTrace()
         }
