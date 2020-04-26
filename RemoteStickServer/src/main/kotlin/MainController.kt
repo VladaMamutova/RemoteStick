@@ -11,7 +11,8 @@ class MainController {
     lateinit var btn: Button
 
     @FXML
-    lateinit var pcName: Label
+    lateinit var name: Label
+    lateinit var ipAddress: Label
 
     @FXML
     private fun click(event: ActionEvent) {
@@ -20,6 +21,7 @@ class MainController {
 
     @FXML
     fun initialize() {
-        pcName.text = InetAddress.getLocalHost().hostName
+        name.text = InetAddress.getLocalHost().hostName
+        ipAddress.text = InetAddress.getLocalHost().hostAddress
     }
 }

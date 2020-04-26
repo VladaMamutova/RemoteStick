@@ -20,17 +20,20 @@ class RemoteControlManager: Runnable {
         private const val codeHello: Byte = 2
         private const val codeOk: Byte = 3
         private const val codeError: Byte = 4
-        private const val codeMessage: Byte = 5
+        private const val codeBye: Byte = 5
+        private const val codeMessage: Byte = 6
     }
 
     private fun closeServer() {
-        if(!server.isClosed) {
-            try {
-                server.close()
-                println("Server stopped.")
-            } catch (ex: IOException) {
-                println("Server wasn't stopped.")
+        if (!server.isClosed) {
+            for (client in clientMap.values) {
+                val writer: OutputStream = client.getOutputStream()
+                writer.write((codeBye.toString() + '\n').toByteArray(Charsets.UTF_8))
+                client.close()
+                println("Client ${client.inetAddress.hostAddress} closed.")
             }
+            server.close()
+            println("\nServer stopped.")
         }
     }
 
@@ -104,7 +107,7 @@ class RemoteControlManager: Runnable {
             if (server.isBound) {
                 isServerAlive.set(true)
 
-                println("Server ${server.inetAddress.hostAddress}:$port started.")
+                println("\nServer ${server.inetAddress.hostAddress}:$port started")
                 println("Wait for connection...")
 
                 while (isServerAlive.get()) {
@@ -120,21 +123,31 @@ class RemoteControlManager: Runnable {
                                 writer.write((codeOk.toString()
                                         + server.inetAddress.hostName
                                         + '\n').toByteArray(Charsets.UTF_8))
+                                println("\nPing from ${client.inetAddress.hostAddress}")
+                                client.close()
                             }
                             codeHello -> {
                                 if (clientMap.size < 2) {
-                                    val name = request.removeRange(0, 1)
+                                    val name = request.removeRange(0, 1) +
+                                            " (${client.inetAddress.hostAddress})"
                                     clientMap[name] = client
-                                    writer.write((codeOk.toString() + '\n')
-                                            .toByteArray(Charsets.UTF_8))
+                                    writer.write((codeOk.toString()
+                                            + server.inetAddress.hostName
+                                            + '\n').toByteArray(Charsets.UTF_8))
+                                    println("\nClient $name connected")
+                                    println("Number of clients: ${clientMap.size}")
                                     thread {
                                         runClientHandler(client)
                                         clientMap.remove(name)
+                                        println("Number of clients: ${clientMap.size}")
                                     }
                                 } else {
                                     writer.write((codeError.toString() +
                                             "Уже подключено 2 устройства." + '\n')
                                             .toByteArray(Charsets.UTF_8))
+                                    println("Client ${client.inetAddress.hostAddress} cannot be connected " +
+                                            "due to restrictions on the number of clients")
+                                    println("Number of clients: ${clientMap.size}")
                                     client.close()
                                 }
                             }
@@ -144,39 +157,9 @@ class RemoteControlManager: Runnable {
                         client.close()
                     }
                 }
-                /*
-                // Пока работа сервера не прекращена, получаем сообщения от клиента.
-                while (isServerAlive.get()) {
-
-                    // Получаем поток чтения сокета.
-                    val inputStream = DataInputStream(handler.getInputStream())
-
-                    if (inputStream.available() != 0) {
-                        when (inputStream.readByte()) {
-                            codeMsg -> { // Клиент отправил сообщение.
-                                val data = StringBuilder()
-                                val buffer = ByteArray(1024)
-                                var count: Int = inputStream.read(buffer) // Читаем данные сообщения.
-                                while (count != -1) {
-                                    data.append(buffer, 0, count)
-                                    count = inputStream.read(buffer)
-                                }
-
-                                if (data.isNotEmpty()) { // Преобразуем полученный набор байт в строку.
-                                    val message = String(buffer, StandardCharsets.UTF_8)
-                                    println(message)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Освобождаем сокет клиента.
-                handler.close()*/
             }
         } catch (ex: Exception) {
             println(ex.message)
-            println(ex.printStackTrace())
         }
         finally {
             closeServer()
@@ -187,7 +170,8 @@ class RemoteControlManager: Runnable {
         val reader = Scanner(client.getInputStream())
         val writer: OutputStream = client.getOutputStream()
 
-        // Пока работа сервера не прекращена, получаем сообщения от клиента.
+        // Пока работа сервера не прекращена и клиент не отключился,
+        // получаем сообщения от клиента и обрабатываем их.
         while (isServerAlive.get() && !client.isClosed) {
             try {
                 if (reader.hasNextLine()) {
@@ -198,34 +182,16 @@ class RemoteControlManager: Runnable {
                         codeMessage -> { // Клиент отправил сообщение.
                             println(message)
                             writer.write((message + '\n').toByteArray(Charsets.UTF_8))
-                            /*  val data = StringBuilder()
-                        val buffer = ByteArray(1024)
-                        var count: Int = reader.(buffer) // Читаем данные сообщения.
-                        while (count != -1) {
-                            data.append(buffer, 0, count)
-                            count = inputStream.read(buffer)
                         }
-
-                        if (data.isNotEmpty()) { // Преобразуем полученный набор байт в строку.
-                            val message = String(buffer, StandardCharsets.UTF_8)
-                            println(message)
-                        }*/
+                        codeBye -> { // Клиент отключился.
+                            client.close()
+                            println("Client ${client.inetAddress.hostAddress} " +
+                                    "disconnected")
                         }
                     }
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        if (!client.isClosed) {
-            try {
-                // Освобождаем сокет клиента.
-                // Закрытие сокета приведёт также к закрытию потоков ввода и вывода.
-                client.close()
-                println("Client closed.")
-            } catch (ex: IOException) {
-                println("Client wasn't closed.")
+            } catch (ex: Exception) {
+                println(ex.message)
             }
         }
     }

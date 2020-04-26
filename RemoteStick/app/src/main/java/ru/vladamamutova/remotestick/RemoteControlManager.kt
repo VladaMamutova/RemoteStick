@@ -1,13 +1,13 @@
 package ru.vladamamutova.remotestick
 
-import android.content.Context
-import ru.vladamamutova.remotestick.utils.NetworkUtils
+import android.os.Build
 import java.io.OutputStream
 import java.lang.Exception
 import java.net.InetAddress
 import java.net.Socket
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.thread
 
 
 class RemoteControlManager private constructor() {
@@ -16,8 +16,13 @@ class RemoteControlManager private constructor() {
     private var reader: Scanner? = null
     private var writer: OutputStream? = null
 
-    private val connected = AtomicBoolean(false) // thread-safe boolean
     private var codeCommand: Byte = 5
+
+    var connected = AtomicBoolean(false) // thread-safe boolean
+    private set
+
+    var errorMessage: String = ""
+    private set
 
     companion object {
         private const val port: Int = 56000
@@ -27,7 +32,8 @@ class RemoteControlManager private constructor() {
         private const val codeHello: Byte = 2
         private const val codeOk: Byte = 3
         private const val codeError: Byte = 4
-        private const val codeMessage: Byte = 5
+        private const val codeBye: Byte = 5
+        private const val codeMessage: Byte = 6
 
         private lateinit var instance: RemoteControlManager
 
@@ -41,96 +47,62 @@ class RemoteControlManager private constructor() {
             }
 
         fun pingServer(serverIp: InetAddress): String {
-            try {
-                val socket = Socket(serverIp, port)
-                socket.use {
-                    var response: String
-                    try {
-                        val reader = Scanner(socket.getInputStream())
-                        val writer = socket.getOutputStream()
-                        writer!!.write(
-                            (codePing.toString() + '\n')
-                                .toByteArray(Charsets.UTF_8)
-                        )
+            val socket = Socket(serverIp, port)
+            socket.use {
+                var response: String
+                val reader = Scanner(socket.getInputStream())
+                val writer = socket.getOutputStream()
+                writer!!.write(
+                    (codePing.toString() + '\n')
+                        .toByteArray(Charsets.UTF_8)
+                )
 
-                        response = reader.nextLine()
-                        if ((response[0] - '0').toByte() == codeOk) {
-                            // В ответе - сетевое имя компьютера.
-                            response = response.removeRange(0, 1)
-                        }
-                    } catch (e: Exception) {
-                        socket.close()
-                        response = e.message.orEmpty()
-                    }
-                    return response
+                response = reader.nextLine()
+                if ((response[0] - '0').toByte() == codeOk) {
+                    // В ответе - сетевое имя компьютера.
+                    response = response.removeRange(0, 1)
+                } else {
+                    throw Exception(response.removeRange(0, 1))
                 }
-            } catch (e: Exception) {
-                return e.message.orEmpty()
+                return response
             }
         }
     }
 
-    fun connect(context: Context, serverIp : InetAddress) {
+    fun connect(serverIp : InetAddress) {
         client = Socket(serverIp, port)
         reader = Scanner(client.getInputStream())
         writer = client.getOutputStream()
-        write(codeHello, NetworkUtils.getLocalIpAddress(context).hostName)
+        errorMessage = ""
 
-        val response: String = reader!!.nextLine()
-        if (response.isNotEmpty()) {
-            when ((response[0] - '0').toByte()) {
-                codeError -> {
-                    throw Exception("Невозможно подключиться к серверу. "
-                            + response.removeRange(0, 1)
-                    )
-                }
-            }
-        }
-    }
-/*    override fun doInBackground(vararg p0: Void?): Void? {
+        write(codeHello, Build.MODEL)
+
         try {
-            // Получаем поток вывода
-            val out = DataOutputStream(client!!.getOutputStream())
-            when (codeCommand) {
-                codeMsg -> {
-                    out.write(byteArrayOf(codeMsg))
-                    message = "Hello!"
-                    // Устанавливаем кодировку символов UTF-8
-                    val outMsg: ByteArray = message!!.toByteArray(Charsets.UTF_8)
-                    out.write(outMsg)
-                    out.flush()
-                    out.close()
-                }
+            val response: String = reader!!.nextLine()
+            if ((response[0] - '0').toByte() == codeOk) {
+                connected.compareAndSet(false, true)
+            } else {
+                throw Exception(response.removeRange(0, 1))
             }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
         }
-
-        return null
-    }*/
-
-    private fun closeClient() {
-        if (!client.isClosed) {
-            try {
-                client.close()
-            }
-            catch (ex: Exception) { }
+        catch (ex: Exception) {
+            throw Exception("Невозможно подключиться к серверу.\n" + ex.message)
         }
     }
 
     fun run() {
         try {
             client.use {
-                /*thread { read() }*/
+                thread { read() }
                 while (connected.get()) {
                     when (codeCommand) {
                         codeMessage -> {
-                            // Устанавливаем кодировку символов UTF-8
                             write(codeMessage, "Hello!")
                             codeCommand = 0
                         }
                     }
                 }
+                write(codeBye, "")
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -144,7 +116,11 @@ class RemoteControlManager private constructor() {
     private fun read() {
         while (connected.get()) {
             if (reader!!.hasNextLine()) {
-                println(reader!!.nextLine())
+                val message = reader!!.nextLine()
+                if ((message[0] - '0').toByte() == codeBye) {
+                    stop()
+                    errorMessage = "Сервер перестал отвечать"
+                }
             }
         }
     }

@@ -42,5 +42,6 @@ class MainActivity : AppCompatActivity() {
     fun addDevice(view: View) {
         val intent = Intent(this, AddDeviceActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }

@@ -5,6 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
+
 <FlowPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.kotlin.MainController"
           orientation="VERTICAL">
     <padding>
@@ -13,15 +14,30 @@
 
     <GridPane hgap="7">
 
-        <Label text="Сетевое имя ПК:"
-               GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label text="Имя компьютера:"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="0"/>
 
-        <Label fx:id="pcName" text="undefined"
-               GridPane.columnIndex="1" GridPane.rowIndex="0">
-         </Label>
+        <Label fx:id="name"
+               text="undefined"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="0"/>
 
-        <Button text="Click!" onAction="#click" fx:id="btn"
-                GridPane.columnIndex="0" GridPane.columnSpan="2" GridPane.rowIndex="1">
+        <Label text="IP-адрес:"
+               GridPane.columnIndex="0"
+               GridPane.rowIndex="1"/>
+
+        <Label fx:id="ipAddress"
+               text="undefined"
+               GridPane.columnIndex="1"
+               GridPane.rowIndex="1"/>
+
+        <Button fx:id="btn"
+                text="Click!"
+                onAction="#click"
+                GridPane.columnIndex="0"
+                GridPane.columnSpan="2"
+                GridPane.rowIndex="2">
             <GridPane.margin>
                 <Insets top="20"/>
             </GridPane.margin>
