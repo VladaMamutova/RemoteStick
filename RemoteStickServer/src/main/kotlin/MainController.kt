@@ -7,6 +7,7 @@ import javafx.scene.control.Label
 import java.net.InetAddress
 
 class MainController {
+
     @FXML
     lateinit var btn: Button
 
