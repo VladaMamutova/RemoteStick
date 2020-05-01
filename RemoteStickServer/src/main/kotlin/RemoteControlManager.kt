@@ -1,34 +1,31 @@
 package main.kotlin
 
-import java.io.*
-import java.net.*
+import main.kotlin.service.PacketTypes.*
+import main.kotlin.service.NetworkPacket
+import java.io.OutputStream
+import java.net.InetAddress
+import java.net.InetSocketAddress
+import java.net.ServerSocket
+import java.net.Socket
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 
 class RemoteControlManager: Runnable {
+    companion object {
+        private const val port: Int = 56000
+    }
+
     private val server = ServerSocket()
     private val isServerAlive = AtomicBoolean(false) // thread-safe boolean
     private val clientMap: MutableMap<String, Socket> = mutableMapOf()
-
-    companion object {
-        private const val port: Int = 56000
-
-        // Коды команд.
-        private const val codePing: Byte = 1
-        private const val codeHello: Byte = 2
-        private const val codeOk: Byte = 3
-        private const val codeError: Byte = 4
-        private const val codeBye: Byte = 5
-        private const val codeMessage: Byte = 6
-    }
 
     private fun closeServer() {
         if (server.isBound && !server.isClosed) {
             for (client in clientMap.values) {
                 val writer: OutputStream = client.getOutputStream()
-                writer.write((codeBye.toString() + '\n').toByteArray(Charsets.UTF_8))
+                writer.write((BYE.value.toString() + '\n').toByteArray(Charsets.UTF_8))
                 client.close()
                 println("Client ${client.inetAddress.hostAddress} closed.")
             }
@@ -53,29 +50,31 @@ class RemoteControlManager: Runnable {
                     // Ждем соединение.
                     val client: Socket = server.accept()
                     try {
-                        // Проверяем цель подключения клиента: пинг или подключение.
                         val reader = Scanner(client.getInputStream())
                         val writer: OutputStream = client.getOutputStream()
-                        val request = reader.nextLine()
-                        when ((request[0] - '0').toByte()) {
-                            codePing -> {
+                        val packet = NetworkPacket(reader.nextLine())
+                        // Проверяем цель запроса клиента: пинг или подключение.
+                        // В остальных случаях пропускам пакет.
+                        when (packet.type) {
+                            PING -> {
                                 writer.write(
-                                    (codeOk.toString()
-                                            + server.inetAddress.hostName
-                                            + '\n').toByteArray(Charsets.UTF_8)
-                                )
+                                    NetworkPacket(
+                                        OK,
+                                        server.inetAddress.hostName
+                                    ).toUTFBytes())
                                 println("\nPing from ${client.inetAddress.hostAddress}")
                                 client.close()
                             }
-                            codeHello -> {
+                            HELLO -> {
                                 if (clientMap.size < 2) {
-                                    val name = request.removeRange(0, 1) +
+                                    // В пакете - имя подключённого устройства.
+                                    val name = packet.body +
                                             " (${client.inetAddress.hostAddress})"
                                     clientMap[name] = client
                                     writer.write(
-                                        (codeOk.toString()
-                                                + server.inetAddress.hostName
-                                                + '\n').toByteArray(Charsets.UTF_8)
+                                        NetworkPacket(
+                                            OK, server.inetAddress.hostName
+                                        ).toUTFBytes()
                                     )
                                     println("\nClient $name connected")
                                     println("Number of clients: ${clientMap.size}")
@@ -86,9 +85,9 @@ class RemoteControlManager: Runnable {
                                     }
                                 } else {
                                     writer.write(
-                                        (codeError.toString() +
-                                                "Уже подключено 2 устройства." + '\n')
-                                            .toByteArray(Charsets.UTF_8)
+                                        NetworkPacket(
+                                            ERROR, "Уже подключено 2 устройства"
+                                        ).toUTFBytes()
                                     )
                                     println(
                                         "Client ${client.inetAddress.hostAddress} cannot be connected " +
@@ -98,6 +97,7 @@ class RemoteControlManager: Runnable {
                                     client.close()
                                 }
                             }
+                            else -> client.close()
                         }
                     } catch (ex: Exception) {
                         client.close()
@@ -113,28 +113,28 @@ class RemoteControlManager: Runnable {
 
     private fun runClientHandler(client: Socket) {
         val reader = Scanner(client.getInputStream())
-        val writer: OutputStream = client.getOutputStream()
 
         // Пока работа сервера не прекращена и клиент не отключился,
         // получаем сообщения от клиента и обрабатываем их.
         while (isServerAlive.get() && !client.isClosed) {
             try {
                 if (reader.hasNextLine()) {
-                    var message = reader.nextLine()
-                    val code = (message[0] - '0').toByte()
-                    message = message.removeRange(0, 1)
-                    when (code) {
-                        codeMessage -> { // Клиент отправил сообщение.
-                            println(message)
-                            writer.write((message + '\n').toByteArray(Charsets.UTF_8))
+                    val packet = NetworkPacket(reader.nextLine())
+                    when (packet.type) {
+                        MESSAGE -> { // Клиент отправил сообщение.
+                            println(packet.body)
                         }
-                        codeBye -> { // Клиент отключился.
+                        BYE -> { // Клиент отключился.
                             client.close()
                             println(
                                 "Client ${client.inetAddress.hostAddress} " +
                                         "disconnected"
                             )
                         }
+                        else -> println(
+                            "The package type from " +
+                                    "${client.inetAddress.hostAddress} is not defined"
+                        )
                     }
                 }
             } catch (ex: Exception) {

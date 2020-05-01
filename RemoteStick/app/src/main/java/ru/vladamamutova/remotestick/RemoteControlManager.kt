@@ -1,6 +1,8 @@
 package ru.vladamamutova.remotestick
 
 import android.os.Build
+import ru.vladamamutova.remotestick.service.PacketTypes.*
+import ru.vladamamutova.remotestick.service.NetworkPacket
 import java.io.OutputStream
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -15,7 +17,7 @@ class RemoteControlManager private constructor() {
     private var reader: Scanner? = null
     private var writer: OutputStream? = null
 
-    private var codeCommand: Byte = 5
+    private var codeCommand: Byte = 6
 
     var connected = AtomicBoolean(false) // thread-safe boolean
     private set
@@ -26,14 +28,6 @@ class RemoteControlManager private constructor() {
     companion object {
         private const val port: Int = 56000
         private const val connectionTimeout: Int = 2000
-
-        // Коды команд.
-        private const val codePing: Byte = 1
-        private const val codeHello: Byte = 2
-        private const val codeOk: Byte = 3
-        private const val codeError: Byte = 4
-        private const val codeBye: Byte = 5
-        private const val codeMessage: Byte = 6
 
         private lateinit var instance: RemoteControlManager
 
@@ -51,18 +45,16 @@ class RemoteControlManager private constructor() {
             socket.connect(InetSocketAddress(serverIp, port), connectionTimeout)
 
             socket.use {
-                var response: String
+                val response: String
                 val reader = Scanner(socket.getInputStream())
                 val writer = socket.getOutputStream()
-                writer!!.write(
-                    (codePing.toString() + '\n').toByteArray(Charsets.UTF_8))
-
-                response = reader.nextLine()
-                if ((response[0] - '0').toByte() == codeOk) {
+                writer!!.write(NetworkPacket(PING, "").toUTFBytes())
+                val packet = NetworkPacket(reader.nextLine())
+                if (packet.type == OK) {
                     // В ответе - сетевое имя компьютера.
-                    response = response.removeRange(0, 1)
+                    response = packet.body
                 } else {
-                    throw Exception(response.removeRange(0, 1))
+                    throw Exception(packet.body)
                 }
                 return response
             }
@@ -77,13 +69,13 @@ class RemoteControlManager private constructor() {
         writer = client.getOutputStream()
         errorMessage = ""
 
-        write(codeHello, Build.MODEL)
+        writer!!.write(NetworkPacket(HELLO, Build.MODEL).toUTFBytes())
 
-        val response: String = reader!!.nextLine()
-        if ((response[0] - '0').toByte() == codeOk) {
+        val packet = NetworkPacket(reader!!.nextLine())
+        if (packet.type == OK) {
             connected.compareAndSet(false, true)
         } else {
-            throw Exception(response.removeRange(0, 1))
+            throw Exception(packet.body)
         }
     }
 
@@ -93,28 +85,29 @@ class RemoteControlManager private constructor() {
                 thread { read() }
                 while (connected.get()) {
                     when (codeCommand) {
-                        codeMessage -> {
-                            write(codeMessage, "Hello!")
+                        MESSAGE.value -> {
+                            writer!!.write(
+                                NetworkPacket(
+                                    MESSAGE,
+                                    "Hello"
+                                ).toUTFBytes())
                             codeCommand = 0
                         }
+                        else -> Thread.sleep(50)
                     }
                 }
-                write(codeBye, "")
+                writer!!.write(NetworkPacket(BYE, "").toUTFBytes())
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
 
-    private fun write(code: Byte, message: String) {
-        writer!!.write((code.toString() + message + '\n').toByteArray(Charsets.UTF_8))
-    }
-
     private fun read() {
         while (connected.get()) {
             if (reader!!.hasNextLine()) {
-                val message = reader!!.nextLine()
-                if ((message[0] - '0').toByte() == codeBye) {
+                val packet = NetworkPacket(reader!!.nextLine())
+                if (packet.type == BYE) {
                     stop()
                     errorMessage = "Сервер перестал отвечать"
                 }
