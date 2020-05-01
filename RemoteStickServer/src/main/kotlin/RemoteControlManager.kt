@@ -8,7 +8,7 @@ import kotlin.concurrent.thread
 
 
 class RemoteControlManager: Runnable {
-    private lateinit var server: ServerSocket
+    private val server = ServerSocket()
     private val isServerAlive = AtomicBoolean(false) // thread-safe boolean
     private val clientMap : MutableMap<String, Socket> = mutableMapOf()
 
@@ -25,7 +25,7 @@ class RemoteControlManager: Runnable {
     }
 
     private fun closeServer() {
-        if (!server.isClosed) {
+        if (server.isBound && !server.isClosed) {
             for (client in clientMap.values) {
                 val writer: OutputStream = client.getOutputStream()
                 writer.write((codeBye.toString() + '\n').toByteArray(Charsets.UTF_8))
@@ -37,68 +37,7 @@ class RemoteControlManager: Runnable {
         }
     }
 
-    // Для получения адреса компьютера в локальной сети достаточно
-    // воспользоваться методом getHostAddress() класса InetAddress.
-
-    // Получение внешнего IP - не такая простая задача.
-    // Для получения внешного IP необходимо подключиться к какому-нибудь
-    // серверу в интернете, который и вернет IP, под которым он видит
-    // данный компьютер.
-    //
-    // Подключимся к серверу (сайту http://myip.by/), предоставляющему
-    // услугу определения IP, получим ответ в виде html кода и выделим
-    // из этого кода IP адрес.
-
-    fun getCurrentIP(): String {
-        var result = ""
-        try {
-            var reader: BufferedReader? = null
-            try {
-                val url = URL("https://myip.by/")
-                val inputStream: InputStream
-                inputStream = url.openStream()
-                reader = BufferedReader(InputStreamReader(inputStream))
-                val allText = StringBuilder()
-                val buffer = CharArray(1024)
-
-                var count: Int = reader.read(buffer)
-                while (count != -1) {
-                    allText.append(buffer, 0, count)
-                    count = reader.read(buffer)
-                }
-
-                // Строка, содержащая IP, имеет следующий вид:
-                // <a href="./whois?176.101.127.1">whois 176.101.127.1</a>
-                val indStart: Int = allText.indexOf("\">whois ")
-                val indEnd: Int = allText.indexOf("</a>", indStart)
-
-                val ipAddress = String(allText.substring(indStart + "\">whois ".length,
-                        indEnd).toCharArray())
-
-                // Проверяем, что выбранный текст является IP-адресом.
-                if (ipAddress.split(".").size >= 4) { // минимальная (неполная)
-                    result = ipAddress
-                }
-            } catch (ex: MalformedURLException) {
-                ex.printStackTrace()
-            } catch (ex: IOException) {
-                ex.printStackTrace()
-            } finally {
-                try {
-                    reader?.close()
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return result
-    }
-
     override fun run() {
-        server = ServerSocket()
         // Создаём конечную точку с IP-адресом и портом.
         val socketAddress = InetSocketAddress(InetAddress.getLocalHost().hostAddress, port)
         server.reuseAddress = true
@@ -159,7 +98,7 @@ class RemoteControlManager: Runnable {
                 }
             }
         } catch (ex: Exception) {
-            println(ex.message)
+            println("Error: " + ex.message)
         }
         finally {
             closeServer()
@@ -191,7 +130,7 @@ class RemoteControlManager: Runnable {
                     }
                 }
             } catch (ex: Exception) {
-                println(ex.message)
+                println("Error: " + ex.message)
             }
         }
     }
