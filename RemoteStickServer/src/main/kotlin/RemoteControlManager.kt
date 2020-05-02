@@ -135,6 +135,8 @@ class RemoteControlManager: Runnable {
         }
     }
 
+    fun getClientName() = clientMap.keys.joinToString(", ")
+
     fun stop() {
         isServerAlive.compareAndSet(true, false)
         closeServer()

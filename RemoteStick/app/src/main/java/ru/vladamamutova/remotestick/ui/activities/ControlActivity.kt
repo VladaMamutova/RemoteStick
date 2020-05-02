@@ -38,6 +38,9 @@ class ControlActivity : AppCompatActivity() {
 
         thread {
             RemoteControlManager.myInstance.run()
+            // Здесь клиент завершил работу.
+            // Если есть сообщение об ошибке (то есть сервер перестал отвечать),
+            // то отобржаем сообщение и завершаем активность.
             if (RemoteControlManager.myInstance.errorMessage != "") {
                 runOnUiThread {
                     Toast.makeText(

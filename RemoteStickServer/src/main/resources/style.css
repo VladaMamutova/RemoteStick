@@ -1,0 +1,12 @@
+.root {
+    -fx-padding: 15px;
+}
+
+.label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #121212;
+}
+
+.label-value {
+    -fx-font-weight: bold;
+}

@@ -120,7 +120,6 @@ class RemoteControlManager private constructor() {
                 if ((message[0] - '0').toByte() == codeBye) {
                     stop()
                     errorMessage = "Сервер перестал отвечать"
-
                 }
             }
         }

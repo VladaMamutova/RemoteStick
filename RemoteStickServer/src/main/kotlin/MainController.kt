@@ -9,16 +9,9 @@ import java.net.InetAddress
 class MainController {
 
     @FXML
-    lateinit var btn: Button
-
-    @FXML
     lateinit var name: Label
     lateinit var ipAddress: Label
-
-    @FXML
-    private fun click(event: ActionEvent) {
-        btn.text = "You've clicked!"
-    }
+    lateinit var clientName: Label
 
     @FXML
     fun initialize() {
