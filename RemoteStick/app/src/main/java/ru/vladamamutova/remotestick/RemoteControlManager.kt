@@ -2,8 +2,8 @@ package ru.vladamamutova.remotestick
 
 import android.os.Build
 import java.io.OutputStream
-import java.lang.Exception
 import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.net.Socket
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -11,7 +11,6 @@ import kotlin.concurrent.thread
 
 
 class RemoteControlManager private constructor() {
-
     private lateinit var client: Socket
     private var reader: Scanner? = null
     private var writer: OutputStream? = null
@@ -26,6 +25,7 @@ class RemoteControlManager private constructor() {
 
     companion object {
         private const val port: Int = 56000
+        private const val connectionTimeout: Int = 2000
 
         // Коды команд.
         private const val codePing: Byte = 1
@@ -47,15 +47,15 @@ class RemoteControlManager private constructor() {
             }
 
         fun pingServer(serverIp: InetAddress): String {
-            val socket = Socket(serverIp, port)
+            val socket = Socket()
+            socket.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+
             socket.use {
                 var response: String
                 val reader = Scanner(socket.getInputStream())
                 val writer = socket.getOutputStream()
                 writer!!.write(
-                    (codePing.toString() + '\n')
-                        .toByteArray(Charsets.UTF_8)
-                )
+                    (codePing.toString() + '\n').toByteArray(Charsets.UTF_8))
 
                 response = reader.nextLine()
                 if ((response[0] - '0').toByte() == codeOk) {
@@ -70,23 +70,20 @@ class RemoteControlManager private constructor() {
     }
 
     fun connect(serverIp : InetAddress) {
-        client = Socket(serverIp, port)
+        client = Socket()
+        client.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+
         reader = Scanner(client.getInputStream())
         writer = client.getOutputStream()
         errorMessage = ""
 
         write(codeHello, Build.MODEL)
 
-        try {
-            val response: String = reader!!.nextLine()
-            if ((response[0] - '0').toByte() == codeOk) {
-                connected.compareAndSet(false, true)
-            } else {
-                throw Exception(response.removeRange(0, 1))
-            }
-        }
-        catch (ex: Exception) {
-            throw Exception("Невозможно подключиться к серверу.\n" + ex.message)
+        val response: String = reader!!.nextLine()
+        if ((response[0] - '0').toByte() == codeOk) {
+            connected.compareAndSet(false, true)
+        } else {
+            throw Exception(response.removeRange(0, 1))
         }
     }
 

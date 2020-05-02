@@ -5,8 +5,10 @@ import javafx.application.Platform
 import javafx.fxml.FXMLLoader.load
 import javafx.scene.Scene
 import javafx.scene.control.Alert
+import javafx.scene.control.Label
 import javafx.stage.Stage
 import java.net.InetAddress
+import kotlin.concurrent.thread
 
 // Главный класс приложения JavaFX наследуется от javafx.application.Application
 class Main : Application() {
@@ -27,11 +29,25 @@ class Main : Application() {
         println("Host name: " + InetAddress.getLocalHost().hostName)
 
         remoteControlManager = RemoteControlManager()
+        val clientName: Label = stage?.scene!!.lookup("#clientName") as Label
+        clientName.text = remoteControlManager.getClientName()
 
         try {
             // Пытаемся загрузить библиотеку.
             Win32()
             Thread(remoteControlManager).start()
+            thread {
+                while (remoteControlManager.isServerAlive()) {
+                    if (clientName.text != remoteControlManager.getClientName()) {
+                        // Обновляем имя клиента в потоке приложения.
+                        Platform.runLater {
+                            clientName.text = remoteControlManager.getClientName()
+                        }
+                    } else {
+                        Thread.sleep(500)
+                    }
+                }
+            }
         } catch (throwable: Throwable) {
             var message: String = throwable.message.orEmpty()
             var inner: Throwable? = throwable.cause

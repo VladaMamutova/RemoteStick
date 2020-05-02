@@ -24,12 +24,8 @@ class AddDeviceActivity : AppCompatActivity() {
         edit_ip_address.doAfterTextChanged {
             val splits = it.toString().split("\\.".toRegex())
                 .filter { split -> !split.isBlank() }
-                connect_button.isEnabled = splits.size == 4
-            }
-
-       /* // Позволяем выполнять операции с сетью в основном потоке.
-        val policy = ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)*/
+            connect_button.isEnabled = splits.size == 4
+        }
     }
 
     fun connect(view: View) {
@@ -41,8 +37,10 @@ class AddDeviceActivity : AppCompatActivity() {
                 if (response.isNotEmpty()) {
                     RemoteControlManager.myInstance.connect(ip)
                     runOnUiThread(Runnable {
-                        Toast.makeText(this, "Подключено к $response",
-                            Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this, "Подключено к $response",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     })
 
                     val intent = Intent(this, ControlActivity::class.java)
@@ -50,9 +48,12 @@ class AddDeviceActivity : AppCompatActivity() {
                     finish()
                 }
             } catch (ex: Exception) {
-                runOnUiThread(Runnable {
-                    Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
-                })
+                runOnUiThread {
+                    Toast.makeText(
+                        this, "Не удаётся подключиться к серверу",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }

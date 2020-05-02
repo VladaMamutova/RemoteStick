@@ -10,7 +10,7 @@ import kotlin.concurrent.thread
 class RemoteControlManager: Runnable {
     private val server = ServerSocket()
     private val isServerAlive = AtomicBoolean(false) // thread-safe boolean
-    private val clientMap : MutableMap<String, Socket> = mutableMapOf()
+    private val clientMap: MutableMap<String, Socket> = mutableMapOf()
 
     companion object {
         private const val port: Int = 56000
@@ -59,9 +59,11 @@ class RemoteControlManager: Runnable {
                         val request = reader.nextLine()
                         when ((request[0] - '0').toByte()) {
                             codePing -> {
-                                writer.write((codeOk.toString()
-                                        + server.inetAddress.hostName
-                                        + '\n').toByteArray(Charsets.UTF_8))
+                                writer.write(
+                                    (codeOk.toString()
+                                            + server.inetAddress.hostName
+                                            + '\n').toByteArray(Charsets.UTF_8)
+                                )
                                 println("\nPing from ${client.inetAddress.hostAddress}")
                                 client.close()
                             }
@@ -70,9 +72,11 @@ class RemoteControlManager: Runnable {
                                     val name = request.removeRange(0, 1) +
                                             " (${client.inetAddress.hostAddress})"
                                     clientMap[name] = client
-                                    writer.write((codeOk.toString()
-                                            + server.inetAddress.hostName
-                                            + '\n').toByteArray(Charsets.UTF_8))
+                                    writer.write(
+                                        (codeOk.toString()
+                                                + server.inetAddress.hostName
+                                                + '\n').toByteArray(Charsets.UTF_8)
+                                    )
                                     println("\nClient $name connected")
                                     println("Number of clients: ${clientMap.size}")
                                     thread {
@@ -81,31 +85,33 @@ class RemoteControlManager: Runnable {
                                         println("Number of clients: ${clientMap.size}")
                                     }
                                 } else {
-                                    writer.write((codeError.toString() +
-                                            "Уже подключено 2 устройства." + '\n')
-                                            .toByteArray(Charsets.UTF_8))
-                                    println("Client ${client.inetAddress.hostAddress} cannot be connected " +
-                                            "due to restrictions on the number of clients")
+                                    writer.write(
+                                        (codeError.toString() +
+                                                "Уже подключено 2 устройства." + '\n')
+                                            .toByteArray(Charsets.UTF_8)
+                                    )
+                                    println(
+                                        "Client ${client.inetAddress.hostAddress} cannot be connected " +
+                                                "due to restrictions on the number of clients"
+                                    )
                                     println("Number of clients: ${clientMap.size}")
                                     client.close()
                                 }
                             }
                         }
-                    }
-                    catch(ex: Exception) {
+                    } catch (ex: Exception) {
                         client.close()
                     }
                 }
             }
         } catch (ex: Exception) {
             println("Error: " + ex.message)
-        }
-        finally {
+        } finally {
             closeServer()
         }
     }
 
-    private fun runClientHandler(client : Socket) {
+    private fun runClientHandler(client: Socket) {
         val reader = Scanner(client.getInputStream())
         val writer: OutputStream = client.getOutputStream()
 
@@ -124,8 +130,10 @@ class RemoteControlManager: Runnable {
                         }
                         codeBye -> { // Клиент отключился.
                             client.close()
-                            println("Client ${client.inetAddress.hostAddress} " +
-                                    "disconnected")
+                            println(
+                                "Client ${client.inetAddress.hostAddress} " +
+                                        "disconnected"
+                            )
                         }
                     }
                 }
@@ -135,10 +143,15 @@ class RemoteControlManager: Runnable {
         }
     }
 
-    fun getClientName() = clientMap.keys.joinToString(", ")
+    fun getClientName() =
+        if (clientMap.isNotEmpty())
+        clientMap.keys.joinToString(", ")
+        else "не подключён"
 
     fun stop() {
         isServerAlive.compareAndSet(true, false)
         closeServer()
     }
+
+    fun isServerAlive() = isServerAlive.get()
 }
