@@ -4,12 +4,19 @@ package ru.vladamamutova.remotestick.service
  * Тип пакета, передаваемого между клиентом и сервером.
  * */
 enum class PacketTypes (val value: Byte) {
-    PING(1),
-    HELLO(2),
-    OK(3),
-    ERROR(4),
-    BYE(5),
-    MESSAGE(6);
+    PING(0),
+    HELLO(1),
+    OK(2),
+    ERROR(3),
+    BYE(4),
+    MOUSE(5),
+    KEYBOARD(6),
+    MEDIA(7),
+    PRESENTATION(8),
+    BROWSER(9),
+    DISPATCHER(10),
+    POWER(11);
+
 
     override fun toString(): String {
         return value.toString()

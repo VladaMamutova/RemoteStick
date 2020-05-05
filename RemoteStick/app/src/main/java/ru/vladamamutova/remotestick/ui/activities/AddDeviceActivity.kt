@@ -32,25 +32,20 @@ class AddDeviceActivity : AppCompatActivity() {
         doAsync {
             try {
                 val ip = InetAddress.getByName(edit_ip_address.text.toString())
-                val response = RemoteControlManager.pingServer(ip)
+                val response = RemoteControlManager.myInstance.connect(ip)
+                runOnUiThread(Runnable {
+                    Toast.makeText(
+                        this, "Подключено к $response", Toast.LENGTH_SHORT
+                    ).show()
+                })
 
-                if (response.isNotEmpty()) {
-                    RemoteControlManager.myInstance.connect(ip)
-                    runOnUiThread(Runnable {
-                        Toast.makeText(
-                            this, "Подключено к $response",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    })
-
-                    val intent = Intent(this, ControlActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
+                val intent = Intent(this, ControlActivity::class.java)
+                startActivity(intent)
+                finish()
             } catch (ex: Exception) {
                 runOnUiThread {
                     Toast.makeText(
-                        this, "Не удаётся подключиться к серверу",
+                        this, ex.message,
                         Toast.LENGTH_SHORT
                     ).show()
                 }

@@ -24,8 +24,7 @@ class RemoteControlManager: Runnable {
     private fun closeServer() {
         if (server.isBound && !server.isClosed) {
             for (client in clientMap.values) {
-                val writer: OutputStream = client.getOutputStream()
-                writer.write((BYE.value.toString() + '\n').toByteArray(Charsets.UTF_8))
+                client.getOutputStream().sendPacket(NetworkPacket(BYE))
                 client.close()
                 println("Client ${client.inetAddress.hostAddress} closed.")
             }
@@ -40,68 +39,53 @@ class RemoteControlManager: Runnable {
         server.reuseAddress = true
         try {
             server.bind(socketAddress) // Привязываем серверный сокет к настроенной конечной точке.
-            if (server.isBound) {
-                isServerAlive.set(true)
+            isServerAlive.set(true)
+            println("\nServer ${server.inetAddress.hostAddress}:$port started")
+            println("Wait for connection...")
 
-                println("\nServer ${server.inetAddress.hostAddress}:$port started")
-                println("Wait for connection...")
-
-                while (isServerAlive.get()) {
-                    // Ждем соединение.
-                    val client: Socket = server.accept()
-                    try {
-                        val reader = Scanner(client.getInputStream())
-                        val writer: OutputStream = client.getOutputStream()
-                        val packet = NetworkPacket(reader.nextLine())
-                        // Проверяем цель запроса клиента: пинг или подключение.
-                        // В остальных случаях пропускам пакет.
-                        when (packet.type) {
-                            PING -> {
-                                writer.write(
-                                    NetworkPacket(
-                                        OK,
-                                        server.inetAddress.hostName
-                                    ).toUTFBytes())
-                                println("\nPing from ${client.inetAddress.hostAddress}")
+            while (isServerAlive.get()) {
+                // Ждем соединение.
+                val client: Socket = server.accept()
+                try {
+                    val reader = Scanner(client.getInputStream())
+                    val writer: OutputStream = client.getOutputStream()
+                    val packet = NetworkPacket(reader.nextLine())
+                    // Проверяем цель запроса клиента: пинг или подключение.
+                    // В остальных случаях пропускам пакет.
+                    when (packet.type) {
+                        PING -> {
+                            sendOkPacket(writer)
+                            println("\nPing from ${client.inetAddress.hostAddress}")
+                            client.close()
+                        }
+                        HELLO -> {
+                            if (clientMap.size < 2) {
+                                // В пакете - имя подключённого устройства.
+                                val name = packet.body.get("name")?.asString +
+                                        " (${client.inetAddress.hostAddress})"
+                                clientMap[name] = client
+                                sendOkPacket(writer)
+                                println("\nClient $name connected")
+                                println("Number of clients: ${clientMap.size}")
+                                thread {
+                                    runClientHandler(client)
+                                    clientMap.remove(name)
+                                    println("Number of clients: ${clientMap.size}")
+                                }
+                            } else {
+                                sendErrorPacket(writer, "Уже подключено 2 устройства")
+                                println(
+                                    "Client ${client.inetAddress.hostAddress} cannot be connected " +
+                                            "due to restrictions on the number of clients"
+                                )
+                                println("Number of clients: ${clientMap.size}")
                                 client.close()
                             }
-                            HELLO -> {
-                                if (clientMap.size < 2) {
-                                    // В пакете - имя подключённого устройства.
-                                    val name = packet.body +
-                                            " (${client.inetAddress.hostAddress})"
-                                    clientMap[name] = client
-                                    writer.write(
-                                        NetworkPacket(
-                                            OK, server.inetAddress.hostName
-                                        ).toUTFBytes()
-                                    )
-                                    println("\nClient $name connected")
-                                    println("Number of clients: ${clientMap.size}")
-                                    thread {
-                                        runClientHandler(client)
-                                        clientMap.remove(name)
-                                        println("Number of clients: ${clientMap.size}")
-                                    }
-                                } else {
-                                    writer.write(
-                                        NetworkPacket(
-                                            ERROR, "Уже подключено 2 устройства"
-                                        ).toUTFBytes()
-                                    )
-                                    println(
-                                        "Client ${client.inetAddress.hostAddress} cannot be connected " +
-                                                "due to restrictions on the number of clients"
-                                    )
-                                    println("Number of clients: ${clientMap.size}")
-                                    client.close()
-                                }
-                            }
-                            else -> client.close()
                         }
-                    } catch (ex: Exception) {
-                        client.close()
+                        else -> client.close()
                     }
+                } catch (ex: Exception) {
+                    client.close()
                 }
             }
         } catch (ex: Exception) {
@@ -121,9 +105,6 @@ class RemoteControlManager: Runnable {
                 if (reader.hasNextLine()) {
                     val packet = NetworkPacket(reader.nextLine())
                     when (packet.type) {
-                        MESSAGE -> { // Клиент отправил сообщение.
-                            println(packet.body)
-                        }
                         BYE -> { // Клиент отключился.
                             client.close()
                             println(
@@ -141,6 +122,30 @@ class RemoteControlManager: Runnable {
                 println("Error: " + ex.message)
             }
         }
+    }
+
+    /**
+     * Отправляет сетевой пакет типа OK с указанием имени сервера
+     * (в теле пакета - свойство name).
+     * */
+    private fun sendOkPacket(writer: OutputStream) {
+        writer.sendPacket(
+            NetworkPacket(OK, "name", server.inetAddress.hostName)
+        )
+    }
+
+    /**
+     * Отправляет сетевой пакет типа ERROR с указанием сообщения об ошибке
+     * (в теле пакета - свойство message).
+     * */
+    private fun sendErrorPacket(writer: OutputStream, message: String) {
+        writer.sendPacket(
+            NetworkPacket(ERROR, "message", message)
+        )
+    }
+
+    private fun OutputStream.sendPacket(packet: NetworkPacket) {
+        this.write(packet.toUTFBytes())
     }
 
     fun getClientName() =

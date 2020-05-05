@@ -1,5 +1,7 @@
 package main.kotlin
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader.load
@@ -7,8 +9,10 @@ import javafx.scene.Scene
 import javafx.scene.control.Alert
 import javafx.scene.control.Label
 import javafx.stage.Stage
+import main.kotlin.service.NetworkPacket
 import java.net.InetAddress
 import kotlin.concurrent.thread
+
 
 // Главный класс приложения JavaFX наследуется от javafx.application.Application
 class Main : Application() {

@@ -17,7 +17,7 @@ class RemoteControlManager private constructor() {
     private var reader: Scanner? = null
     private var writer: OutputStream? = null
 
-    private var codeCommand: Byte = 6
+    private var codeCommand: Byte = 0
 
     var connected = AtomicBoolean(false) // thread-safe boolean
     private set
@@ -27,7 +27,7 @@ class RemoteControlManager private constructor() {
 
     companion object {
         private const val port: Int = 56000
-        private const val connectionTimeout: Int = 2000
+        private const val connectionTimeout: Int = 1500
 
         private lateinit var instance: RemoteControlManager
 
@@ -42,41 +42,71 @@ class RemoteControlManager private constructor() {
 
         fun pingServer(serverIp: InetAddress): String {
             val socket = Socket()
-            socket.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+            try {
+                socket.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+            } catch (ex: Exception) {
+                throw Exception(
+                    "Невозможно подключиться к серверу с заданным IP-адресом"
+                )
+            }
 
             socket.use {
                 val response: String
                 val reader = Scanner(socket.getInputStream())
                 val writer = socket.getOutputStream()
-                writer!!.write(NetworkPacket(PING, "").toUTFBytes())
+                writer!!.write(NetworkPacket(PING).toUTFBytes())
                 val packet = NetworkPacket(reader.nextLine())
-                if (packet.type == OK) {
-                    // В ответе - сетевое имя компьютера.
-                    response = packet.body
-                } else {
-                    throw Exception(packet.body)
+                when (packet.type) {
+                    OK -> { // В ответе - сетевое имя компьютера.
+                        response = packet.body.get("name").asString
+                    }
+                    ERROR -> { // В ответе - сообщение об ошибке.
+                        throw Exception(packet.body.get("message").asString)
+                    }
+                    else -> {
+                        throw Exception("Сервер не отвечает")
+                    }
                 }
                 return response
             }
         }
     }
 
-    fun connect(serverIp : InetAddress) {
+    fun connect(serverIp : InetAddress): String {
         client = Socket()
-        client.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+        try {
+            client.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+        } catch (ex: Exception) {
+            throw Exception(
+                "Невозможно подключиться к серверу с заданным IP-адресом"
+            )
+        }
 
         reader = Scanner(client.getInputStream())
         writer = client.getOutputStream()
         errorMessage = ""
 
-        writer!!.write(NetworkPacket(HELLO, Build.MODEL).toUTFBytes())
+        writer!!.sendPacket(NetworkPacket(HELLO, "name", Build.MODEL))
 
+        val response: String
         val packet = NetworkPacket(reader!!.nextLine())
-        if (packet.type == OK) {
-            connected.compareAndSet(false, true)
-        } else {
-            throw Exception(packet.body)
+        when (packet.type) {
+            OK -> { // В ответе - сетевое имя компьютера.
+                response = packet.body.get("name").asString
+                connected.compareAndSet(false, true)
+            }
+            ERROR -> { // В ответе - сообщение об ошибке.
+                throw Exception(packet.body.get("message").asString)
+            }
+            else -> {
+                throw Exception("Сервер не отвечает")
+            }
         }
+        return response
+    }
+
+    private fun OutputStream.sendPacket(packet: NetworkPacket) {
+        this.write(packet.toUTFBytes())
     }
 
     fun run() {
@@ -85,18 +115,10 @@ class RemoteControlManager private constructor() {
                 thread { read() }
                 while (connected.get()) {
                     when (codeCommand) {
-                        MESSAGE.value -> {
-                            writer!!.write(
-                                NetworkPacket(
-                                    MESSAGE,
-                                    "Hello"
-                                ).toUTFBytes())
-                            codeCommand = 0
-                        }
-                        else -> Thread.sleep(50)
+                        else -> Thread.sleep(5)
                     }
                 }
-                writer!!.write(NetworkPacket(BYE, "").toUTFBytes())
+                writer!!.sendPacket(NetworkPacket(BYE))
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
