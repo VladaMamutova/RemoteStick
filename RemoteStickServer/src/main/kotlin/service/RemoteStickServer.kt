@@ -1,7 +1,6 @@
-package main.kotlin
+package main.kotlin.service
 
 import main.kotlin.service.PacketTypes.*
-import main.kotlin.service.NetworkPacket
 import java.io.OutputStream
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -12,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 
-class RemoteControlManager: Runnable {
+class RemoteStickServer: Runnable {
     companion object {
         private const val port: Int = 56000
     }
@@ -35,7 +34,9 @@ class RemoteControlManager: Runnable {
 
     override fun run() {
         // Создаём конечную точку с IP-адресом и портом.
-        val socketAddress = InetSocketAddress(InetAddress.getLocalHost().hostAddress, port)
+        val socketAddress = InetSocketAddress(InetAddress.getLocalHost().hostAddress,
+            port
+        )
         server.reuseAddress = true
         try {
             server.bind(socketAddress) // Привязываем серверный сокет к настроенной конечной точке.

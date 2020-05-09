@@ -1,8 +1,7 @@
-package ru.vladamamutova.remotestick
+package ru.vladamamutova.remotestick.service
 
 import android.os.Build
 import ru.vladamamutova.remotestick.service.PacketTypes.*
-import ru.vladamamutova.remotestick.service.NetworkPacket
 import java.io.OutputStream
 import java.net.InetAddress
 import java.net.InetSocketAddress
@@ -12,7 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 
-class RemoteControlManager private constructor() {
+class RemoteStickClient private constructor() {
     private lateinit var client: Socket
     private var reader: Scanner? = null
     private var writer: OutputStream? = null
@@ -29,12 +28,13 @@ class RemoteControlManager private constructor() {
         private const val port: Int = 56000
         private const val connectionTimeout: Int = 1500
 
-        private lateinit var instance: RemoteControlManager
+        private lateinit var instance: RemoteStickClient
 
-        val myInstance: RemoteControlManager
+        val myInstance: RemoteStickClient
             get() {
                 if (!this::instance.isInitialized) {
-                    instance = RemoteControlManager()
+                    instance =
+                        RemoteStickClient()
                 }
 
                 return instance
@@ -43,7 +43,10 @@ class RemoteControlManager private constructor() {
         fun pingServer(serverIp: InetAddress): String {
             val socket = Socket()
             try {
-                socket.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+                socket.connect(InetSocketAddress(serverIp,
+                    port
+                ), connectionTimeout
+                )
             } catch (ex: Exception) {
                 throw Exception(
                     "Невозможно подключиться к серверу с заданным IP-адресом"
@@ -75,7 +78,10 @@ class RemoteControlManager private constructor() {
     fun connect(serverIp : InetAddress): String {
         client = Socket()
         try {
-            client.connect(InetSocketAddress(serverIp, port), connectionTimeout)
+            client.connect(InetSocketAddress(serverIp,
+                port
+            ), connectionTimeout
+            )
         } catch (ex: Exception) {
             throw Exception(
                 "Невозможно подключиться к серверу с заданным IP-адресом"

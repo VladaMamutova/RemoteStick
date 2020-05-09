@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.activity_control.*
 import ru.vladamamutova.remotestick.R
-import ru.vladamamutova.remotestick.RemoteControlManager
+import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
 import kotlin.concurrent.thread
@@ -37,14 +37,14 @@ class ControlActivity : AppCompatActivity() {
         }
 
         thread {
-            RemoteControlManager.myInstance.run()
+            RemoteStickClient.myInstance.run()
             // Здесь клиент завершил работу.
             // Если есть сообщение об ошибке (то есть сервер перестал отвечать),
             // то отобржаем сообщение и завершаем активность.
-            if (RemoteControlManager.myInstance.errorMessage != "") {
+            if (RemoteStickClient.myInstance.errorMessage != "") {
                 runOnUiThread {
                     Toast.makeText(
-                        applicationContext, RemoteControlManager.myInstance.errorMessage,
+                        applicationContext, RemoteStickClient.myInstance.errorMessage,
                         Toast.LENGTH_SHORT
                     ).show()
                     startActivity(Intent(applicationContext, MainActivity::class.java))
@@ -74,7 +74,7 @@ class ControlActivity : AppCompatActivity() {
             if (disconnectionToast!!.view.isShown) {
                 disconnectionToast!!.cancel()
 
-                RemoteControlManager.myInstance.stop()
+                RemoteStickClient.myInstance.stop()
 
                 startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish()

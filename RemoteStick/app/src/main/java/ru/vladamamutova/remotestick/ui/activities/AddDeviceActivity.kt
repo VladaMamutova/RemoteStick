@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
 import kotlinx.android.synthetic.main.activity_add_device.*
 import ru.vladamamutova.remotestick.R
-import ru.vladamamutova.remotestick.RemoteControlManager
+import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.utils.InputUtils
 import ru.vladamamutova.remotestick.utils.doAsync
 import java.net.InetAddress
@@ -32,7 +32,7 @@ class AddDeviceActivity : AppCompatActivity() {
         doAsync {
             try {
                 val ip = InetAddress.getByName(edit_ip_address.text.toString())
-                val response = RemoteControlManager.myInstance.connect(ip)
+                val response = RemoteStickClient.myInstance.connect(ip)
                 runOnUiThread(Runnable {
                     Toast.makeText(
                         this, "Подключено к $response", Toast.LENGTH_SHORT
