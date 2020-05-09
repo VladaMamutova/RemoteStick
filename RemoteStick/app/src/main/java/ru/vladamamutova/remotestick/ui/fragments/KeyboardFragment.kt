@@ -43,6 +43,7 @@ class KeyboardFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_keyboard, container, false)
     }
 
+
    /* // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
         listener?.onFragmentInteraction(uri)
@@ -89,7 +90,7 @@ class KeyboardFragment : Fragment() {
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(): KeyboardFragment = KeyboardFragment()
+        fun newInstance() = KeyboardFragment()
         /*fun newInstance(param1: String, param2: String) =
             KeyboardFragment().apply {
                 arguments = Bundle().apply {

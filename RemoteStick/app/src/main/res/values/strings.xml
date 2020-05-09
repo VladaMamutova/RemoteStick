@@ -6,4 +6,8 @@
     <string name="ip_address">IP-адрес:</string>
     <string name="ip_address_example">Например, 192.168.0.102</string>
     <string name="action_connect">Подключиться</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_media_fragment">Hello media fragment</string>
 </resources>

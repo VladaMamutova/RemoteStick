@@ -1,5 +1,6 @@
 package ru.vladamamutova.remotestick.ui.adapters
 
+import android.text.BoringLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
