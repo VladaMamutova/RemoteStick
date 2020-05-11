@@ -1,6 +1,7 @@
 package ru.vladamamutova.remotestick.ui.activities
 
 import android.content.Intent
+import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -27,59 +28,28 @@ class ControlActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_control)
 
-        viewPager.layoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT,
-            (resources.displayMetrics.heightPixels * 0.3).toInt())
-            .apply { addRule(RelativeLayout.BELOW, R.id.tabs); }
-
-        setupViewPager(viewPager)
+        viewPager.setupAdapter()
         tabs.setupWithViewPager(viewPager)
+        val iconColors = resources.obtainTypedArray(R.array.icon_colors)
+        tabs.setupIcons(resources.obtainTypedArray(R.array.icons), iconColors)
 
-        tabs.getTabAt(0)!!.setIcon(R.drawable.ic_keyboard)
-        tabs.getTabAt(1)!!.setIcon(R.drawable.ic_music_video)
-        tabs.getTabAt(2)!!.setIcon(R.drawable.ic_keyboard)
-        tabs.getTabAt(3)!!.setIcon(R.drawable.ic_music_video)
-        tabs.getTabAt(4)!!.setIcon(R.drawable.ic_music_video)
-        tabs.getTabAt(5)!!.setIcon(R.drawable.ic_music_video)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            tabs.getTabAt(0)!!.setIconTintList(R.color.violet_tab_selector)
-            tabs.getTabAt(1)!!.setIconTintList(R.color.blue_tab_selector)
-            tabs.getTabAt(2)!!.setIconTintList(R.color.green_tab_selector)
-            tabs.getTabAt(3)!!.setIconTintList(R.color.pink_tab_selector)
-            tabs.getTabAt(4)!!.setIconTintList(R.color.violet_tab_selector)
-            tabs.getTabAt(5)!!.setIconTintList(R.color.blue_tab_selector)
-        }
-
-        tabs.addOnTabSelectedListener(object : OnTabSelectedListener {
+        tabs.addOnTabSelectedListener(object: OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                // При выборе вкладки в любом случае панель инструментов
-                // должна быть открыта.
+                // При выборе вкладки открываем панель инструментов.
                 if (viewPager.visibility == View.GONE) {
                     viewPager.visibility = View.VISIBLE
                 }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    when(tab.position) {
-                        0 -> tab.setIconTintList(R.color.violet_tab_selector)
-                        1 -> tab.setIconTintList(R.color.blue_tab_selector)
-                        2 -> tab.setIconTintList(R.color.green_tab_selector)
-                        3 -> tab.setIconTintList(R.color.pink_tab_selector)
-                        4 -> tab.setIconTintList(R.color.violet_tab_selector)
-                        5 -> tab.setIconTintList(R.color.blue_tab_selector)
-                    }
-                }
+                tab.setIconTintList(iconColors.getResourceId(tab.position, R.color.violet))
             }
-            override fun onTabUnselected(tab: TabLayout.Tab) {}
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab) {
-                // При повторном выборе вкладки скрываем
-                // панель инструментов, если она была открыта.
-                if (viewPager.visibility == View.VISIBLE) {
-                    viewPager.visibility = View.GONE
-                    tab.setIconTintList(R.color.grey)
-                    tabs.selectTab(null)
-                } /*else {
-                    viewPager.visibility = View.VISIBLE
-                }*/
+                // При повторном выборе вкладки скрываем панель инструментов.
+                viewPager.visibility = View.GONE
+                tab.setIconTintList(R.color.grey)
+                // Устанавливаем текущую вкладку в null, чтобы
+                // не обрабатывать это событие, когда панель уже была скрыта.
+                tabs.selectTab(null)
             }
         })
 
@@ -101,22 +71,41 @@ class ControlActivity : AppCompatActivity() {
         }
     }
 
-    private fun TabLayout.Tab.setIconTintList(colorResource: Int) {
-        this.icon?.setTintList(
-            ContextCompat.getColorStateList(
-                applicationContext, colorResource
-            )
-        )
+    private fun ViewPager.setupAdapter() {
+        // Устанавливаем высоту панели инструментов в 30%.
+        this.layoutParams = RelativeLayout.LayoutParams(
+            RelativeLayout.LayoutParams.MATCH_PARENT,
+            (resources.displayMetrics.heightPixels * 0.3).toInt()
+        ).apply { addRule(RelativeLayout.BELOW, R.id.tabs); }
+
+        // Добавляем вкладки.
+        val adapter = ViewPagerAdapter(supportFragmentManager).apply {
+            addFragment(KeyboardFragment())
+            addFragment(MediaFragment())
+            addFragment(KeyboardFragment())
+            addFragment(KeyboardFragment())
+            addFragment(KeyboardFragment())
+            addFragment(KeyboardFragment())
+            addFragment(KeyboardFragment())
+        }
+        this.adapter = adapter
     }
-    private fun setupViewPager(viewPager : ViewPager) {
-        val adapter = ViewPagerAdapter(supportFragmentManager)
-        adapter.addFragment(KeyboardFragment())
-        adapter.addFragment(MediaFragment())
-        adapter.addFragment(KeyboardFragment())
-        adapter.addFragment(KeyboardFragment())
-        adapter.addFragment(KeyboardFragment())
-        adapter.addFragment(KeyboardFragment())
-        viewPager.adapter = adapter
+
+    private fun TabLayout.setupIcons(icons: TypedArray, colors: TypedArray) {
+        for (i in 0 until this.tabCount) {
+            this.getTabAt(i)!!.setIcon(icons.getResourceId(i, R.drawable.ic_keyboard))
+            this.getTabAt(i)!!.setIconTintList(colors.getResourceId(i, R.color.violet))
+        }
+    }
+
+    private fun TabLayout.Tab.setIconTintList(colorResource: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.icon?.setTintList(
+                ContextCompat.getColorStateList(
+                    applicationContext, colorResource
+                )
+            )
+        }
     }
 
     override fun onBackPressed() {
@@ -139,4 +128,7 @@ class ControlActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun onRightButtonClick(view: View) {}
+    fun onLeftButtonClick(view: View) {}
 }

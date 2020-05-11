@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="icon_colors">
+        <item>@color/violet_selector</item>
+        <item>@color/pink_selector</item>
+        <item>@color/orange_selector</item>
+        <item>@color/yellow_selector</item>
+        <item>@color/green_selector</item>
+        <item>@color/azure_selector</item>
+        <item>@color/blue_selector</item>
+    </array>
+    <array name="icons">
+        <item>@drawable/ic_music_video</item>
+        <item>@drawable/ic_keyboard</item>
+        <item>@drawable/ic_music_video</item>
+        <item>@drawable/ic_keyboard</item>
+        <item>@drawable/ic_music_video</item>
+        <item>@drawable/ic_keyboard</item>
+        <item>@drawable/ic_music_video</item>
+    </array>
+</resources>

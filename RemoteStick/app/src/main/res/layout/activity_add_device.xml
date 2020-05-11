@@ -37,7 +37,7 @@
             android:text="@string/action_connect"
             android:textSize="@dimen/body_text"
             android:textColor="@android:color/white"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/button_background"
             android:onClick="connect"/>
 
 </LinearLayout>

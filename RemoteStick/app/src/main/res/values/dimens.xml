@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="small_intent">8dp</dimen>
+    <dimen name="small_intent">4dp</dimen>
     <dimen name="medium_intent">14dp</dimen>
+    <dimen name="button_radius">4dp</dimen>
     <dimen name="body_text">18sp</dimen>
 </resources>

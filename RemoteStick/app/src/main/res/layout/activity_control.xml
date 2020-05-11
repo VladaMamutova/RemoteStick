@@ -15,7 +15,35 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/toolbar"
-    />
+            android:background="@drawable/light_gradient">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_margin="@dimen/small_intent">
+
+            <Button android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/mouse_button_background"
+                    android:onClick="onRightButtonClick"/>
+
+            <TextView android:layout_width="@dimen/small_intent"
+                      android:layout_height="match_parent"/>
+
+            <Button android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/mouse_button_background"
+                    android:onClick="onLeftButtonClick"/>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout android:id="@+id/toolbar"
                     android:layout_width="match_parent"
@@ -36,8 +64,7 @@
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_below="@+id/tabs"
-        />
+                android:layout_below="@+id/tabs"/>
 
     </RelativeLayout>
 
