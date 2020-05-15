@@ -1,5 +1,6 @@
 package main.kotlin.service
 
+import main.kotlin.plugins.MousePlugin
 import main.kotlin.service.PacketTypes.*
 import java.io.OutputStream
 import java.net.InetAddress
@@ -19,6 +20,7 @@ class RemoteStickServer: Runnable {
     private val server = ServerSocket()
     private val isServerAlive = AtomicBoolean(false) // thread-safe boolean
     private val clientMap: MutableMap<String, Socket> = mutableMapOf()
+    private val mousePlugin = MousePlugin()
 
     private fun closeServer() {
         if (server.isBound && !server.isClosed) {
@@ -106,6 +108,7 @@ class RemoteStickServer: Runnable {
                 if (reader.hasNextLine()) {
                     val packet = NetworkPacket(reader.nextLine())
                     when (packet.type) {
+                        MOUSE -> mousePlugin.handlePacket(packet)
                         BYE -> { // Клиент отключился.
                             client.close()
                             println(

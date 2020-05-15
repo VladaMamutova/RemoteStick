@@ -18,6 +18,7 @@ import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
 import ru.vladamamutova.remotestick.ui.fragments.MediaFragment
+import ru.vladamamutova.remotestick.utils.DoubleClickListener
 import kotlin.concurrent.thread
 
 
@@ -50,6 +51,16 @@ class ControlActivity : AppCompatActivity() {
                 // Устанавливаем текущую вкладку в null, чтобы
                 // не обрабатывать это событие, когда панель уже была скрыта.
                 tabs.selectTab(null)
+            }
+        })
+
+        leftButton.setOnClickListener(object : DoubleClickListener() {
+            override fun onDoubleClick() {
+                RemoteStickClient.myInstance.mousePlugin.sendDoubleClick()
+            }
+
+            override fun onSingleClick() {
+                RemoteStickClient.myInstance.mousePlugin.sendLeftClick()
             }
         })
 
@@ -129,6 +140,7 @@ class ControlActivity : AppCompatActivity() {
         }
     }
 
-    fun onRightButtonClick(view: View) {}
-    fun onLeftButtonClick(view: View) {}
+    fun onRightButtonClick(view: View) {
+        RemoteStickClient.myInstance.mousePlugin.sendRightClick()
+    }
 }

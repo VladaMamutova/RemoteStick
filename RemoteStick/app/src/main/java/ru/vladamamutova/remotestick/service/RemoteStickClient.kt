@@ -1,6 +1,8 @@
 package ru.vladamamutova.remotestick.service
 
 import android.os.Build
+import ru.vladamamutova.remotestick.plugins.MousePlugin
+import ru.vladamamutova.remotestick.plugins.PluginMediator
 import ru.vladamamutova.remotestick.service.PacketTypes.*
 import java.io.OutputStream
 import java.net.InetAddress
@@ -11,18 +13,17 @@ import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 
-class RemoteStickClient private constructor() {
+class RemoteStickClient private constructor() : PluginMediator {
     private lateinit var client: Socket
     private var reader: Scanner? = null
     private var writer: OutputStream? = null
-
-    private var codeCommand: Byte = 0
-
-    var connected = AtomicBoolean(false) // thread-safe boolean
-    private set
+    private var connected = AtomicBoolean(false) // thread-safe boolean
+    private val packetQueue: Queue<NetworkPacket> = LinkedList()
 
     var errorMessage: String = ""
     private set
+
+    val mousePlugin = MousePlugin(this)
 
     companion object {
         private const val port: Int = 56000
@@ -75,6 +76,18 @@ class RemoteStickClient private constructor() {
         }
     }
 
+    // Когда что-то случается с компонентом, он шлёт посреднику
+    // оповещение. После получения извещения посредник может
+    // либо сделать что-то самостоятельно, либо перенаправить
+    // запрос другому компоненту.
+    /*override fun notify(type: PacketTypes, event: String) {
+       for (plugin in plugins){
+           if (type == plugin.type) {
+               plugin.handleEvent(event)
+           }
+       }
+    }*/
+
     fun connect(serverIp : InetAddress): String {
         client = Socket()
         try {
@@ -115,13 +128,17 @@ class RemoteStickClient private constructor() {
         this.write(packet.toUTFBytes())
     }
 
+    override fun sendPacket(packet: NetworkPacket) {
+        packetQueue.add(packet)
+    }
+
     fun run() {
         try {
             client.use {
                 thread { read() }
                 while (connected.get()) {
-                    when (codeCommand) {
-                        else -> Thread.sleep(5)
+                    if(packetQueue.isNotEmpty()) {
+                        writer?.write(packetQueue.remove().toUTFBytes())
                     }
                 }
                 writer!!.sendPacket(NetworkPacket(BYE))

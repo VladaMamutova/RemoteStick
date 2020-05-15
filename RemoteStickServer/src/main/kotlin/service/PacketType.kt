@@ -17,7 +17,6 @@ enum class PacketTypes (val value: Byte) {
     DISPATCHER(10),
     POWER(11);
 
-
     override fun toString(): String {
         return value.toString()
     }

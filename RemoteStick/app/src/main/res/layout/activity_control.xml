@@ -26,11 +26,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_margin="@dimen/small_intent">
 
-            <Button android:layout_width="0dp"
+            <Button android:id="@+id/leftButton"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/mouse_button_background"
-                    android:onClick="onRightButtonClick"/>
+            />
 
             <TextView android:layout_width="@dimen/small_intent"
                       android:layout_height="match_parent"/>
@@ -39,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/mouse_button_background"
-                    android:onClick="onLeftButtonClick"/>
+                    android:onClick="onRightButtonClick"/>
 
         </LinearLayout>
 
