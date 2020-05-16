@@ -56,13 +56,14 @@ class ControlActivity : AppCompatActivity() {
 
         leftButton.setOnClickListener(object : DoubleClickListener() {
             override fun onDoubleClick() {
-                RemoteStickClient.myInstance.mousePlugin.sendDoubleClick()
+                RemoteStickClient.myInstance.mousePlugin.onDoubleClick()
             }
 
             override fun onSingleClick() {
-                RemoteStickClient.myInstance.mousePlugin.sendLeftClick()
+                RemoteStickClient.myInstance.mousePlugin.onLeftClick()
             }
         })
+
 
         thread {
             RemoteStickClient.myInstance.run()
@@ -80,8 +81,29 @@ class ControlActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+/*        mDetector = GestureDetector(this, AdvancedGestureListener())
 
+        // Add a touch listener to the view
+        // The touch listener passes all its events on to the gesture detector
+        touchpad.setOnTouchListener(touchListener)*/
+        rightButton.setOnClickListener {
+            RemoteStickClient.myInstance.mousePlugin.onRightClick()
+        }
+        //touchpad.setOnMouseActionListener(RemoteStickClient.myInstance.mousePlugin)
+    }
+  /*  private var mDetector: GestureDetector? = null
+
+    // This touch listener passes everything on to the gesture detector.
+    // That saves us the trouble of interpreting the raw touch events
+    // ourselves.
+
+    var touchListener = OnTouchListener { v, event -> // pass the events to the gesture detector
+        // a return value of true means the detector is handling it
+        // a return value of false means the detector didn't
+        // recognize the event
+        mDetector!!.onTouchEvent(event)
+    }
+*/
     private fun ViewPager.setupAdapter() {
         // Устанавливаем высоту панели инструментов в 30%.
         this.layoutParams = RelativeLayout.LayoutParams(
@@ -138,9 +160,5 @@ class ControlActivity : AppCompatActivity() {
                 disconnectionToast!!.show()
             }
         }
-    }
-
-    fun onRightButtonClick(view: View) {
-        RemoteStickClient.myInstance.mousePlugin.sendRightClick()
     }
 }

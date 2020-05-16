@@ -17,14 +17,21 @@
             app:layout_constraintBottom_toTopOf="@+id/toolbar"
             android:background="@drawable/light_gradient">
 
-        <LinearLayout
+        <ru.vladamamutova.remotestick.ui.custom.TouchpadView
+                android:id="@+id/touchpad"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="@dimen/small_intent">
+                android:layout_height="0dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/buttonPanel"/>
+
+        <LinearLayout android:id="@+id/buttonPanel"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal"
+                      app:layout_constraintBottom_toBottomOf="parent"
+                      app:layout_constraintStart_toStartOf="parent"
+                      app:layout_constraintEnd_toEndOf="parent"
+                      android:layout_margin="@dimen/small_intent">
 
             <Button android:id="@+id/leftButton"
                     android:layout_width="0dp"
@@ -36,11 +43,12 @@
             <TextView android:layout_width="@dimen/small_intent"
                       android:layout_height="match_parent"/>
 
-            <Button android:layout_width="0dp"
+            <Button android:id="@+id/rightButton"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/mouse_button_background"
-                    android:onClick="onRightButtonClick"/>
+            />
 
         </LinearLayout>
 

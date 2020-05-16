@@ -3,12 +3,14 @@ package ru.vladamamutova.remotestick.plugins
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
 import ru.vladamamutova.remotestick.service.PacketTypes
+import ru.vladamamutova.remotestick.utils.MouseActionListener
 
-class MousePlugin(owner: PluginMediator) : Plugin(owner) {
+class MousePlugin(owner: PluginMediator) : Plugin(owner), MouseActionListener {
     enum class Action(val value: String) {
         RIGHT_CLICK("right click"),
         LEFT_CLICK("left click"),
-        DOUBLE_CLICK("double click");
+        DOUBLE_CLICK("double click"),
+        MOVE("move");
 
         companion object {
             const val name = "action"
@@ -26,8 +28,10 @@ class MousePlugin(owner: PluginMediator) : Plugin(owner) {
         }
     }*/
 
-    private fun createPacket(action: Action,
-                             properties: Map<String, String> = mapOf())
+    private fun createPacket(
+        action: Action,
+        properties: Map<String, String> = mapOf()
+    )
             : NetworkPacket {
         val body = JsonObject().apply { addProperty(Action.name, action.value) }
         for (property in properties) {
@@ -36,15 +40,23 @@ class MousePlugin(owner: PluginMediator) : Plugin(owner) {
         return createPacket(body)
     }
 
-    fun sendLeftClick() {
+    override fun onLeftClick() {
         owner.sendPacket(createPacket(Action.LEFT_CLICK))
     }
 
-    fun sendRightClick() {
+    override fun onRightClick() {
         owner.sendPacket(createPacket(Action.RIGHT_CLICK))
     }
 
-    fun sendDoubleClick() {
+    override fun onDoubleClick() {
         owner.sendPacket(createPacket(Action.DOUBLE_CLICK))
+    }
+
+    override fun onMove(dx: Int, dy: Int) {
+        owner.sendPacket(
+            createPacket(
+                Action.MOVE, mapOf("dx" to dx.toString(), "dy" to dy.toString())
+            )
+        )
     }
 }
