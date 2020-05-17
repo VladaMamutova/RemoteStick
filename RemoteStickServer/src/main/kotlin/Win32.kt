@@ -25,5 +25,5 @@ class Win32 {
     external fun doubleClick()
     external fun leftClick()
     external fun rightClick()
-    external fun moveMouse(x: Int, y: Int)
+    external fun moveMouse(dx: Int, dy: Int)
 }

@@ -1,6 +1,7 @@
 package ru.vladamamutova.remotestick.service
 
 import android.os.Build
+import android.util.Log
 import ru.vladamamutova.remotestick.plugins.MousePlugin
 import ru.vladamamutova.remotestick.plugins.PluginMediator
 import ru.vladamamutova.remotestick.service.PacketTypes.*
@@ -28,14 +29,14 @@ class RemoteStickClient private constructor() : PluginMediator {
     companion object {
         private const val port: Int = 56000
         private const val connectionTimeout: Int = 1500
+        private const val pingHelloTimeout: Int = 1000
 
         private lateinit var instance: RemoteStickClient
 
         val myInstance: RemoteStickClient
             get() {
                 if (!this::instance.isInitialized) {
-                    instance =
-                        RemoteStickClient()
+                    instance = RemoteStickClient()
                 }
 
                 return instance
@@ -44,9 +45,8 @@ class RemoteStickClient private constructor() : PluginMediator {
         fun pingServer(serverIp: InetAddress): String {
             val socket = Socket()
             try {
-                socket.connect(InetSocketAddress(serverIp,
-                    port
-                ), connectionTimeout
+                socket.connect(
+                    InetSocketAddress(serverIp, port), connectionTimeout
                 )
             } catch (ex: Exception) {
                 throw Exception(
@@ -55,11 +55,21 @@ class RemoteStickClient private constructor() : PluginMediator {
             }
 
             socket.use {
-                val response: String
                 val reader = Scanner(socket.getInputStream())
                 val writer = socket.getOutputStream()
                 writer!!.write(NetworkPacket(PING).toUTFBytes())
-                val packet = NetworkPacket(reader.nextLine())
+
+                val response: String
+                val packet: NetworkPacket
+                try {
+                    // Выставляем тайм-аут на блокирующие операции
+                    // и пытаемся за это время получить ответ на PING.
+                    socket.soTimeout = pingHelloTimeout
+                    packet = NetworkPacket(reader.nextLine())
+                } catch (ex: Exception) {
+                    throw Exception("Сервер не отвечает")
+                }
+
                 when (packet.type) {
                     OK -> { // В ответе - сетевое имя компьютера.
                         response = packet.body.get("name").asString
@@ -76,25 +86,10 @@ class RemoteStickClient private constructor() : PluginMediator {
         }
     }
 
-    // Когда что-то случается с компонентом, он шлёт посреднику
-    // оповещение. После получения извещения посредник может
-    // либо сделать что-то самостоятельно, либо перенаправить
-    // запрос другому компоненту.
-    /*override fun notify(type: PacketTypes, event: String) {
-       for (plugin in plugins){
-           if (type == plugin.type) {
-               plugin.handleEvent(event)
-           }
-       }
-    }*/
-
     fun connect(serverIp : InetAddress): String {
         client = Socket()
         try {
-            client.connect(InetSocketAddress(serverIp,
-                port
-            ), connectionTimeout
-            )
+            client.connect(InetSocketAddress(serverIp, port), connectionTimeout)
         } catch (ex: Exception) {
             throw Exception(
                 "Невозможно подключиться к серверу с заданным IP-адресом"
@@ -108,7 +103,16 @@ class RemoteStickClient private constructor() : PluginMediator {
         writer!!.sendPacket(NetworkPacket(HELLO, "name", Build.MODEL))
 
         val response: String
-        val packet = NetworkPacket(reader!!.nextLine())
+        val packet: NetworkPacket
+        try {
+            // Выставляем тайм-аут на блокирующие операции
+            // и пытаемся за это время получить ответ на HELLO.
+            client.soTimeout = pingHelloTimeout
+            packet = NetworkPacket(reader!!.nextLine())
+        } catch (ex: Exception) {
+            throw Exception("Сервер не отвечает")
+        }
+
         when (packet.type) {
             OK -> { // В ответе - сетевое имя компьютера.
                 response = packet.body.get("name").asString
@@ -133,6 +137,9 @@ class RemoteStickClient private constructor() : PluginMediator {
     }
 
     fun run() {
+        // Выставляем бесконечный тайм-аут на получение сообщений от сервера.
+        client.soTimeout = 0
+
         try {
             client.use {
                 thread { read() }

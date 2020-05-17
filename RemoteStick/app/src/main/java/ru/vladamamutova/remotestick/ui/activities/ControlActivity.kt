@@ -89,7 +89,7 @@ class ControlActivity : AppCompatActivity() {
         rightButton.setOnClickListener {
             RemoteStickClient.myInstance.mousePlugin.onRightClick()
         }
-        //touchpad.setOnMouseActionListener(RemoteStickClient.myInstance.mousePlugin)
+        touchpad.setOnMouseActionListener(RemoteStickClient.myInstance.mousePlugin)
     }
   /*  private var mDetector: GestureDetector? = null
 

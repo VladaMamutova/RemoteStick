@@ -52,6 +52,7 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
 
     private var isLeftDown = false
     private var isRightClick = false
+    private var isMove = false
 
     private var isLeftBtnDown = false
     private var isMidBtnDown = false
@@ -195,9 +196,10 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun motionMove(event: MotionEvent) {
+        currX = event.x
+        currY = event.y
         if (event.pointerCount == 1) {
-            currX = event.x
-            currY = event.y
+            isMove = true
 
             val dx = (currX - prevX).toInt() //* dpi * sensitivity
             val dy = (currY - prevY).toInt() //* dpi * sensitivity
@@ -206,11 +208,11 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
                 mouseListener?.onMove(dx, dy)
                 Log.d("TAG", "move: (${dx}, ${dy})")
             } else {
-                Log.d("TAG", "not move: (${dx}, ${dy})")
+                //Log.d("TAG", "not move: (${dx}, ${dy})")
             }
-            prevX = currX
-            prevY = currY
         }
+        prevX = currX
+        prevY = currY
 /*        if (event.pointerCount == 1 && event.y < btnY) { // Перемещение передней одноточечной области сенсорной панели
             // Одноточечная область сенсорной панели, которая отменяет состояние нажатия левой кнопки
             if (isLeftBtnDown) {
@@ -251,7 +253,7 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun motionUp(event: MotionEvent) {
-        if(!isRightClick) {
+        if(!isRightClick && !isMove) {
             if (SystemClock.elapsedRealtime() - lastClickDelay < doubleClickDelay) {
                 isSingleClick = false
                 clickHandler.removeCallbacks(runnable)
@@ -266,6 +268,7 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
 
         isLeftDown = false
         isRightClick = false
+        isMove = false
 
         // Левая кнопка вверх
     /*    if (x1 < btnLeftXend && y1 > btnY) {

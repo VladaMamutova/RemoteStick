@@ -89,6 +89,7 @@ class RemoteStickServer: Runnable {
                     }
                 } catch (ex: Exception) {
                     client.close()
+                    println("Error: " + ex.message)
                 }
             }
         } catch (ex: Exception) {
@@ -99,6 +100,8 @@ class RemoteStickServer: Runnable {
     }
 
     private fun runClientHandler(client: Socket) {
+        // Выставляем бесконечный тайм-аут на получение сообщений от клиента.
+        client.soTimeout = 0
         val reader = Scanner(client.getInputStream())
 
         // Пока работа сервера не прекращена и клиент не отключился,
