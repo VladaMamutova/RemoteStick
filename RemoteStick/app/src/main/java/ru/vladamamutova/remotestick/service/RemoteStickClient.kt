@@ -5,31 +5,30 @@ import android.util.Log
 import ru.vladamamutova.remotestick.plugins.MousePlugin
 import ru.vladamamutova.remotestick.plugins.PluginMediator
 import ru.vladamamutova.remotestick.service.PacketTypes.*
-import java.io.OutputStream
-import java.net.InetAddress
-import java.net.InetSocketAddress
-import java.net.Socket
-import java.util.*
+import java.net.*
+import java.util.concurrent.BlockingQueue
+import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.concurrent.thread
 
 
 class RemoteStickClient private constructor() : PluginMediator {
-    private lateinit var client: Socket
-    private var reader: Scanner? = null
-    private var writer: OutputStream? = null
+    private lateinit var client: DatagramSocket
     private var connected = AtomicBoolean(false) // thread-safe boolean
-    private val packetQueue: Queue<NetworkPacket> = LinkedList()
+    private var serverAddress : SocketAddress? = null
 
+    // BlockingQueue позволяет передавать элементы из одного потока
+    // для обработки в другой поток без явных хлопот о проблемах синхронизации.
+    private val packetQueue: BlockingQueue<NetworkPacket> = LinkedBlockingQueue()
     var errorMessage: String = ""
-    private set
+        private set
 
     val mousePlugin = MousePlugin(this)
 
     companion object {
-        private const val port: Int = 56000
-        private const val connectionTimeout: Int = 1500
-        private const val pingHelloTimeout: Int = 1000
+        private const val PORT: Int = 56000
+        private const val BUFFER_SIZE: Int = 256
+        private const val PING_HELLO_TIMEOUT: Int = 1500
 
         private lateinit var instance: RemoteStickClient
 
@@ -43,97 +42,78 @@ class RemoteStickClient private constructor() : PluginMediator {
             }
 
         fun pingServer(serverIp: InetAddress): String {
-            val socket = Socket()
-            try {
-                socket.connect(
-                    InetSocketAddress(serverIp, port), connectionTimeout
+            val socket = DatagramSocket()
+            val bytes = NetworkPacket(PING).toUTFBytes()
+            socket.send(
+                DatagramPacket(
+                    bytes, bytes.size, InetSocketAddress(serverIp, PORT)
                 )
+            )
+
+            val networkPacket: NetworkPacket
+            val buffer = ByteArray(BUFFER_SIZE)
+            val packet = DatagramPacket(buffer, buffer.size)
+            try {
+                // Выставляем тайм-аут на блокирующие операции
+                // и пытаемся за это время получить ответ на PING.
+                socket.soTimeout = PING_HELLO_TIMEOUT
+                networkPacket = NetworkPacket(String(packet.data, 0, packet.length))
             } catch (ex: Exception) {
                 throw Exception(
                     "Невозможно подключиться к серверу с заданным IP-адресом"
                 )
             }
 
-            socket.use {
-                val reader = Scanner(socket.getInputStream())
-                val writer = socket.getOutputStream()
-                writer!!.write(NetworkPacket(PING).toUTFBytes())
 
-                val response: String
-                val packet: NetworkPacket
-                try {
-                    // Выставляем тайм-аут на блокирующие операции
-                    // и пытаемся за это время получить ответ на PING.
-                    socket.soTimeout = pingHelloTimeout
-                    packet = NetworkPacket(reader.nextLine())
-                } catch (ex: Exception) {
+            val response: String
+            when (networkPacket.type) {
+                OK -> { // В ответе - сетевое имя компьютера.
+                    response = networkPacket.body.get("name").asString
+                }
+                ERROR -> { // В ответе - сообщение об ошибке.
+                    throw Exception(networkPacket.body.get("message").asString)
+                }
+                else -> {
                     throw Exception("Сервер не отвечает")
                 }
-
-                when (packet.type) {
-                    OK -> { // В ответе - сетевое имя компьютера.
-                        response = packet.body.get("name").asString
-                    }
-                    ERROR -> { // В ответе - сообщение об ошибке.
-                        throw Exception(packet.body.get("message").asString)
-                    }
-                    else -> {
-                        throw Exception("Сервер не отвечает")
-                    }
-                }
-                return response
             }
+            return response
         }
     }
 
     fun connect(serverIp : InetAddress): String {
-        client = Socket()
-        try {
-            client.connect(InetSocketAddress(serverIp, port), connectionTimeout)
-        } catch (ex: Exception) {
-            throw Exception(
-                "Невозможно подключиться к серверу с заданным IP-адресом"
-            )
-        }
-
-        reader = Scanner(client.getInputStream())
-        writer = client.getOutputStream()
         errorMessage = ""
+        serverAddress = InetSocketAddress(serverIp, PORT)
+        client = DatagramSocket()
+        client.sendHelloPacket(serverAddress!!)
 
-        writer!!.sendPacket(NetworkPacket(HELLO, "name", Build.MODEL))
-
-        val response: String
-        val packet: NetworkPacket
+        val networkPacket: NetworkPacket
+        val buffer = ByteArray(BUFFER_SIZE)
+        val packet = DatagramPacket(buffer, buffer.size)
         try {
             // Выставляем тайм-аут на блокирующие операции
             // и пытаемся за это время получить ответ на HELLO.
-            client.soTimeout = pingHelloTimeout
-            packet = NetworkPacket(reader!!.nextLine())
+            client.soTimeout = PING_HELLO_TIMEOUT
+            client.receive(packet)
+            networkPacket = NetworkPacket(String(packet.data, 0, packet.length))
         } catch (ex: Exception) {
-            throw Exception("Сервер не отвечает")
+            throw Exception("Невозможно подключиться к серверу с заданным IP-адресом")
         }
 
-        when (packet.type) {
+        val response: String
+        when (networkPacket.type) {
             OK -> { // В ответе - сетевое имя компьютера.
-                response = packet.body.get("name").asString
+                response = networkPacket.body.get("name").asString
                 connected.compareAndSet(false, true)
             }
             ERROR -> { // В ответе - сообщение об ошибке.
-                throw Exception(packet.body.get("message").asString)
+                throw Exception(networkPacket.body.get("message").asString)
             }
             else -> {
                 throw Exception("Сервер не отвечает")
             }
         }
         return response
-    }
-
-    private fun OutputStream.sendPacket(packet: NetworkPacket) {
-        this.write(packet.toUTFBytes())
-    }
-
-    override fun sendPacket(packet: NetworkPacket) {
-        packetQueue.add(packet)
     }
 
     fun run() {
@@ -145,10 +125,10 @@ class RemoteStickClient private constructor() : PluginMediator {
                 thread { read() }
                 while (connected.get()) {
                     if(packetQueue.isNotEmpty()) {
-                        writer?.write(packetQueue.remove().toUTFBytes())
+                        client.sendPacket(packetQueue.take(), serverAddress!!)
                     }
                 }
-                writer!!.sendPacket(NetworkPacket(BYE))
+                client.sendPacket(NetworkPacket(BYE), serverAddress!!)
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -157,14 +137,46 @@ class RemoteStickClient private constructor() : PluginMediator {
 
     private fun read() {
         while (connected.get()) {
-            if (reader!!.hasNextLine()) {
-                val packet = NetworkPacket(reader!!.nextLine())
-                if (packet.type == BYE) {
-                    stop()
-                    errorMessage = "Сервер перестал отвечать"
-                }
+            val buffer = ByteArray(BUFFER_SIZE)
+            val packet = DatagramPacket(buffer, buffer.size)
+            client.receive(packet)
+            val networkPacket = NetworkPacket(String(packet.data, 0, packet.length))
+
+            if (networkPacket.type == BYE) {
+                stop()
+                errorMessage = "Сервер перестал отвечать"
             }
         }
+    }
+
+
+    /**
+     * Отправляет сетевой пакет типа HELLO с указанием имени клиента
+     * (в теле пакета - свойство name).
+     */
+    private fun DatagramSocket.sendHelloPacket(address: SocketAddress) {
+        this.sendPacket(NetworkPacket(HELLO, "name", Build.MODEL), address)
+    }
+
+    /**
+     * Отправляет сетевой пакет типа BYE с пустым телом.
+     */
+    private fun DatagramSocket.sendByePacket(address: SocketAddress) {
+        this.sendPacket(NetworkPacket(BYE), address)
+    }
+
+    /**
+     * Отправляет сетевой пакет на указанный удалённый адрес.
+     */
+    private fun DatagramSocket.sendPacket(
+        packet: NetworkPacket, address: SocketAddress
+    ) {
+        val bytes = packet.toUTFBytes()
+        this.send(DatagramPacket(bytes, bytes.size, address))
+    }
+
+    override fun sendPacket(packet: NetworkPacket) {
+        packetQueue.put(packet)
     }
 
     fun stop() {

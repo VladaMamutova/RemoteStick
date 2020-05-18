@@ -39,7 +39,7 @@ class Main : Application() {
             Win32()
             Thread(remoteControlManager).start()
             thread {
-                while (remoteControlManager.isServerAlive()) {
+                while (remoteControlManager.isRunning()) {
                     if (clientName.text != remoteControlManager.getClientName()) {
                         // Обновляем имя клиента в потоке приложения.
                         Platform.runLater {

@@ -207,8 +207,6 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
             if (dx != 0 || dy != 0) {
                 mouseListener?.onMove(dx, dy)
                 Log.d("TAG", "move: (${dx}, ${dy})")
-            } else {
-                //Log.d("TAG", "not move: (${dx}, ${dy})")
             }
         }
         prevX = currX
