@@ -27,6 +27,7 @@ class RemoteStickServer: Runnable {
                 println("Client ${client.key} closed.")
             }
             clientMap.clear()
+            println("Number of clients: ${clientMap.size}")
             server.close()
             println("\nServer stopped.")
         }
