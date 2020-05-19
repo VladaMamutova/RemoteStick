@@ -1,7 +1,6 @@
 package ru.vladamamutova.remotestick.service
 
 import android.os.Build
-import android.util.Log
 import ru.vladamamutova.remotestick.plugins.MousePlugin
 import ru.vladamamutova.remotestick.plugins.PluginMediator
 import ru.vladamamutova.remotestick.service.PacketTypes.*
@@ -14,12 +13,13 @@ import kotlin.concurrent.thread
 
 class RemoteStickClient private constructor() : PluginMediator {
     private lateinit var client: DatagramSocket
-    private var connected = AtomicBoolean(false) // thread-safe boolean
-    private var serverAddress : SocketAddress? = null
+    private lateinit var serverAddress: SocketAddress
 
     // BlockingQueue позволяет передавать элементы из одного потока
     // для обработки в другой поток без явных хлопот о проблемах синхронизации.
     private val packetQueue: BlockingQueue<NetworkPacket> = LinkedBlockingQueue()
+
+    var connected = AtomicBoolean(false) // thread-safe boolean
     var errorMessage: String = ""
         private set
 
@@ -64,7 +64,6 @@ class RemoteStickClient private constructor() : PluginMediator {
                 )
             }
 
-
             val response: String
             when (networkPacket.type) {
                 OK -> { // В ответе - сетевое имя компьютера.
@@ -81,11 +80,11 @@ class RemoteStickClient private constructor() : PluginMediator {
         }
     }
 
-    fun connect(serverIp : InetAddress): String {
+    fun connect(serverIp: InetAddress): String {
         errorMessage = ""
         serverAddress = InetSocketAddress(serverIp, PORT)
         client = DatagramSocket()
-        client.sendHelloPacket(serverAddress!!)
+        client.sendHelloPacket(serverAddress)
 
         val networkPacket: NetworkPacket
         val buffer = ByteArray(BUFFER_SIZE)
@@ -117,21 +116,23 @@ class RemoteStickClient private constructor() : PluginMediator {
     }
 
     fun run() {
-        // Выставляем бесконечный тайм-аут на получение сообщений от сервера.
-        client.soTimeout = 0
+        if (connected.get()) {
+            // Выставляем бесконечный тайм-аут на получение сообщений от сервера.
+            client.soTimeout = 0
 
-        try {
-            client.use {
-                thread { read() }
-                while (connected.get()) {
-                    if(packetQueue.isNotEmpty()) {
-                        client.sendPacket(packetQueue.take(), serverAddress!!)
+            try {
+                client.use {
+                    thread { read() }
+                    while (connected.get()) {
+                        if (packetQueue.isNotEmpty()) {
+                            client.sendPacket(packetQueue.take(), serverAddress)
+                        }
                     }
+                    client.sendPacket(NetworkPacket(BYE), serverAddress)
                 }
-                client.sendPacket(NetworkPacket(BYE), serverAddress!!)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
             }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
         }
     }
 

@@ -13,17 +13,18 @@ import ru.vladamamutova.remotestick.utils.MouseActionListener
 
 class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     companion object {
-        private const val DEFAULT_DOUBLE_CLICK_DELAY: Long = 200
+        private const val DOUBLE_CLICK_DELAY: Long = 200
+        private const val FIRST_MOVE_DELAY: Long = 150
     }
 
     private var isSingleClick = false
-    private var doubleClickDelay: Long = DEFAULT_DOUBLE_CLICK_DELAY
     private var lastClickDelay: Long = 0
+    private var firstMoveDelay: Long = 0
     private var clickHandler: Handler = Handler()
     private var runnable = Runnable {
         if (isSingleClick) {
             mouseListener?.onLeftClick()
-            Log.d("TAG", "left click")
+            Log.d("ACTION--------", "left click")
         }
     }
 
@@ -50,7 +51,6 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     private var x2 = 0f
     private var y2 = 0f
 
-    private var isLeftDown = false
     private var isRightClick = false
     private var isMove = false
 
@@ -134,12 +134,13 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun motionOneDown(event: MotionEvent) {
+        Log.d("TAG", "motion down")
         // Запись одноточечных координат, когда одноточечное
         // событие может быть только событием нажатия клавиши
         prevX = event.x
         prevY = event.y
-
-        isLeftDown = true
+        firstMoveDelay = SystemClock.elapsedRealtime()
+        //isLeftDown = true
 
        /* // 左键点击
         if (x1 < btnLeftXend && y1 > btnY) { // Координаты клика в левой области
@@ -171,9 +172,9 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
      * Обработка двойного щелчка
      */
     private fun motionTwoDown(event: MotionEvent) {
+        Log.d("TAG", "motion two down")
         isRightClick = true
-        mouseListener?.onRightClick()
-        Log.d("TAG", "right click")
+
         /*if (!isLeftMove) { // Если не левая кнопка и перемещение, то состояние функции комбинации
             // Запишите координаты первой точки
             x1 = event.getX(0)
@@ -196,17 +197,24 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun motionMove(event: MotionEvent) {
+        Log.d("TAG", "motion move")
+
         currX = event.x
         currY = event.y
         if (event.pointerCount == 1) {
-            isMove = true
+            Log.d("TAG", "isMove = $isMove")
+            if (isMove || SystemClock.elapsedRealtime() - firstMoveDelay > FIRST_MOVE_DELAY) {
+                isMove = true
+                isSingleClick = false
+                val dx = (currX - prevX).toInt() //* dpi * sensitivity
+                val dy = (currY - prevY).toInt() //* dpi * sensitivity
 
-            val dx = (currX - prevX).toInt() //* dpi * sensitivity
-            val dy = (currY - prevY).toInt() //* dpi * sensitivity
-
-            if (dx != 0 || dy != 0) {
-                mouseListener?.onMove(dx, dy)
-                Log.d("TAG", "move: (${dx}, ${dy})")
+                if (dx != 0 || dy != 0) {
+                    mouseListener?.onMove(dx, dy)
+                    Log.d("ACTION--------", "move: (${dx}, ${dy})")
+                }
+            } else {
+                isSingleClick = true
             }
         }
         prevX = currX
@@ -251,21 +259,24 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun motionUp(event: MotionEvent) {
-        if(!isRightClick && !isMove) {
-            if (SystemClock.elapsedRealtime() - lastClickDelay < doubleClickDelay) {
+        Log.d("TAG", "motion up")
+        if(isRightClick) {
+            isRightClick = false
+            mouseListener?.onRightClick()
+            Log.d("ACTION--------", "right click")
+        } else if(isSingleClick || !isMove) {
+            if (SystemClock.elapsedRealtime() - lastClickDelay < DOUBLE_CLICK_DELAY) {
                 isSingleClick = false
                 clickHandler.removeCallbacks(runnable)
-                Log.d("TAG", "double click")
+                Log.d("ACTION--------", "double click")
                 mouseListener?.onDoubleClick()
-                return
+            } else {
+                isSingleClick = true
+                clickHandler.postDelayed(runnable, DOUBLE_CLICK_DELAY)
+                lastClickDelay = SystemClock.elapsedRealtime()
             }
-            isSingleClick = true
-            clickHandler.postDelayed(runnable, DEFAULT_DOUBLE_CLICK_DELAY)
-            lastClickDelay = SystemClock.elapsedRealtime()
         }
 
-        isLeftDown = false
-        isRightClick = false
         isMove = false
 
         // Левая кнопка вверх
