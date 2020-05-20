@@ -14,18 +14,20 @@ import ru.vladamamutova.remotestick.utils.MouseActionListener
 class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     companion object {
         private const val DOUBLE_CLICK_DELAY: Long = 200
-        private const val FIRST_MOVE_DELAY: Long = 150
+        private const val LEFT_CLICK_TIME: Long = 100
     }
 
-    private var isSingleClick = false
+    private var downTime: Long = 0
+
+    //private var isSingleClick = false
     private var lastClickDelay: Long = 0
-    private var firstMoveDelay: Long = 0
+    //private var firstMoveDelay: Long = 0
     private var clickHandler: Handler = Handler()
     private var runnable = Runnable {
-        if (isSingleClick) {
+      /*  if (isSingleClick) {
             mouseListener?.onLeftClick()
             Log.d("ACTION--------", "left click")
-        }
+        }*/
     }
 
     private var prevX = 0f
@@ -139,7 +141,7 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
         // событие может быть только событием нажатия клавиши
         prevX = event.x
         prevY = event.y
-        firstMoveDelay = SystemClock.elapsedRealtime()
+        downTime = SystemClock.elapsedRealtime()
         //isLeftDown = true
 
        /* // 左键点击
@@ -201,11 +203,10 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
 
         currX = event.x
         currY = event.y
-        if (event.pointerCount == 1) {
-            Log.d("TAG", "isMove = $isMove")
-            if (isMove || SystemClock.elapsedRealtime() - firstMoveDelay > FIRST_MOVE_DELAY) {
+        if (event.pointerCount == 1 && !isRightClick) {
+            if (isMove || SystemClock.elapsedRealtime() - downTime > LEFT_CLICK_TIME) {
                 isMove = true
-                isSingleClick = false
+                //isSingleClick = false
                 val dx = (currX - prevX).toInt() //* dpi * sensitivity
                 val dy = (currY - prevY).toInt() //* dpi * sensitivity
 
@@ -214,7 +215,7 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
                     Log.d("ACTION--------", "move: (${dx}, ${dy})")
                 }
             } else {
-                isSingleClick = true
+                //isSingleClick = true
             }
         }
         prevX = currX
@@ -259,12 +260,16 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     }
 
     private fun motionUp(event: MotionEvent) {
-        Log.d("TAG", "motion up")
+        val upTime = SystemClock.elapsedRealtime() - downTime
+        Log.d("TAG", "motion up : $upTime")
         if(isRightClick) {
             isRightClick = false
             mouseListener?.onRightClick()
             Log.d("ACTION--------", "right click")
-        } else if(isSingleClick || !isMove) {
+        } else if (upTime < LEFT_CLICK_TIME) {
+            mouseListener?.onLeftClick()
+            Log.d("ACTION--------", "left click")
+        }/* else if(isSingleClick || !isMove) {
             if (SystemClock.elapsedRealtime() - lastClickDelay < DOUBLE_CLICK_DELAY) {
                 isSingleClick = false
                 clickHandler.removeCallbacks(runnable)
@@ -275,7 +280,7 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
                 clickHandler.postDelayed(runnable, DOUBLE_CLICK_DELAY)
                 lastClickDelay = SystemClock.elapsedRealtime()
             }
-        }
+        }*/
 
         isMove = false
 

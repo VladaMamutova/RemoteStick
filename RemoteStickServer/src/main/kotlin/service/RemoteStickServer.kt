@@ -2,10 +2,7 @@ package main.kotlin.service
 
 import main.kotlin.plugins.MousePlugin
 import main.kotlin.service.PacketTypes.*
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
-import java.net.SocketAddress
+import java.net.*
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -56,7 +53,8 @@ class RemoteStickServer: Runnable {
                         HELLO -> {
                             // В пакете - имя подключённого устройства.
                             val name = networkPacket.body.get("name")?.asString +
-                                    " (${packet.socketAddress})"
+                                    " (${(packet.socketAddress as InetSocketAddress)
+                                        .hostName})"
                             clientMap[name] = packet.socketAddress
                             server.sendOkPacket(packet.socketAddress)
                             println("\nClient $name connected")

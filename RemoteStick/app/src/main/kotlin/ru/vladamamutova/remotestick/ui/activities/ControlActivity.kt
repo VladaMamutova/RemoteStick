@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -40,11 +41,21 @@ class ControlActivity : AppCompatActivity() {
                 if (viewPager.visibility == View.GONE) {
                     viewPager.visibility = View.VISIBLE
                 }
+                if (tab.position == 2) {
+                  toggleKeyboard()
+                }
                 tab.setIconTintList(iconColors.getResourceId(tab.position, R.color.violet))
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                if (tab?.position == 2) {
+                 toggleKeyboard()
+                }
+            }
             override fun onTabReselected(tab: TabLayout.Tab) {
+                if (tab.position == 2) {
+                 toggleKeyboard()
+                }
                 // При повторном выборе вкладки скрываем панель инструментов.
                 viewPager.visibility = View.GONE
                 tab.setIconTintList(R.color.grey)
@@ -105,10 +116,10 @@ class ControlActivity : AppCompatActivity() {
     }
 */
     private fun ViewPager.setupAdapter() {
-        // Устанавливаем высоту панели инструментов в 30%.
+        // Устанавливаем высоту панели инструментов в 39% (высота клавиатуры).
         this.layoutParams = RelativeLayout.LayoutParams(
             RelativeLayout.LayoutParams.MATCH_PARENT,
-            (resources.displayMetrics.heightPixels * 0.3).toInt()
+            (resources.displayMetrics.heightPixels * 0.39).toInt()
         ).apply { addRule(RelativeLayout.BELOW, R.id.tabs); }
 
         // Добавляем вкладки.
@@ -139,6 +150,15 @@ class ControlActivity : AppCompatActivity() {
                 )
             )
         }
+    }
+
+    /**
+     * Показывает либо скрывает клавиатуру.
+     */
+    private fun toggleKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        keyView.requestFocus()
+        imm.toggleSoftInputFromWindow(keyView.windowToken, 0, 0)
     }
 
     override fun onBackPressed() {
