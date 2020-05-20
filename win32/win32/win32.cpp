@@ -5,25 +5,6 @@
 #include <windows.h>
 #include "win32.h"
 
-JNIEXPORT void JNICALL Java_main_kotlin_Win32_doubleClick(JNIEnv* env, jobject obj) {
-    //// dx and dy contain normalized absolute coordinates between 0 and 65 535.
-    //jint dx = x * 65535 / GetSystemMetrics(0);
-    //jint dy = y * 65535 / GetSystemMetrics(1);
-
-    //// mouse_event(MOUSEEVENTF dwFlags, int dx, int dy, int dwData, UIntPtr dwExtraInfo);
-    //mouse_event(MOUSEEVENTF_ABSOLUTE | MOUSEEVENTF_MOVE, dx, dy, 0, 0);
-    //mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, dx, dy, 0, 0);
-    //Sleep(150);
-    //mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, dx, dy, 0, 0);
-
-    INPUT input = { 0 };
-    input.type = INPUT_MOUSE;
-    input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP;
-    SendInput(1, &input, sizeof(INPUT));
-    Sleep(150);
-    SendInput(1, &input, sizeof(INPUT));
-}
-
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftClick(JNIEnv* env, jobject obj) {
     INPUT input = { 0 };
     input.type = INPUT_MOUSE;
@@ -38,11 +19,53 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_rightClick(JNIEnv* env, jobject ob
     SendInput(1, &input, sizeof(INPUT));
 }
 
-JNIEXPORT void JNICALL Java_main_kotlin_Win32_moveMouse(JNIEnv* env, jobject obj, jint x, jint y) {
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_middleClick(JNIEnv* env, jobject obj) {
+    INPUT input = { 0 };
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP;
+    SendInput(1, &input, sizeof(INPUT));
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftDown(JNIEnv* env, jobject obj) {
+    INPUT input = { 0 };
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
+    SendInput(1, &input, sizeof(INPUT));
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftUp(JNIEnv* env, jobject obj) {
+    INPUT input = { 0 };
+    input.type = INPUT_MOUSE;
+    input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+    SendInput(1, &input, sizeof(INPUT));
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_move(JNIEnv* env, jobject obj, jint dx, jint dy) {
     INPUT input = { 0 };
     input.type = INPUT_MOUSE;
     input.mi.dwFlags = MOUSEEVENTF_MOVE;
-    input.mi.dx = x;
-    input.mi.dy = y;
+    input.mi.dx = dx;
+    input.mi.dy = dy;
     SendInput(1, &input, sizeof(INPUT));
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendKeys(JNIEnv* env, jobject obj, jchar symbol) {
+    INPUT input = { 0 };
+    input.type = INPUT_KEYBOARD;
+    input.ki.wVk = 0;
+    input.ki.wScan = symbol;
+    input.ki.time = 0;
+    input.ki.dwFlags = KEYEVENTF_UNICODE;
+    SendInput(1, &input, sizeof(INPUT));
+
+    //INPUT input = { 0 };
+    //input.type = INPUT_KEYBOARD;
+
+    //input.ki.wVk = 0;
+    //input.ki.wScan = symb;
+    //input.ki.dwFlags = KEYEVENTF_UNICODE;
+    //SendInput(1, &input, sizeof(INPUT));
+
+    //input.ki.dwFlags = KEYEVENTF_KEYUP | KEYEVENTF_UNICODE;
+    //SendInput(1, &input, sizeof(INPUT));
 }

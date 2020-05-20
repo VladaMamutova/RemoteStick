@@ -6,10 +6,12 @@ import ru.vladamamutova.remotestick.service.PacketTypes
 import ru.vladamamutova.remotestick.utils.MouseActionListener
 
 class MousePlugin(owner: PluginMediator) : Plugin(owner), MouseActionListener {
-    enum class Action(val value: String) {
+    private enum class Action(val value: String) {
         RIGHT_CLICK("right click"),
+        MIDDLE_CLICK("middle click"),
         LEFT_CLICK("left click"),
-        DOUBLE_CLICK("double click"),
+        LEFT_DOWN("left down"),
+        LEFT_UP("left up"),
         MOVE("move");
 
         companion object {
@@ -19,14 +21,6 @@ class MousePlugin(owner: PluginMediator) : Plugin(owner), MouseActionListener {
 
     override val type: PacketTypes
         get() = PacketTypes.MOUSE
-
-/*
-    override fun handleEvent(event: String) {
-        when(event){
-            Action.RIGHT_CLICK.value -> sendRightClick()
-            Action.LEFT_CLICK.value -> sendLeftClick()
-        }
-    }*/
 
     private fun createPacket(
         action: Action,
@@ -44,12 +38,20 @@ class MousePlugin(owner: PluginMediator) : Plugin(owner), MouseActionListener {
         owner.sendPacket(createPacket(Action.LEFT_CLICK))
     }
 
+    override fun onMiddleClick() {
+        owner.sendPacket(createPacket(Action.MIDDLE_CLICK))
+    }
+
     override fun onRightClick() {
         owner.sendPacket(createPacket(Action.RIGHT_CLICK))
     }
 
-    override fun onDoubleClick() {
-        owner.sendPacket(createPacket(Action.DOUBLE_CLICK))
+    override fun onLeftDown() {
+        owner.sendPacket(createPacket(Action.LEFT_DOWN))
+    }
+
+    override fun onLeftUp() {
+        owner.sendPacket(createPacket(Action.LEFT_UP))
     }
 
     override fun onMove(dx: Int, dy: Int) {

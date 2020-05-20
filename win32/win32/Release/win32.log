@@ -1,0 +1,4 @@
+﻿  pch.cpp
+  dllmain.cpp
+  win32.cpp
+D:\MyApplications\RemoteStick\win32\win32\win32.cpp(4,10): fatal error C1083: Не удается открыть файл включение: jni.h: No such file or directory,

@@ -1,5 +1,6 @@
 package main.kotlin.service
 
+import main.kotlin.plugins.KeyboardPlugin
 import main.kotlin.plugins.MousePlugin
 import main.kotlin.service.PacketTypes.*
 import java.net.*
@@ -16,6 +17,7 @@ class RemoteStickServer: Runnable {
     private val running = AtomicBoolean(false) // thread-safe boolean
     private val clientMap: MutableMap<String, SocketAddress> = mutableMapOf()
     private val mousePlugin = MousePlugin()
+    private val keyboardPlugin = KeyboardPlugin()
 
     private fun closeServer() {
         if (server.isBound && !server.isClosed) {
@@ -61,6 +63,7 @@ class RemoteStickServer: Runnable {
                             println("Number of clients: ${clientMap.size}")
                         }
                         MOUSE -> mousePlugin.handlePacket(networkPacket)
+                        KEYBOARD -> keyboardPlugin.handlePacket(networkPacket)
                         BYE -> {
                             if (clientMap.containsValue(packet.socketAddress)) {
                                 val name = clientMap.filterValues {

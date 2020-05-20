@@ -10,18 +10,18 @@ extern "C" {
 #endif
 	/*
 	* Class:     Java_main_kotlin_Win32
-	* Method:    doubleClick
-	* Signature: ()V
-	*/
-	JNIEXPORT void JNICALL Java_main_kotlin_Win32_doubleClick
-	(JNIEnv*, jobject);
-
-	/*
-	* Class:     Java_main_kotlin_Win32
 	* Method:    leftClick
 	* Signature: ()V
 	*/
 	JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftClick
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    middleClick
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_middleClick
 	(JNIEnv*, jobject);
 
 	/*
@@ -34,11 +34,35 @@ extern "C" {
 
 	/*
 	* Class:     Java_main_kotlin_Win32
-	* Method:    moveMouse
+	* Method:    leftDown
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftDown
+	(JNIEnv*, jobject, jint, jint);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    leftUp
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftUp
+	(JNIEnv*, jobject, jint, jint);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    move
 	* Signature: (II)V
 	*/
-	JNIEXPORT void JNICALL Java_main_kotlin_Win32_moveMouse
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_move
 	(JNIEnv*, jobject, jint, jint);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    move
+	* Signature: (C)V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendKeys
+	(JNIEnv*, jobject, jchar);
 
 #ifdef __cplusplus
 }

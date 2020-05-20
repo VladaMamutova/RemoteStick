@@ -22,8 +22,11 @@ class Win32 {
         }
     }
 
-    external fun doubleClick()
     external fun leftClick()
+    external fun middleClick()
     external fun rightClick()
-    external fun moveMouse(dx: Int, dy: Int)
+    external fun leftDown()
+    external fun leftUp()
+    external fun move(dx: Int, dy: Int)
+    external fun sendKeys(symbol: Char)
 }

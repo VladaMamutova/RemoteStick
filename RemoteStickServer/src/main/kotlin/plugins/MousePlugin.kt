@@ -7,8 +7,10 @@ import main.kotlin.service.PacketTypes
 class MousePlugin : Plugin() {
     enum class Action(val value: String) {
         RIGHT_CLICK("right click"),
+        MIDDLE_CLICK("middle click"),
         LEFT_CLICK("left click"),
-        DOUBLE_CLICK("double click"),
+        LEFT_DOWN("left down"),
+        LEFT_UP("left up"),
         MOVE("move");
 
         companion object {
@@ -24,8 +26,10 @@ class MousePlugin : Plugin() {
             if (packet.type == type) {
                 when (packet.body.get(Action.name).asString) {
                     Action.LEFT_CLICK.value -> onLeftClick()
+                    Action.MIDDLE_CLICK.value -> onMiddleClick()
                     Action.RIGHT_CLICK.value -> onRightClick()
-                    Action.DOUBLE_CLICK.value -> onDoubleClick()
+                    Action.LEFT_DOWN.value -> onLeftDown()
+                    Action.LEFT_UP.value -> onLeftUp()
                     Action.MOVE.value -> {
                         onMove(packet.body.get("dx").asInt, packet.body.get("dy").asInt)
                     }
@@ -40,15 +44,23 @@ class MousePlugin : Plugin() {
         Win32().leftClick()
     }
 
+    private fun onMiddleClick() {
+        Win32().middleClick()
+    }
+
     private fun onRightClick() {
         Win32().rightClick()
     }
 
-    private fun onDoubleClick() {
-        Win32().doubleClick()
+    private fun onLeftDown() {
+        Win32().leftDown()
+    }
+
+    private fun onLeftUp() {
+        Win32().leftUp()
     }
 
     private fun onMove(dx: Int, dy: Int) {
-        Win32().moveMouse(dx, dy)
+        Win32().move(dx, dy)
     }
 }

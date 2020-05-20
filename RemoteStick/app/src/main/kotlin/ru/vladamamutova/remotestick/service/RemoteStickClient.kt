@@ -1,6 +1,7 @@
 package ru.vladamamutova.remotestick.service
 
 import android.os.Build
+import ru.vladamamutova.remotestick.plugins.KeyboardPlugin
 import ru.vladamamutova.remotestick.plugins.MousePlugin
 import ru.vladamamutova.remotestick.plugins.PluginMediator
 import ru.vladamamutova.remotestick.service.PacketTypes.*
@@ -24,11 +25,12 @@ class RemoteStickClient private constructor() : PluginMediator {
         private set
 
     val mousePlugin = MousePlugin(this)
+    val keyboardPlugin = KeyboardPlugin(this)
 
     companion object {
         private const val PORT: Int = 56000
         private const val BUFFER_SIZE: Int = 256
-        private const val PING_HELLO_TIMEOUT: Int = 1500
+        private const val PING_HELLO_TIMEOUT: Int = 2000
 
         private lateinit var instance: RemoteStickClient
 
@@ -138,14 +140,18 @@ class RemoteStickClient private constructor() : PluginMediator {
 
     private fun read() {
         while (connected.get()) {
-            val buffer = ByteArray(BUFFER_SIZE)
-            val packet = DatagramPacket(buffer, buffer.size)
-            client.receive(packet)
-            val networkPacket = NetworkPacket(String(packet.data, 0, packet.length))
+            try {
+                val buffer = ByteArray(BUFFER_SIZE)
+                val packet = DatagramPacket(buffer, buffer.size)
+                client.receive(packet)
+                val networkPacket = NetworkPacket(String(packet.data, 0, packet.length))
 
-            if (networkPacket.type == BYE) {
-                stop()
-                errorMessage = "Сервер перестал отвечать"
+                if (networkPacket.type == BYE) {
+                    stop()
+                    errorMessage = "Сервер перестал отвечать"
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
             }
         }
     }
