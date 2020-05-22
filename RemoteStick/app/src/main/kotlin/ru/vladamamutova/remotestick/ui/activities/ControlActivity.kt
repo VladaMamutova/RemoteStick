@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
@@ -71,56 +70,11 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
             }
         })
 
-        /*leftButton.setOnClickListener(object : DoubleClickListener() {
-            override fun onDoubleClick() {
-                RemoteStickClient.myInstance.mousePlugin.onDoubleClick()
-            }
-
-            override fun onSingleClick() {
-                RemoteStickClient.myInstance.mousePlugin.onLeftClick()
-            }
-        })*/
-        leftButton.setOnClickListener {
-            RemoteStickClient.myInstance.mousePlugin.onLeftClick()
-        }
-
-        middleButton.setOnClickListener {
-            RemoteStickClient.myInstance.mousePlugin.onMiddleClick()
-        }
-
-        rightButton.setOnClickListener {
-            RemoteStickClient.myInstance.mousePlugin.onRightClick()
-        }
-
         touchpad.setOnMouseActionListener(
             RemoteStickClient.myInstance.mousePlugin
         )
 
         keyView.setOnBackPressedListener(this)
-/*        keyView.addTextChangedListener(
-            KeyboardListener(RemoteStickClient.myInstance.keyboardPlugin)
-        )
-        keyView.setOnClickListener {
-            (it as EditText).setSelection(it.text.length)
-        }
-        keyView.setOnKeyListener { view: View, keyCode: Int, event: KeyEvent ->
-            if (event.action == KeyEvent.ACTION_DOWN &&
-                (keyCode == KeyEvent.KEYCODE_ENTER)
-            ) {
-                // сохраняем текст, введенный до нажатия Enter в переменную
-                Log.d("TAG", "ENTER PRESSED")
-                (view as EditText).text.clear()
-                true
-            } else if (event.action == KeyEvent.ACTION_DOWN &&
-                (keyCode == KeyEvent.KEYCODE_BACK)
-            ) {
-                // сохраняем текст, введенный до нажатия Enter в переменную
-                Log.d("TAG", "BACK PRESSED")
-                (view as EditText).text.clear()
-                true
-            } else
-            false
-        }*/
 
         thread {
             RemoteStickClient.myInstance.run()
@@ -220,5 +174,17 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                 disconnectionToast!!.show()
             }
         }
+    }
+
+    fun onLeftClick(view: View) {
+        RemoteStickClient.myInstance.mousePlugin.onLeftClick()
+    }
+
+    fun onMiddleClick(view: View) {
+        RemoteStickClient.myInstance.mousePlugin.onMiddleClick()
+    }
+
+    fun onRightClick(view: View) {
+        RemoteStickClient.myInstance.mousePlugin.onRightClick()
     }
 }

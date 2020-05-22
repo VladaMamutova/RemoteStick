@@ -44,30 +44,30 @@
                       app:layout_constraintEnd_toEndOf="parent"
                       android:layout_margin="@dimen/small_intent">
 
-            <Button android:id="@+id/leftButton"
-                    android:layout_width="0dp"
+            <Button android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/mouse_button_background"
+                    android:onClick="onLeftClick"
             />
 
             <TextView android:layout_width="@dimen/small_intent"
                       android:layout_height="match_parent"/>
 
-            <Button android:id="@+id/middleButton"
-                    android:layout_width="60dp"
+            <Button android:layout_width="60dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/mouse_button_background"
+                    android:onClick="onMiddleClick"
             />
 
             <TextView android:layout_width="@dimen/small_intent"
                       android:layout_height="match_parent"/>
 
-            <Button android:id="@+id/rightButton"
-                    android:layout_width="0dp"
+            <Button android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/mouse_button_background"
+                    android:onClick="onRightClick"
             />
 
         </LinearLayout>
