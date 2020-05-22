@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.RelativeLayout
@@ -19,13 +20,13 @@ import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
 import ru.vladamamutova.remotestick.ui.fragments.MediaFragment
-import ru.vladamamutova.remotestick.utils.DoubleClickListener
-import ru.vladamamutova.remotestick.utils.KeyboardListener
+import ru.vladamamutova.remotestick.utils.OnBackPressedListener
 import kotlin.concurrent.thread
 
 
-class ControlActivity : AppCompatActivity() {
+class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     private var disconnectionToast: Toast? = null
+    private var isKeyboardVisible: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +37,7 @@ class ControlActivity : AppCompatActivity() {
         val iconColors = resources.obtainTypedArray(R.array.icon_colors)
         tabs.setupIcons(resources.obtainTypedArray(R.array.icons), iconColors)
 
-        tabs.addOnTabSelectedListener(object: OnTabSelectedListener {
+        tabs.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 // При выборе вкладки открываем панель инструментов.
                 if (viewPager.visibility == View.GONE) {
@@ -44,6 +45,7 @@ class ControlActivity : AppCompatActivity() {
                 }
                 if (tab.position == 2) {
                     toggleKeyboard()
+                    isKeyboardVisible = true
                 }
                 tab.setIconTintList(iconColors.getResourceId(tab.position, R.color.violet))
             }
@@ -51,12 +53,14 @@ class ControlActivity : AppCompatActivity() {
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 if (tab?.position == 2) {
                     toggleKeyboard()
+                    isKeyboardVisible = false
                 }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
                 if (tab.position == 2) {
                     toggleKeyboard()
+                    isKeyboardVisible = false
                 }
                 // При повторном выборе вкладки скрываем панель инструментов.
                 viewPager.visibility = View.GONE
@@ -91,15 +95,38 @@ class ControlActivity : AppCompatActivity() {
         touchpad.setOnMouseActionListener(
             RemoteStickClient.myInstance.mousePlugin
         )
-        keyView.addTextChangedListener(
+
+        keyView.setOnBackPressedListener(this)
+/*        keyView.addTextChangedListener(
             KeyboardListener(RemoteStickClient.myInstance.keyboardPlugin)
         )
+        keyView.setOnClickListener {
+            (it as EditText).setSelection(it.text.length)
+        }
+        keyView.setOnKeyListener { view: View, keyCode: Int, event: KeyEvent ->
+            if (event.action == KeyEvent.ACTION_DOWN &&
+                (keyCode == KeyEvent.KEYCODE_ENTER)
+            ) {
+                // сохраняем текст, введенный до нажатия Enter в переменную
+                Log.d("TAG", "ENTER PRESSED")
+                (view as EditText).text.clear()
+                true
+            } else if (event.action == KeyEvent.ACTION_DOWN &&
+                (keyCode == KeyEvent.KEYCODE_BACK)
+            ) {
+                // сохраняем текст, введенный до нажатия Enter в переменную
+                Log.d("TAG", "BACK PRESSED")
+                (view as EditText).text.clear()
+                true
+            } else
+            false
+        }*/
 
         thread {
             RemoteStickClient.myInstance.run()
             // Здесь клиент завершил работу.
             // Если есть сообщение об ошибке (то есть сервер перестал отвечать),
-            // то отобржаем сообщение и завершаем активность.
+            // то отображаем сообщение и завершаем активность.
             if (RemoteStickClient.myInstance.errorMessage != "") {
                 runOnUiThread {
                     Toast.makeText(
@@ -156,13 +183,25 @@ class ControlActivity : AppCompatActivity() {
     private fun toggleKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         keyView.requestFocus()
-        imm.toggleSoftInputFromWindow(keyView.windowToken, 0, 0)
+        // Флаг SHOW_FORCED показывает, что клавиатура не будет скрыта до того,
+        // как это явно не будет сделано, то есть эти же методом.
+        // Поэтоме если при блокировке клавиатура была открыта, то
+        // после разблокировки она так же остаётся открытой.
+        imm.toggleSoftInputFromWindow(
+            keyView.windowToken, InputMethodManager.SHOW_FORCED, 0
+        )
     }
 
     override fun onBackPressed() {
-        if(disconnectionToast == null) {
-            disconnectionToast = Toast.makeText(this,
-                "Нажмите снова для отключения", Toast.LENGTH_SHORT)
+        doBack()
+    }
+
+    override fun doBack() {
+        if (disconnectionToast == null) {
+            disconnectionToast = Toast.makeText(
+                this,
+                "Нажмите снова для отключения", Toast.LENGTH_SHORT
+            )
             disconnectionToast!!.show()
         } else {
             // Отключаем клиент после повторного нажатия кнопки "Назад"
@@ -171,6 +210,9 @@ class ControlActivity : AppCompatActivity() {
                 disconnectionToast!!.cancel()
 
                 RemoteStickClient.myInstance.stop()
+                if (isKeyboardVisible) {
+                    toggleKeyboard()
+                }
 
                 startActivity(Intent(applicationContext, MainActivity::class.java))
                 finish()
