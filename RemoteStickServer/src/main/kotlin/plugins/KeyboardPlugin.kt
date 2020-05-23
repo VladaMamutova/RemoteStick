@@ -1,17 +1,16 @@
 package main.kotlin.plugins
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import main.kotlin.Win32
 import main.kotlin.service.NetworkPacket
 import main.kotlin.service.PacketTypes
 
 class KeyboardPlugin : Plugin() {
     private enum class Type(val value: String) {
-        SYMBOL("symbol"),
-        SHORTCUTS("shortcuts");
-
-        companion object {
-            const val name = "type"
-        }
+        SPECIAL_KEYS("special keys"),
+        SYMBOL("symbol");
     }
 
     override val type: PacketTypes
@@ -20,8 +19,25 @@ class KeyboardPlugin : Plugin() {
     override fun handlePacket(packet: NetworkPacket) {
         try {
             if (packet.type == type) {
-                when (packet.body.get(Type.name).asString) {
-                    Type.SYMBOL.value -> sendKey((packet.body.get("key1").asCharacter))
+                var specialKeys: Array<SpecialKey>? = null
+                var symbol: Char? = null
+                if (packet.body.has(Type.SPECIAL_KEYS.value)) {
+                    specialKeys = Gson().fromJson(
+                        packet.body.get(Type.SPECIAL_KEYS.value),
+                        Array<SpecialKey>::class.java
+                    )
+                }
+
+                if (packet.body.has(Type.SYMBOL.value)) {
+                    symbol = packet.body.get(Type.SYMBOL.value).asCharacter
+                }
+
+                if (specialKeys != null && symbol != null) {
+                    sendKeys(specialKeys, symbol)
+                } else if (symbol != null) {
+                    sendSymbol(symbol)
+                } else if (specialKeys != null) {
+                    sendSpecialKeys(specialKeys)
                 }
             }
         } catch (ex: Exception) {
@@ -29,7 +45,25 @@ class KeyboardPlugin : Plugin() {
         }
     }
 
-    private fun sendKey(char: Char) {
-        Win32().sendKeys(char)
+    private fun sendSymbol(symbol: Char) {
+        Win32().sendSymbol(symbol)
+    }
+
+    private fun sendSpecialKeys(specialKeys: Array<SpecialKey>) {
+        val specialKeysArray = IntArray(specialKeys.size)
+        for (i in specialKeys.indices) {
+            specialKeysArray[i] = specialKeys[i].ordinal
+        }
+
+        Win32().sendSpecialKeys(specialKeysArray)
+    }
+
+    private fun sendKeys(specialKeys: Array<SpecialKey>, symbol: Char) {
+        val specialKeysArray = IntArray(specialKeys.size)
+        for (i in specialKeys.indices) {
+            specialKeysArray[i] = specialKeys[i].ordinal
+        }
+
+        Win32().sendKeys(specialKeysArray, symbol)
     }
 }

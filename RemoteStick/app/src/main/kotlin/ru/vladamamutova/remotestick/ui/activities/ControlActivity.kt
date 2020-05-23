@@ -75,6 +75,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
         )
 
         keyView.setOnBackPressedListener(this)
+        keyView.setKeyboardListener(RemoteStickClient.myInstance.keyboardPlugin)
 
         thread {
             RemoteStickClient.myInstance.run()

@@ -34,11 +34,12 @@ class RemoteStickServer: Runnable {
 
     override fun run() {
         try {
+            running.set(true)
+
             // Создаём и привязываем серверный сокет к локальному адресу и порту.
             server = DatagramSocket(PORT, InetAddress.getLocalHost())
             // Устанавливаем бесконечный тайм-аут на получение пакетов от клиентов.
             server.soTimeout = 0
-            running.set(true)
             println("\nServer ${server.localAddress}:$PORT started")
             println("Wait for connection...")
 
@@ -53,12 +54,12 @@ class RemoteStickServer: Runnable {
                             println("\nPing from ${packet.socketAddress}")
                         }
                         HELLO -> {
+                            server.sendOkPacket(packet.socketAddress)
                             // В пакете - имя подключённого устройства.
                             val name = networkPacket.body.get("name")?.asString +
                                     " (${(packet.socketAddress as InetSocketAddress)
                                         .hostName})"
                             clientMap[name] = packet.socketAddress
-                            server.sendOkPacket(packet.socketAddress)
                             println("\nClient $name connected")
                             println("Number of clients: ${clientMap.size}")
                         }
@@ -70,7 +71,8 @@ class RemoteStickServer: Runnable {
                                     it == packet.socketAddress
                                 }
                                     .keys.first()
-                                println("Client $name disconnected")
+                                println("\nClient $name disconnected")
+                                println("Number of clients: ${clientMap.size}")
                                 clientMap.remove(name)
                             }
                         }

@@ -58,11 +58,27 @@ extern "C" {
 
 	/*
 	* Class:     Java_main_kotlin_Win32
-	* Method:    move
+	* Method:    sendSymbol
 	* Signature: (C)V
 	*/
-	JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendKeys
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendSymbol
 	(JNIEnv*, jobject, jchar);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    sendSpecialKeys
+	* Signature: ([I)V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendSpecialKeys
+	(JNIEnv*, jobject, jintArray);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    sendKeys
+	* Signature: ([IC)V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendKeys
+	(JNIEnv*, jobject, jintArray, jchar);
 
 #ifdef __cplusplus
 }

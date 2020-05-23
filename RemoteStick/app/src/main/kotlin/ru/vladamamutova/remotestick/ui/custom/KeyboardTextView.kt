@@ -4,16 +4,19 @@ import android.content.Context
 import android.graphics.Color
 import android.text.InputType
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import ru.vladamamutova.remotestick.plugins.SpecialKey
+import ru.vladamamutova.remotestick.utils.KeyboardListener
 import ru.vladamamutova.remotestick.utils.OnBackPressedListener
 
 
 class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
     androidx.appcompat.widget.AppCompatEditText(context, attrs) {
     private var length: Int = 0
+    private var keyboardListener: KeyboardListener? = null
     private var onBackPressedListener: OnBackPressedListener? = null
 
     init {
@@ -25,20 +28,21 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
         // Устанавливаем тип ввода текста. Первые два флага гарантируют,
         // что текст при вводе не будет подчёркиваться.
         inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or // без подсказок при вводе
-                    InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD or // без автокоррекции
-                    InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                    InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD  // без автокоррекции
+        setHorizontallyScrolling(false) // текст переносится на новую строку
+        maxLines = 11
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_DOWN) {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                Log.d("TAG", "ENTER PRESSED")
+                keyboardListener?.sendSpecialKeys(arrayOf(SpecialKey.ENTER))
                 text?.clear()
                 length = 0
                 return true // событие уже обработано
 
             } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-                Log.d("TAG", "DEL PRESSED")
+                keyboardListener?.sendSpecialKeys(arrayOf(SpecialKey.BACKSPACE))
             }
         }
 
@@ -51,7 +55,6 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
         // как будет скрыта клавиатура.
         if (event?.action == KeyEvent.ACTION_DOWN &&
             keyCode == KeyEvent.KEYCODE_BACK) {
-            Log.d("TAG pre ime", "BACK PRESSED")
             onBackPressedListener?.doBack()
             return true // обработка уже выполнена, клавиатура скрыта не будет
         }
@@ -61,22 +64,24 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
 
     override fun onTextChanged(text: CharSequence?, start: Int, lengthBefore: Int, lengthAfter: Int) {
         val currentLength = text.toString().length
-        if(currentLength != 0 && currentLength > length) {
-            Log.d("TAG", "new char = " + text?.get(start).toString())
-            //keyboardPlugin.sendKey(charSequence[before])
+        if (currentLength != 0 && currentLength > length) {
+            text?.get(start)?.let { keyboardListener?.sendSymbol(it) }
         }
 
-        length = text.toString().length
+        length = currentLength
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
     }
 
-    override fun selectAll() {
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        // Любое касание или удерживание текста не обрабатываем,
+        // таким образом, отключения выделение текста и перемещение курсора.
+        // Возвращаем false, чтобы показать, что событие не было обработано,
+        // и было передано в другие view (в нашем случае - в TouchpadView).
+        return false
     }
 
-    override fun onSelectionChanged(selStart: Int, selEnd: Int) {
-    }
-
-    override fun setSelection(index: Int) {
+    fun setKeyboardListener(keyboardListener: KeyboardListener){
+        this.keyboardListener = keyboardListener
     }
 
     fun setOnBackPressedListener(onBackPressedListener: OnBackPressedListener){

@@ -1,5 +1,6 @@
 package main.kotlin
 
+import com.sun.xml.internal.fastinfoset.util.StringArray
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -28,5 +29,7 @@ class Win32 {
     external fun leftDown()
     external fun leftUp()
     external fun move(dx: Int, dy: Int)
-    external fun sendKeys(symbol: Char)
+    external fun sendSymbol(symbol: Char)
+    external fun sendSpecialKeys(specialKeys: IntArray)
+    external fun sendKeys(specialKeys: IntArray, symbol: Char)
 }
