@@ -18,6 +18,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.android.synthetic.main.activity_control.*
 import ru.vladamamutova.remotestick.R
+import ru.vladamamutova.remotestick.SpecialKeyboardFragment
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
@@ -45,7 +46,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                 if (viewPager.visibility == View.GONE) {
                     viewPager.visibility = View.VISIBLE
                 }
-                if (tab.position == 2) {
+                if (tab.position == 1) {
                     toggleKeyboard()
                     isKeyboardVisible = true
                 }
@@ -53,14 +54,14 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                if (tab?.position == 2) {
+                if (tab?.position == 1 && isKeyboardVisible) {
                     toggleKeyboard()
                     isKeyboardVisible = false
                 }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
-                if (tab.position == 2) {
+                if (tab.position == 1) {
                     toggleKeyboard()
                     isKeyboardVisible = false
                 }
@@ -112,13 +113,13 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
 
         // Добавляем вкладки.
         val adapter = ViewPagerAdapter(supportFragmentManager).apply {
-            addFragment(KeyboardFragment())
             addFragment(MediaFragment())
             addFragment(KeyboardFragment())
-            addFragment(KeyboardFragment())
-            addFragment(KeyboardFragment())
-            addFragment(KeyboardFragment())
-            addFragment(KeyboardFragment())
+            addFragment(SpecialKeyboardFragment())
+            addFragment(MediaFragment())
+            addFragment(MediaFragment())
+            addFragment(MediaFragment())
+            addFragment(MediaFragment())
         }
         this.adapter = adapter
     }

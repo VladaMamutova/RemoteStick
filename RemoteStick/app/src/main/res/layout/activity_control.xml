@@ -96,25 +96,45 @@
                       android:orientation="vertical"
                       android:layout_below="@id/tabs">
 
-            <LinearLayout android:id="@+id/specialKeysPanel"
-                          android:layout_width="match_parent"
-                          android:layout_height="46dp"
-                          android:orientation="horizontal"
-                          android:paddingStart="@dimen/medium_intent"
-                          android:paddingEnd="@dimen/medium_intent">
+            <TableLayout android:id="@+id/specialKeysPanel"
+                         android:layout_width="match_parent"
+                         android:layout_height="46dp"
+                         android:stretchColumns="*"
+                         android:paddingStart="@dimen/medium_intent"
+                         android:paddingEnd="@dimen/medium_intent">
+                <TableRow>
+                    <Button android:id="@+id/shiftButton"
+                            style="@style/SpecialKeyButton"
+                            android:text="@string/shift"
+                            android:layout_column="0"/>
 
-                <Button android:id="@+id/shiftButton"
-                        style="@style/SpecialKeyButton"
-                        android:text="Shift"/>
+                    <Button android:id="@+id/ctrlButton"
+                            style="@style/SpecialKeyButton"
+                            android:text="@string/ctrl"
+                            android:layout_column="1"/>
 
-                <Button android:id="@+id/ctrlButton"
-                        style="@style/SpecialKeyButton"
-                        android:text="Ctrl"/>
+                    <Button android:id="@+id/altButton"
+                            style="@style/SpecialKeyButton"
+                            android:text="@string/alt"
+                            android:layout_column="2"/>
 
-                <Button android:id="@+id/altButton"
-                        style="@style/SpecialKeyButton"
-                        android:text="Alt"/>
-            </LinearLayout>
+                    <ImageButton android:id="@+id/winButton"
+                                 style="@style/SpecialKeyButton"
+                                 android:src="@drawable/ic_windows"
+                                 android:tint="@color/darkText"
+                                 android:layout_column="3"/>
+
+                    <Button android:id="@+id/Button1"
+                            style="@style/SpecialKeyButton"
+                            android:text="@string/alt"
+                            android:layout_column="4"/>
+
+                    <Button android:id="@+id/Button2"
+                            style="@style/SpecialKeyButton"
+                            android:text="@string/alt"
+                            android:layout_column="5"/>
+                </TableRow>
+            </TableLayout>
 
             <ru.vladamamutova.remotestick.ui.custom.NonScrollableViewPager
                     android:id="@+id/viewPager"

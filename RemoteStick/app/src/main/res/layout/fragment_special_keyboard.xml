@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".SpecialKeyboardFragment"
+             android:stretchColumns="*"
+             android:paddingStart="@dimen/medium_intent"
+             android:paddingEnd="@dimen/medium_intent">
+
+    <TableRow>
+        <Button android:id="@+id/shiftButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/shift"
+                android:layout_column="0"/>
+
+        <Button android:id="@+id/ctrlButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/ctrl"
+                android:layout_column="1"/>
+
+        <Button android:id="@+id/altButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/alt"
+                android:layout_column="2"/>
+
+        <ImageButton android:id="@+id/winButton"
+                     style="@style/SpecialKeyButton"
+                     android:src="@drawable/ic_windows"
+                     android:tint="@color/darkText"
+                     android:layout_column="3"/>
+
+        <Button android:id="@+id/Button1"
+                style="@style/SpecialKeyButton"
+                android:text="@string/alt"
+                android:layout_column="4"/>
+
+        <Button android:id="@+id/Button2"
+                style="@style/SpecialKeyButton"
+                android:text="@string/alt"
+                android:layout_column="5"/>
+    </TableRow>
+</TableLayout>

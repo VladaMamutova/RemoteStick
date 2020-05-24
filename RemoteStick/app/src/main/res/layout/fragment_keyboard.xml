@@ -5,9 +5,13 @@
              android:layout_height="match_parent"
              tools:context=".ui.fragments.KeyboardFragment">
 
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Hello, blank fragment!"/>
+    <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_wireless_keyboard"
+            android:tint="@color/darkText"
+            android:layout_marginTop="-10dp"
+    />
 
 </FrameLayout>
