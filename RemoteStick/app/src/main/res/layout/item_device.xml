@@ -5,7 +5,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/medium_intent">
+        android:padding="@dimen/big_intent">
 
     <TextView android:id="@+id/name"
               tools:text="AsusX550VX"

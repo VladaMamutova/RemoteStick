@@ -7,6 +7,7 @@
     <color name="lightGrey">#E0E0E0</color>
     <color name="grey">#BDBDBD</color>
     <color name="darkGrey">#616161</color>
+    <color name="darkText">#414141</color>
     <color name="violet">#BC5EDF</color>
     <color name="pink">#EC65A4</color>
     <color name="orange">#F49222</color>
@@ -14,4 +15,5 @@
     <color name="green">#4BE64D</color>
     <color name="azure">#56B9D1</color>
     <color name="blue">#4794EB</color>
+    <color name="darkBlue">#2C7EDD</color>
 </resources>

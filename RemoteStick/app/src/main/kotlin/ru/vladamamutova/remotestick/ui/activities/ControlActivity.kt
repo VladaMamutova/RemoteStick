@@ -6,10 +6,13 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.transition.Visibility
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -77,6 +80,11 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
         keyView.setOnBackPressedListener(this)
         keyView.setKeyboardListener(RemoteStickClient.myInstance.keyboardPlugin)
 
+        ctrlButton.setOnLongClickListener {
+            (it as Button).isSelected = !it.isSelected
+            return@setOnLongClickListener true
+        }
+
         thread {
             RemoteStickClient.myInstance.run()
             // Здесь клиент завершил работу.
@@ -97,10 +105,10 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
 
     private fun ViewPager.setupAdapter() {
         // Устанавливаем высоту панели инструментов в 39% (высота клавиатуры).
-        this.layoutParams = RelativeLayout.LayoutParams(
-            RelativeLayout.LayoutParams.MATCH_PARENT,
+        this.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
             (resources.displayMetrics.heightPixels * 0.39).toInt()
-        ).apply { addRule(RelativeLayout.BELOW, R.id.tabs); }
+        )
 
         // Добавляем вкладки.
         val adapter = ViewPagerAdapter(supportFragmentManager).apply {
@@ -178,7 +186,12 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     }
 
     fun onLeftClick(view: View) {
-        RemoteStickClient.myInstance.mousePlugin.onLeftClick()
+        if(specialKeysPanel.visibility == View.GONE) {
+            specialKeysPanel.visibility = View.VISIBLE
+        } else {
+            specialKeysPanel.visibility = View.GONE
+        }
+        //RemoteStickClient.myInstance.mousePlugin.onLeftClick()
     }
 
     fun onMiddleClick(view: View) {

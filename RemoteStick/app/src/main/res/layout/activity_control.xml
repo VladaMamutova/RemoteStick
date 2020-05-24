@@ -87,16 +87,41 @@
                 android:id="@+id/tabs"
                 style="@style/CustomTabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="@dimen/tab_layout_height"
                 app:tabMode="fixed"
                 app:tabGravity="fill"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.NonScrollableViewPager
-                android:id="@+id/viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_below="@+id/tabs"/>
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      android:layout_below="@id/tabs">
 
+            <LinearLayout android:id="@+id/specialKeysPanel"
+                          android:layout_width="match_parent"
+                          android:layout_height="46dp"
+                          android:orientation="horizontal"
+                          android:paddingStart="@dimen/medium_intent"
+                          android:paddingEnd="@dimen/medium_intent">
+
+                <Button android:id="@+id/shiftButton"
+                        style="@style/SpecialKeyButton"
+                        android:text="Shift"/>
+
+                <Button android:id="@+id/ctrlButton"
+                        style="@style/SpecialKeyButton"
+                        android:text="Ctrl"/>
+
+                <Button android:id="@+id/altButton"
+                        style="@style/SpecialKeyButton"
+                        android:text="Alt"/>
+            </LinearLayout>
+
+            <ru.vladamamutova.remotestick.ui.custom.NonScrollableViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+            />
+        </LinearLayout>
     </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

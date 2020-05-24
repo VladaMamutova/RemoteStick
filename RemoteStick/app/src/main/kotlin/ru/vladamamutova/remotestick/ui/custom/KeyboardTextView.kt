@@ -30,7 +30,7 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
         inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or // без подсказок при вводе
                     InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD  // без автокоррекции
         setHorizontallyScrolling(false) // текст переносится на новую строку
-        maxLines = 11
+        maxLines = 10
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

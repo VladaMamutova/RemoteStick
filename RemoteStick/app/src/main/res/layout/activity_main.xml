@@ -15,7 +15,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     android:background="@color/lightBackground"
-                    android:padding="@dimen/medium_intent">
+                    android:padding="@dimen/big_intent">
 
         <ImageView android:id="@+id/available_devices_icon"
                    android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
                    android:src="@drawable/ic_devices"
                    android:contentDescription="@string/available_devices_button"
                    android:tint="@color/darkGrey"
-                   android:layout_marginEnd="@dimen/medium_intent"
+                   android:layout_marginEnd="@dimen/big_intent"
                    android:layout_centerInParent="true"
                    android:layout_alignParentStart="true"/>
 
@@ -62,7 +62,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
             android:padding="@dimen/small_intent"
-            android:layout_margin="@dimen/medium_intent"
+            android:layout_margin="@dimen/big_intent"
             android:text="Обновить"
             android:textSize="@dimen/body_text"
             android:textColor="@android:color/white"
