@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".SpecialKeyboardFragment"
+             tools:context=".ui.fragments.SpecialKeyboardFragment"
              android:stretchColumns="*"
              android:paddingStart="@dimen/medium_intent"
              android:paddingEnd="@dimen/medium_intent">

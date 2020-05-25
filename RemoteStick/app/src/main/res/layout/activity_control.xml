@@ -86,10 +86,23 @@
         <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
                 style="@style/CustomTabLayout"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/tab_layout_height"
                 app:tabMode="fixed"
-                app:tabGravity="fill"/>
+                app:tabGravity="fill"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/specialKeysButton"/>
+
+        <ImageButton android:id="@+id/specialKeysButton"
+                     android:layout_width="46dp"
+                     android:layout_height="@dimen/tab_layout_height"
+                     android:background="@color/lightBackground"
+                     android:src="@drawable/ic_alt"
+                     android:tint="@color/special_keys_button_color"
+                     android:layout_alignParentEnd="true"
+                     android:contentDescription="@string/special_keys_button_description"
+                     android:onClick="onSpecialKeysButtonClick"
+        />
 
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
@@ -101,7 +114,8 @@
                          android:layout_height="46dp"
                          android:stretchColumns="*"
                          android:paddingStart="@dimen/medium_intent"
-                         android:paddingEnd="@dimen/medium_intent">
+                         android:paddingEnd="@dimen/medium_intent"
+                         android:visibility="gone">
                 <TableRow>
                     <Button android:id="@+id/shiftButton"
                             style="@style/SpecialKeyButton"
@@ -122,7 +136,8 @@
                                  style="@style/SpecialKeyButton"
                                  android:src="@drawable/ic_windows"
                                  android:tint="@color/darkText"
-                                 android:layout_column="3"/>
+                                 android:layout_column="3"
+                                 android:contentDescription="@string/win_button_description"/>
 
                     <Button android:id="@+id/Button1"
                             style="@style/SpecialKeyButton"

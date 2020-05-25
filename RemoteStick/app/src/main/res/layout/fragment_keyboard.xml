@@ -10,7 +10,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/ic_wireless_keyboard"
-            android:tint="@color/darkText"
+            android:tint="@color/grey"
             android:layout_marginTop="-10dp"
     />
 

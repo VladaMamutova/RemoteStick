@@ -7,18 +7,17 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.transition.Visibility
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.android.synthetic.main.activity_control.*
 import ru.vladamamutova.remotestick.R
-import ru.vladamamutova.remotestick.SpecialKeyboardFragment
+import ru.vladamamutova.remotestick.ui.fragments.SpecialKeyboardFragment
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
@@ -187,12 +186,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     }
 
     fun onLeftClick(view: View) {
-        if(specialKeysPanel.visibility == View.GONE) {
-            specialKeysPanel.visibility = View.VISIBLE
-        } else {
-            specialKeysPanel.visibility = View.GONE
-        }
-        //RemoteStickClient.myInstance.mousePlugin.onLeftClick()
+        RemoteStickClient.myInstance.mousePlugin.onLeftClick()
     }
 
     fun onMiddleClick(view: View) {
@@ -201,5 +195,15 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
 
     fun onRightClick(view: View) {
         RemoteStickClient.myInstance.mousePlugin.onRightClick()
+    }
+
+    fun onSpecialKeysButtonClick(view: View) {
+        if(specialKeysPanel.visibility == View.GONE) {
+            specialKeysPanel.visibility = View.VISIBLE
+            (view as ImageButton).isSelected = true
+        } else {
+            specialKeysPanel.visibility = View.GONE
+            (view as ImageButton).isSelected = false
+        }
     }
 }
