@@ -14,4 +14,6 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_media_fragment">Hello media fragment</string>
+    <string name="search_button_description">search button</string>
+    <string name="explorer_button_description">explorer button</string>
 </resources>

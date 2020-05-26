@@ -114,40 +114,49 @@
                          android:layout_height="46dp"
                          android:stretchColumns="*"
                          android:paddingStart="@dimen/medium_intent"
-                         android:paddingEnd="@dimen/medium_intent"
-                         android:visibility="gone">
+                         android:paddingEnd="@dimen/medium_intent">
+                         <!--android:visibility="gone">-->
                 <TableRow>
-                    <Button android:id="@+id/shiftButton"
-                            style="@style/SpecialKeyButton"
-                            android:text="@string/shift"
-                            android:layout_column="0"/>
 
                     <Button android:id="@+id/ctrlButton"
                             style="@style/SpecialKeyButton"
                             android:text="@string/ctrl"
-                            android:layout_column="1"/>
+                            android:layout_column="0"
+                            android:onClick="onSpecialKeyClick"/>
+
+                    <Button android:id="@+id/shiftButton"
+                            style="@style/SpecialKeyButton"
+                            android:text="@string/shift"
+                            android:layout_column="1"
+                            android:onClick="onSpecialKeyClick"/>
 
                     <Button android:id="@+id/altButton"
                             style="@style/SpecialKeyButton"
                             android:text="@string/alt"
-                            android:layout_column="2"/>
+                            android:layout_column="2"
+                            android:onClick="onSpecialKeyClick"/>
 
                     <ImageButton android:id="@+id/winButton"
                                  style="@style/SpecialKeyButton"
                                  android:src="@drawable/ic_windows"
-                                 android:tint="@color/darkText"
                                  android:layout_column="3"
-                                 android:contentDescription="@string/win_button_description"/>
+                                 android:contentDescription="@string/win_button_description"
+                                 android:onClick="onSpecialKeyClick"/>
 
-                    <Button android:id="@+id/Button1"
-                            style="@style/SpecialKeyButton"
-                            android:text="@string/alt"
-                            android:layout_column="4"/>
+                    <ImageButton android:id="@+id/searchButton"
+                                 style="@style/SpecialKeyButton"
+                                 android:src="@drawable/ic_search"
+                                 android:layout_column="4"
+                                 android:contentDescription="@string/search_button_description"
+                                 android:onClick="onSpecialKeyClick"/>
 
-                    <Button android:id="@+id/Button2"
-                            style="@style/SpecialKeyButton"
-                            android:text="@string/alt"
-                            android:layout_column="5"/>
+                    <ImageButton android:id="@+id/explorerButton"
+                                 style="@style/SpecialKeyButton"
+                                 android:src="@drawable/ic_folder"
+                                 android:layout_column="5"
+                                 android:contentDescription="@string/explorer_button_description"
+                                 android:onClick="onSpecialKeyClick"/>
+
                 </TableRow>
             </TableLayout>
 

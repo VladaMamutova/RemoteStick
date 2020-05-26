@@ -36,13 +36,13 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_DOWN) {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                keyboardListener?.sendSpecialKeys(arrayOf(SpecialKey.ENTER))
+                keyboardListener?.sendSpecialKey(SpecialKey.ENTER)
                 text?.clear()
                 length = 0
                 return true // событие уже обработано
 
             } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-                keyboardListener?.sendSpecialKeys(arrayOf(SpecialKey.BACKSPACE))
+                keyboardListener?.sendSpecialKey(SpecialKey.BACKSPACE)
             }
         }
 

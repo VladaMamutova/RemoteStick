@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.View.OnLongClickListener
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageButton
@@ -17,11 +18,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.android.synthetic.main.activity_control.*
 import ru.vladamamutova.remotestick.R
-import ru.vladamamutova.remotestick.ui.fragments.SpecialKeyboardFragment
+import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
 import ru.vladamamutova.remotestick.ui.fragments.MediaFragment
+import ru.vladamamutova.remotestick.ui.fragments.SpecialKeyboardFragment
 import ru.vladamamutova.remotestick.utils.OnBackPressedListener
 import kotlin.concurrent.thread
 
@@ -29,6 +31,31 @@ import kotlin.concurrent.thread
 class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     private var disconnectionToast: Toast? = null
     private var isKeyboardVisible: Boolean = false
+
+    private val longClickListener = OnLongClickListener {
+        when (it.id) {
+            R.id.ctrlButton -> {
+
+            }
+            R.id.shiftButton -> {
+
+            }
+            R.id.altButton -> {
+
+            }
+            R.id.winButton -> {
+
+            }
+            R.id.searchButton -> {
+
+            }
+            R.id.explorerButton -> {
+
+            }
+        }
+        (it as Button).isSelected = !it.isSelected
+        true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,10 +107,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
         keyView.setOnBackPressedListener(this)
         keyView.setKeyboardListener(RemoteStickClient.myInstance.keyboardPlugin)
 
-        ctrlButton.setOnLongClickListener {
-            (it as Button).isSelected = !it.isSelected
-            return@setOnLongClickListener true
-        }
+        setSpecialKeysLongClickListener()
 
         thread {
             RemoteStickClient.myInstance.run()
@@ -96,6 +120,11 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                         applicationContext, RemoteStickClient.myInstance.errorMessage,
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    if (isKeyboardVisible) {
+                        toggleKeyboard()
+                    }
+
                     startActivity(Intent(applicationContext, MainActivity::class.java))
                     finish()
                 }
@@ -138,6 +167,15 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                 )
             )
         }
+    }
+
+    private fun setSpecialKeysLongClickListener() {
+        ctrlButton.setOnLongClickListener(longClickListener)
+        shiftButton.setOnLongClickListener(longClickListener)
+        altButton.setOnLongClickListener(longClickListener)
+        winButton.setOnLongClickListener(longClickListener)
+        searchButton.setOnLongClickListener(longClickListener)
+        explorerButton.setOnLongClickListener(longClickListener)
     }
 
     /**
@@ -198,12 +236,35 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     }
 
     fun onSpecialKeysButtonClick(view: View) {
-        if(specialKeysPanel.visibility == View.GONE) {
+        if (specialKeysPanel.visibility == View.GONE) {
             specialKeysPanel.visibility = View.VISIBLE
             (view as ImageButton).isSelected = true
         } else {
             specialKeysPanel.visibility = View.GONE
             (view as ImageButton).isSelected = false
+        }
+    }
+
+    fun onSpecialKeyClick(view: View) {
+        when (view.id) {
+            R.id.ctrlButton -> {
+                RemoteStickClient.myInstance.keyboardPlugin.pressCtrl()
+            }
+            R.id.shiftButton -> {
+                RemoteStickClient.myInstance.keyboardPlugin.pressShift()
+            }
+            R.id.altButton -> {
+                RemoteStickClient.myInstance.keyboardPlugin.pressAlt()
+            }
+            R.id.winButton -> {
+                RemoteStickClient.myInstance.keyboardPlugin.pressWin()
+            }
+            R.id.searchButton -> {
+                RemoteStickClient.myInstance.keyboardPlugin.sendSearchBarKeys()
+            }
+            R.id.explorerButton -> {
+                RemoteStickClient.myInstance.keyboardPlugin.sendExplorerKeys()
+            }
         }
     }
 }

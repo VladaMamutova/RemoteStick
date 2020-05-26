@@ -5,7 +5,7 @@ import ru.vladamamutova.remotestick.service.NetworkPacket
 import ru.vladamamutova.remotestick.service.PacketTypes
 
 
-abstract class Plugin(val owner: PluginMediator) {
+abstract class Plugin(protected val owner: PluginMediator) {
     abstract val type: PacketTypes
     fun createPacket(body: JsonObject) = NetworkPacket(type, body)
 }
