@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         tools:context=".ui.activities.AddDeviceActivity"
-        android:padding="@dimen/big_intent"
-        android:layout_gravity="center">
+        android:background="@android:color/white">
 
-    <LinearLayout android:orientation="horizontal"
-                  android:layout_width="match_parent"
+    <LinearLayout android:layout_width="match_parent"
                   android:layout_height="wrap_content"
-                  android:layout_marginBottom="@dimen/big_intent">
+                  android:orientation="vertical"
+                  android:padding="@dimen/big_intent"
+                  android:layout_centerInParent="true">
 
-        <TextView android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:text="@string/ip_address"
-                  android:textSize="@dimen/body_text"
-                  android:layout_marginEnd="@dimen/big_intent"/>
+        <LinearLayout android:orientation="horizontal"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:layout_marginBottom="@dimen/big_intent">
 
-        <EditText android:id="@+id/edit_ip_address"
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:inputType="number|numberDecimal"
-                  android:digits="0123456789."
-                  android:importantForAutofill="no"
-                  android:hint="@string/ip_address_example"/>
+            <TextView android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/ip_address"
+                      android:textSize="@dimen/body_text"
+                      android:layout_marginEnd="@dimen/big_intent"/>
+
+            <EditText android:id="@+id/edit_ip_address"
+                      android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:inputType="number|numberDecimal"
+                      android:digits="0123456789."
+                      android:importantForAutofill="no"
+                      android:hint="@string/ip_address_example"/>
+
+        </LinearLayout>
+
+        <Button android:id="@+id/connect_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/small_intent"
+                android:text="@string/action_connect"
+                android:textSize="@dimen/body_text"
+                android:textColor="@android:color/white"
+                android:background="@drawable/button_background"
+                android:onClick="connect"/>
 
     </LinearLayout>
 
-    <Button android:id="@+id/connect_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/small_intent"
-            android:text="@string/action_connect"
-            android:textSize="@dimen/body_text"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_background"
-            android:onClick="connect"/>
-
-</LinearLayout>
+</RelativeLayout>

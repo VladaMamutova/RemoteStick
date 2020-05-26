@@ -14,11 +14,19 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <activity android:name=".ui.activities.ControlActivity"
-                  android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+                  android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"
+                  android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activities.AddDeviceActivity">
+        <activity android:name=".ui.activities.AddDeviceActivity"
+                  android:label="@string/title_activity_add_device"
+                  android:windowSoftInputMode="stateVisible"
+                  android:screenOrientation="portrait">
+            <meta-data
+                    android:name="android.support.PARENT_ACTIVITY"
+                    android:value=".ui.activities.MainActivity"/>
         </activity>
-        <activity android:name=".ui.activities.MainActivity">
+        <activity android:name=".ui.activities.MainActivity"
+                  android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

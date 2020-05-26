@@ -18,7 +18,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.android.synthetic.main.activity_control.*
 import ru.vladamamutova.remotestick.R
-import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
@@ -53,7 +52,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
 
             }
         }
-        (it as Button).isSelected = !it.isSelected
+        it.isSelected = !it.isSelected
         true
     }
 
@@ -73,23 +72,20 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                     viewPager.visibility = View.VISIBLE
                 }
                 if (tab.position == 1) {
-                    toggleKeyboard()
-                    isKeyboardVisible = true
+                    showKeyboard()
                 }
                 tab.setIconTintList(iconColors.getResourceId(tab.position, R.color.violet))
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                if (tab?.position == 1 && isKeyboardVisible) {
-                    toggleKeyboard()
-                    isKeyboardVisible = false
+                if (tab?.position == 1) {
+                    hideKeyboard()
                 }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
                 if (tab.position == 1) {
-                    toggleKeyboard()
-                    isKeyboardVisible = false
+                    hideKeyboard()
                 }
                 // При повторном выборе вкладки скрываем панель инструментов.
                 viewPager.visibility = View.GONE
@@ -122,10 +118,11 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                     ).show()
 
                     if (isKeyboardVisible) {
-                        toggleKeyboard()
+                        hideKeyboard()
                     }
 
                     startActivity(Intent(applicationContext, MainActivity::class.java))
+                    overridePendingTransition(R.anim.right_in, R.anim.right_out)
                     finish()
                 }
             }
@@ -178,19 +175,22 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
         explorerButton.setOnLongClickListener(longClickListener)
     }
 
-    /**
-     * Показывает либо скрывает клавиатуру.
-     */
-    private fun toggleKeyboard() {
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        keyView.requestFocus()
-        // Флаг SHOW_FORCED показывает, что клавиатура не будет скрыта до того,
-        // как это явно не будет сделано, то есть эти же методом.
-        // Поэтоме если при блокировке клавиатура была открыта, то
-        // после разблокировки она так же остаётся открытой.
-        imm.toggleSoftInputFromWindow(
-            keyView.windowToken, InputMethodManager.SHOW_FORCED, 0
-        )
+    private fun showKeyboard() {
+        if (!isKeyboardVisible) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            keyView.requestFocus()
+            imm.showSoftInput(keyView, InputMethodManager.SHOW_FORCED)
+            isKeyboardVisible = true
+        }
+    }
+
+    private fun hideKeyboard() {
+        if (isKeyboardVisible) {
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            keyView.clearFocus()
+            imm.hideSoftInputFromWindow(keyView.windowToken, 0)
+            isKeyboardVisible = false
+        }
     }
 
     override fun onBackPressed() {
@@ -212,10 +212,11 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
 
                 RemoteStickClient.myInstance.stop()
                 if (isKeyboardVisible) {
-                    toggleKeyboard()
+                    hideKeyboard()
                 }
 
                 startActivity(Intent(applicationContext, MainActivity::class.java))
+                overridePendingTransition(R.anim.right_in, R.anim.right_out)
                 finish()
             } else {
                 disconnectionToast!!.show()

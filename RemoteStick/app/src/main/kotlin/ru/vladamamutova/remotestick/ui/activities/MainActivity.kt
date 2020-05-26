@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun addDevice(view: View) {
-        //val intent = Intent(this, AddDeviceActivity::class.java)
-        val intent = Intent(this, ControlActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, AddDeviceActivity::class.java))
+        //startActivity(Intent(this, ControlActivity::class.java))
+        overridePendingTransition(R.anim.left_in, R.anim.left_out)
         finish()
     }
 }
