@@ -1,7 +1,7 @@
 package ru.vladamamutova.remotestick.plugins
 
+import android.os.Handler
 import android.os.SystemClock
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
@@ -21,6 +21,7 @@ class KeyboardPlugin(owner: PluginMediator) : Plugin(owner), KeyboardListener {
     override val type: PacketTypes
         get() = PacketTypes.KEYBOARD
 
+    private var shortcutHandler: Handler? = null
     private var modifiersPressed: HashSet<SpecialKey> = HashSet()
     private var lastModifierClicked: SpecialKey? = null
     private var lastModifierClickTime: Long = 0
@@ -39,71 +40,123 @@ class KeyboardPlugin(owner: PluginMediator) : Plugin(owner), KeyboardListener {
         return createPacket(body)
     }
 
-    override fun sendSymbol(symbol: Char) {
-        if (SystemClock.elapsedRealtime() - lastModifierClickTime < SHORTCUT_TIME) {
-            Log.d("SHORTCUT", lastModifierClicked!!.name + " + " + symbol)
-            owner.sendPacket(createPacket(arrayOf(lastModifierClicked!!), symbol))
-        } else {
-            Log.d("SYMBOL", symbol.toString())
-            owner.sendPacket(createPacket(symbol = symbol))
+    override fun onKeyPress(key: Char): Boolean {
+        if (modifiersPressed.isNotEmpty()) { // клавиши-модификаторы зажаты
+            // Отправляем сочетание клавиш:
+            // модификатор + символ или
+            // модификатор + модификатор + символ.
+            sendShortcutToHandler(modifiersPressed.toTypedArray(), key.toUpperCase())
+            owner.sendPacket(createPacket(modifiersPressed.toTypedArray(), key))
+            modifiersPressed.clear()
+        } else { // нет зажатых клавиш-модификаторов
+            // Проверяем была ли коротко нажата клавиша-модификатор и время её нажатия.
+            if (lastModifierClicked != null &&
+                SystemClock.elapsedRealtime() - lastModifierClickTime < SHORTCUT_TIME
+            ) {
+                // Отправляем сочетание клавиш (модификатор + символ).
+                sendShortcutToHandler(arrayOf(lastModifierClicked!!), key.toUpperCase())
+                owner.sendPacket(createPacket(arrayOf(lastModifierClicked!!), key))
+                lastModifierClicked = null
+                lastModifierClickTime = 0
+            } else {
+                // Отправляем одиночный символ.
+                owner.sendPacket(createPacket(symbol = key))
+                return true // отправлен одиночный символ
+            }
         }
-        
-        lastModifierClicked = null
-        lastModifierClickTime = 0
+
+        return false // отправлено сочетание клавиш с символом
     }
 
-    override fun sendSpecialKey(specialKey: SpecialKey) {
-        if (SystemClock.elapsedRealtime() - lastModifierClickTime < SHORTCUT_TIME) {
-            Log.d("SHORTCUT", lastModifierClicked!!.name + " + " + specialKey.name)
-            owner.sendPacket(createPacket(arrayOf(lastModifierClicked!!, specialKey)))
-        } else {
-            Log.d("SPECIAL KEY", specialKey.name)
-            owner.sendPacket(createPacket(arrayOf(specialKey)))
+    override fun onSpecialKeyPress(specialKey: SpecialKey) {
+        if (modifiersPressed.isNotEmpty()) { // клавиши-модификаторы зажаты
+            if (!modifiersPressed.contains(specialKey)) {
+                // Отправляем сочетание клавиш:
+                // модификатор + модификатор или
+                // модификатор + модификатор + модификатор, или
+                // модификатор + модификатор + немодификатор.
+                val keys: MutableList<SpecialKey> = modifiersPressed.toMutableList()
+                keys.add(specialKey)
+                sendShortcutToHandler(keys.toTypedArray())
+                owner.sendPacket(createPacket(keys.toTypedArray()))
+                modifiersPressed.clear()
+            }
+        } else { // нет зажатых клавиш-модификаторов
+            if (specialKey == SpecialKey.WIN) {
+                // Нажатие Win сразу отправляем.
+                sendShortcutToHandler(arrayOf(specialKey))
+                owner.sendPacket(createPacket(arrayOf(specialKey)))
+            } else if (specialKey.isModifier()) {
+                // При нажатии любой другой клавиши-модификатора, кроме Win:
+                // Ctrl, Shift, Alt - сохраняем её и время нажатия.
+                lastModifierClicked = specialKey
+                lastModifierClickTime = SystemClock.elapsedRealtime()
+            } else {
+                // При нажатии другой специальной клавиши-немодификатора
+                // проверяем была ли коротко нажата клавиша-модификатор и время её нажатия.
+                if (lastModifierClicked != null &&
+                    SystemClock.elapsedRealtime() - lastModifierClickTime < SHORTCUT_TIME
+                ) {
+                    // Отправляем сочетание клавиш (модификатор + немодификатор).
+                    val keys = arrayOf(lastModifierClicked!!, specialKey)
+                    sendShortcutToHandler(keys)
+                    owner.sendPacket(createPacket(keys))
+                    lastModifierClicked = null
+                    lastModifierClickTime = 0
+                } else {
+                    // Отправляем одиночную специальную клавишу-немодификатор.
+                    owner.sendPacket(createPacket(arrayOf(specialKey)))
+                }
+            }
+        }
+    }
+
+    private fun sendShortcutToHandler(specialKeys: Array<SpecialKey>, symbol: Char? = null) {
+        var message = specialKeys.joinToString(" + ")
+        if (symbol != null) {
+            message += " + $symbol"
         }
 
-        lastModifierClicked = null
-        lastModifierClickTime = 0
+        shortcutHandler?.let { it.sendMessage(it.obtainMessage(0, message)) }
     }
 
-    override fun sendSpecialKeys(specialKeys: Array<SpecialKey>) {
-        owner.sendPacket(createPacket(specialKeys))
+    private fun updateModifiersPressed(specialKey: SpecialKey) {
+        if (specialKey.isModifier()) {
+            if (modifiersPressed.contains(specialKey)) {
+                modifiersPressed.remove(specialKey)
+            } else {
+                modifiersPressed.add(specialKey)
+            }
+        }
     }
 
-    override fun sendKeys(specialKeys: Array<SpecialKey>, symbol: Char) {
-        owner.sendPacket(createPacket(specialKeys, symbol))
+    fun holdDownCtrl() {
+        updateModifiersPressed(SpecialKey.CTRL)
+    }
+
+    fun holdDownShift() {
+        updateModifiersPressed(SpecialKey.SHIFT)
+    }
+
+    fun holdDownAlt() {
+        updateModifiersPressed(SpecialKey.ALT)
+    }
+
+    fun holdDownWin() {
+        updateModifiersPressed(SpecialKey.WIN)
     }
 
     fun sendSearchBarKeys() {
-        Log.d("SHORTCUT", SpecialKey.WIN.name + " + " + 'S')
+        sendShortcutToHandler(arrayOf(SpecialKey.WIN), 'S')
         owner.sendPacket(createPacket(arrayOf(SpecialKey.WIN), 'S'))
     }
 
     fun sendExplorerKeys() {
-        Log.d("SHORTCUT", SpecialKey.WIN.name + " + " + 'E')
+        sendShortcutToHandler(arrayOf(SpecialKey.WIN), 'E')
         owner.sendPacket(createPacket(arrayOf(SpecialKey.WIN), 'E'))
     }
 
-    fun pressCtrl() {
-        lastModifierClicked = SpecialKey.CTRL
-        lastModifierClickTime = SystemClock.elapsedRealtime()
-        //modifiersPressed.add(SpecialKey.CTRL)
-    }
-
-    fun pressShift() {
-        lastModifierClicked = SpecialKey.SHIFT
-        lastModifierClickTime = SystemClock.elapsedRealtime()
-        //modifiersPressed.add(SpecialKey.SHIFT)
-    }
-
-    fun pressAlt() {
-        lastModifierClicked = SpecialKey.ALT
-        lastModifierClickTime = SystemClock.elapsedRealtime()
-        //modifiersPressed.add(SpecialKey.ALT)
-    }
-
-    fun pressWin() {
-        lastModifierClicked = SpecialKey.WIN
-        lastModifierClickTime = SystemClock.elapsedRealtime()
-        //modifiersPressed.add(SpecialKey.WIN)
+    fun setShortcutHandler(shortcutHandler: Handler) {
+        this.shortcutHandler = shortcutHandler
     }
 }

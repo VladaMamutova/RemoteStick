@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.text.InputType
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -36,13 +37,13 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event?.action == KeyEvent.ACTION_DOWN) {
             if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                keyboardListener?.sendSpecialKey(SpecialKey.ENTER)
+                keyboardListener?.onSpecialKeyPress(SpecialKey.ENTER)
                 text?.clear()
                 length = 0
                 return true // событие уже обработано
 
             } else if (keyCode == KeyEvent.KEYCODE_DEL) {
-                keyboardListener?.sendSpecialKey(SpecialKey.BACKSPACE)
+                keyboardListener?.onSpecialKeyPress(SpecialKey.BACKSPACE)
             }
         }
 
@@ -65,7 +66,15 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
     override fun onTextChanged(text: CharSequence?, start: Int, lengthBefore: Int, lengthAfter: Int) {
         val currentLength = text.toString().length
         if (currentLength != 0 && currentLength > length) {
-            text?.get(start)?.let { keyboardListener?.sendSymbol(it) }
+            text?.get(start)?.let {
+                if (keyboardListener?.onKeyPress(it) == false) {
+                    // Если был отправлен не одиночный символ, а сочетание клавиш
+                    // с символом, то из текстового поля убираем символ.
+                    setText(text.removeRange(start, start + 1))
+                    this.text?.let { setSelection(this.text!!.length) }
+                    return
+                }
+            }
         }
 
         length = currentLength
@@ -86,5 +95,10 @@ class KeyboardTextView(context: Context?, attrs: AttributeSet?) :
 
     fun setOnBackPressedListener(onBackPressedListener: OnBackPressedListener){
         this.onBackPressedListener = onBackPressedListener
+    }
+
+    fun clearText() {
+        text?.clear()
+        length = 0
     }
 }

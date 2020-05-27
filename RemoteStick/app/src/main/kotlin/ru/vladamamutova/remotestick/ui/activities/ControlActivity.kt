@@ -4,10 +4,11 @@ import android.content.Intent
 import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.view.Gravity
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -17,7 +18,9 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.android.synthetic.main.activity_control.*
+import kotlinx.android.synthetic.main.toast_custom.view.*
 import ru.vladamamutova.remotestick.R
+import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
@@ -30,31 +33,6 @@ import kotlin.concurrent.thread
 class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     private var disconnectionToast: Toast? = null
     private var isKeyboardVisible: Boolean = false
-
-    private val longClickListener = OnLongClickListener {
-        when (it.id) {
-            R.id.ctrlButton -> {
-
-            }
-            R.id.shiftButton -> {
-
-            }
-            R.id.altButton -> {
-
-            }
-            R.id.winButton -> {
-
-            }
-            R.id.searchButton -> {
-
-            }
-            R.id.explorerButton -> {
-
-            }
-        }
-        it.isSelected = !it.isSelected
-        true
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,12 +57,14 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 if (tab?.position == 1) {
+                    keyView.clearText()
                     hideKeyboard()
                 }
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
                 if (tab.position == 1) {
+                    keyView.clearText()
                     hideKeyboard()
                 }
                 // При повторном выборе вкладки скрываем панель инструментов.
@@ -95,6 +75,28 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                 tabs.selectTab(null)
             }
         })
+
+        var toast: Toast? = null
+        val shortcutHandler = Handler {
+            if(toast != null) {
+                toast!!.cancel()
+            }
+            toast = Toast(this)
+            toast!!.view = layoutInflater.inflate(R.layout.toast_custom, null)
+            toast!!.view.text.text = it.obj.toString()
+            toast!!.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
+            toast!!.show()
+
+            ctrlButton.isSelected = false
+            shiftButton.isSelected = false
+            altButton.isSelected = false
+            winButton.isSelected = false
+
+            return@Handler true
+        }
+
+        RemoteStickClient.myInstance.keyboardPlugin
+            .setShortcutHandler(shortcutHandler)
 
         touchpad.setOnMouseActionListener(
             RemoteStickClient.myInstance.mousePlugin
@@ -167,12 +169,29 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     }
 
     private fun setSpecialKeysLongClickListener() {
+        val longClickListener = OnLongClickListener {
+            when (it.id) {
+                R.id.ctrlButton -> {
+                    RemoteStickClient.myInstance.keyboardPlugin.holdDownCtrl()
+                }
+                R.id.shiftButton -> {
+                    RemoteStickClient.myInstance.keyboardPlugin.holdDownShift()
+                }
+                R.id.altButton -> {
+                    RemoteStickClient.myInstance.keyboardPlugin.holdDownAlt()
+                }
+                R.id.winButton -> {
+                    RemoteStickClient.myInstance.keyboardPlugin.holdDownWin()
+                }
+            }
+            it.isSelected = !it.isSelected
+            true
+        }
+
         ctrlButton.setOnLongClickListener(longClickListener)
         shiftButton.setOnLongClickListener(longClickListener)
         altButton.setOnLongClickListener(longClickListener)
         winButton.setOnLongClickListener(longClickListener)
-        searchButton.setOnLongClickListener(longClickListener)
-        explorerButton.setOnLongClickListener(longClickListener)
     }
 
     private fun showKeyboard() {
@@ -249,16 +268,16 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     fun onSpecialKeyClick(view: View) {
         when (view.id) {
             R.id.ctrlButton -> {
-                RemoteStickClient.myInstance.keyboardPlugin.pressCtrl()
+                RemoteStickClient.myInstance.keyboardPlugin.onSpecialKeyPress(SpecialKey.CTRL)
             }
             R.id.shiftButton -> {
-                RemoteStickClient.myInstance.keyboardPlugin.pressShift()
+                RemoteStickClient.myInstance.keyboardPlugin.onSpecialKeyPress(SpecialKey.SHIFT)
             }
             R.id.altButton -> {
-                RemoteStickClient.myInstance.keyboardPlugin.pressAlt()
+                RemoteStickClient.myInstance.keyboardPlugin.onSpecialKeyPress(SpecialKey.ALT)
             }
             R.id.winButton -> {
-                RemoteStickClient.myInstance.keyboardPlugin.pressWin()
+                RemoteStickClient.myInstance.keyboardPlugin.onSpecialKeyPress(SpecialKey.WIN)
             }
             R.id.searchButton -> {
                 RemoteStickClient.myInstance.keyboardPlugin.sendSearchBarKeys()
