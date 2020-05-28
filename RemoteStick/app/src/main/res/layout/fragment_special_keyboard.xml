@@ -1,43 +1,161 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".ui.fragments.SpecialKeyboardFragment"
-             android:stretchColumns="*"
-             android:paddingStart="@dimen/medium_intent"
-             android:paddingEnd="@dimen/medium_intent">
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.fragments.SpecialKeyboardFragment"
+            android:orientation="horizontal"
+            android:columnCount="6"
+            android:paddingStart="@dimen/medium_intent"
+            android:paddingEnd="@dimen/medium_intent">
 
-    <TableRow>
-        <Button android:id="@+id/shiftButton"
+        <Button android:id="@+id/escButton"
                 style="@style/SpecialKeyButton"
-                android:text="@string/shift"
-                android:layout_column="0"/>
+                android:text="@string/esc"/>
 
-        <Button android:id="@+id/ctrlButton"
+        <Button android:id="@+id/insertButton"
                 style="@style/SpecialKeyButton"
-                android:text="@string/ctrl"
-                android:layout_column="1"/>
+                android:text="@string/insert"/>
 
-        <Button android:id="@+id/altButton"
+        <Button
                 style="@style/SpecialKeyButton"
-                android:text="@string/alt"
-                android:layout_column="2"/>
+                android:text="F1/b"/>
 
-        <ImageButton android:id="@+id/winButton"
+        <Button android:id="@+id/p"
+                style="@style/SpecialKeyButton"
+                android:text="F2/ /"/>
+
+        <Button android:id="@+id/m"
+                style="@style/SpecialKeyButton"
+                android:text="F3/*"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="@string/minus_symbol"/>
+
+        <Button android:id="@+id/tabButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/tab"/>
+
+        <Button android:id="@+id/deleteButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/delete"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F4/7"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F5/8"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F6/9"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="@string/plus_symbol"/>
+
+        <ImageButton android:id="@+id/desktopButton"
                      style="@style/SpecialKeyButton"
-                     android:src="@drawable/ic_windows"
-                     android:tint="@color/darkText"
-                     android:layout_column="3"/>
+                     android:src="@drawable/ic_desktop"
+                     android:contentDescription="@string/show_desktop_button_description"/>
 
-        <Button android:id="@+id/Button1"
+        <Button android:id="@+id/printScreenButton"
                 style="@style/SpecialKeyButton"
-                android:text="@string/alt"
-                android:layout_column="4"/>
+                android:text="@string/prt_sc"/>
 
-        <Button android:id="@+id/Button2"
+        <Button
                 style="@style/SpecialKeyButton"
-                android:text="@string/alt"
-                android:layout_column="5"/>
-    </TableRow>
-</TableLayout>
+                android:text="F7/4"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F8/5"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F9/6"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="@string/equal_symbol"/>
+
+        <ImageButton android:id="@+id/copyButton"
+                     style="@style/SpecialKeyButton"
+                     android:src="@drawable/ic_copy"
+                     android:contentDescription="@string/copy_button_description"/>
+
+        <ImageButton android:id="@+id/pasteButton"
+                     style="@style/SpecialKeyButton"
+                     android:src="@drawable/ic_paste"
+                     android:contentDescription="@string/paste_button_description"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F10/1"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F11/2"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="F12/3"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="0"/>
+
+        <Button android:id="@+id/homeButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/home"/>
+
+        <Button android:id="@+id/pageUpButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/pg_up"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="Fn-N"/>
+
+        <ImageButton android:id="@+id/arrowUpButton"
+                     style="@style/SpecialKeyButton"
+                     android:src="@drawable/ic_arrow_up"
+                     android:contentDescription="@string/arrow_up_button_description"/>
+
+        <Button
+                style="@style/SpecialKeyButton"
+                android:text="@string/dot_symbol"/>
+
+        <Button android:id="@+id/enterButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/enter"
+                android:layout_gravity="fill"
+                android:layout_rowSpan="2"/>
+
+        <Button android:id="@+id/endButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/end"/>
+
+        <Button android:id="@+id/pageDownButton"
+                style="@style/SpecialKeyButton"
+                android:text="@string/pg_dn"/>
+
+        <ImageButton android:id="@+id/arrowLeftButton"
+                     style="@style/SpecialKeyButton"
+                     android:src="@drawable/ic_arrow_left"
+                     android:contentDescription="@string/arrow_left_button_description"/>
+
+        <ImageButton android:id="@+id/arrowDownButton"
+                     style="@style/SpecialKeyButton"
+                     android:src="@drawable/ic_arrow_down"
+                     android:contentDescription="@string/arrow_down_button_description"/>
+
+        <ImageButton android:id="@+id/arrowRightButton"
+                     style="@style/SpecialKeyButton"
+                     android:src="@drawable/ic_arrow_right"
+                     android:contentDescription="@string/arrow_right_button_description"/>
+
+</GridLayout>

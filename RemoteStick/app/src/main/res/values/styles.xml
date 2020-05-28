@@ -29,10 +29,12 @@
     </style>
 
     <style name="SpecialKeyButton" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:layout_width">46dp</item>
-        <item name="android:layout_height">38dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
         <item name="android:minWidth">0dp</item> <!--Убираем отступы кнопки по умолчанию-->
         <item name="android:layout_margin">2dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
         <item name="android:padding">8dp</item>
         <item name="android:background">@drawable/special_key_background</item>
         <item name="android:textColor">@color/special_key_color</item>

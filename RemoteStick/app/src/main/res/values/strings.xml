@@ -1,20 +1,45 @@
 <resources>
     <string name="app_name">Remote Stick</string>
     <string name="title_activity_add_device">Подключение по IP</string>
-    <string name="available_devices">Доступные устройства</string>
-    <string name="available_devices_button">available devices icon</string>
-    <string name="add_device_icon">add device button</string>
+        <string name="available_devices">Доступные устройства</string>
     <string name="ip_address">IP-адрес:</string>
     <string name="ip_address_example">Например, 192.168.0.102</string>
     <string name="action_connect">Подключиться</string>
+
+    <!--Названия клавиш клавиатуры.-->
     <string name="shift">Shift</string>
     <string name="ctrl">Ctrl</string>
     <string name="alt">Alt</string>
+    <string name="esc">Esc</string>
+    <string name="insert">Insert</string>
+    <string name="tab">Tab</string>
+    <string name="delete">Delete</string>
+    <string name="prt_sc">Prt Sc</string>
+    <string name="home">Home</string>
+    <string name="pg_up">PgUp</string>
+    <string name="pg_dn">PgDn</string>
+    <string name="end">End</string>
+    <string name="enter">Enter</string>
+    <string name="dot_symbol">.</string>
+    <string name="equal_symbol">=</string>
+    <string name="plus_symbol">+</string>
+    <string name="minus_symbol">-</string>
+
+    <!--Описание графических кнопок-->
+    <string name="available_devices_button_description">available devices icon</string>
+    <string name="add_device_icon_description">add device button</string>
     <string name="special_keys_button_description">special keys button</string>
     <string name="win_button_description">win button</string>
+    <string name="search_button_description">search button</string>
+    <string name="explorer_button_description">explorer button</string>
+    <string name="arrow_up_button_description">arrow up button</string>
+    <string name="arrow_down_button_description">arrow down button</string>
+    <string name="arrow_left_button_description">arrow left button</string>
+    <string name="arrow_right_button_description">arrow right button</string>
+    <string name="copy_button_description">copy button</string>
+    <string name="paste_button_description">paste button</string>
+    <string name="show_desktop_button_description">show desktop button</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_media_fragment">Hello media fragment</string>
-    <string name="search_button_description">search button</string>
-    <string name="explorer_button_description">explorer button</string>
 </resources>

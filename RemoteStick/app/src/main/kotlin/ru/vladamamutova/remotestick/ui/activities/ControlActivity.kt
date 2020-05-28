@@ -18,7 +18,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.android.synthetic.main.activity_control.*
-import kotlinx.android.synthetic.main.toast_custom.view.*
+import kotlinx.android.synthetic.main.toast_shortcut.view.*
 import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
@@ -82,7 +82,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                 toast!!.cancel()
             }
             toast = Toast(this)
-            toast!!.view = layoutInflater.inflate(R.layout.toast_custom, null)
+            toast!!.view = layoutInflater.inflate(R.layout.toast_shortcut, null)
             toast!!.view.text.text = it.obj.toString()
             toast!!.setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL, 0, 0)
             toast!!.show()
@@ -136,6 +136,14 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
         this.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             (resources.displayMetrics.heightPixels * 0.39).toInt()
+        )
+
+        // Устанавливаем высоту панели с специальными клавишами, чтобы
+        // она была равна высоту специальных клавиш в fragment_special_keyboard
+        // (в фрагменте 6 строк, значит высота = 1/6 от панели инструментов)
+        specialKeysPanel.layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            this.layoutParams.height / 6
         )
 
         // Добавляем вкладки.
