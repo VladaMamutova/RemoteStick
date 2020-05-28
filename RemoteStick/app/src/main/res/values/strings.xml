@@ -20,6 +20,7 @@
     <string name="pg_dn">PgDn</string>
     <string name="end">End</string>
     <string name="enter">Enter</string>
+    <string name="zero_symbol">0</string>
     <string name="dot_symbol">.</string>
     <string name="equal_symbol">=</string>
     <string name="plus_symbol">+</string>

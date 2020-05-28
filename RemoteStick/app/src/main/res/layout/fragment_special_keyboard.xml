@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".ui.fragments.SpecialKeyboardFragment"
@@ -17,17 +18,20 @@
                 style="@style/SpecialKeyButton"
                 android:text="@string/insert"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F1/b"/>
+                custom:mainActionText="←"
+                custom:additionActionText="F1"/>
 
-        <Button android:id="@+id/p"
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F2/ /"/>
+                custom:mainActionText="/"
+                custom:additionActionText="F2"/>
 
-        <Button android:id="@+id/m"
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F3/*"/>
+                custom:mainActionText="*"
+                custom:additionActionText="F3"/>
 
         <Button
                 style="@style/SpecialKeyButton"
@@ -41,17 +45,20 @@
                 style="@style/SpecialKeyButton"
                 android:text="@string/delete"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F4/7"/>
+                custom:mainActionText="7"
+                custom:additionActionText="F4"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F5/8"/>
+                custom:mainActionText="8"
+                custom:additionActionText="F5"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F6/9"/>
+                custom:mainActionText="9"
+                custom:additionActionText="F6"/>
 
         <Button
                 style="@style/SpecialKeyButton"
@@ -66,17 +73,20 @@
                 style="@style/SpecialKeyButton"
                 android:text="@string/prt_sc"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F7/4"/>
+                custom:mainActionText="4"
+                custom:additionActionText="F7"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F8/5"/>
+                custom:mainActionText="5"
+                custom:additionActionText="F8"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F9/6"/>
+                custom:mainActionText="6"
+                custom:additionActionText="F9"/>
 
         <Button
                 style="@style/SpecialKeyButton"
@@ -92,21 +102,24 @@
                      android:src="@drawable/ic_paste"
                      android:contentDescription="@string/paste_button_description"/>
 
-        <Button
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
                 style="@style/SpecialKeyButton"
-                android:text="F10/1"/>
+                custom:mainActionText="1"
+                custom:additionActionText="F10"/>
+
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+                style="@style/SpecialKeyButton"
+                custom:mainActionText="2"
+                custom:additionActionText="F11"/>
+
+        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+                style="@style/SpecialKeyButton"
+                custom:mainActionText="3"
+                custom:additionActionText="F12"/>
 
         <Button
                 style="@style/SpecialKeyButton"
-                android:text="F11/2"/>
-
-        <Button
-                style="@style/SpecialKeyButton"
-                android:text="F12/3"/>
-
-        <Button
-                style="@style/SpecialKeyButton"
-                android:text="0"/>
+                android:text="@string/zero_symbol"/>
 
         <Button android:id="@+id/homeButton"
                 style="@style/SpecialKeyButton"
