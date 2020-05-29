@@ -91,7 +91,7 @@
                 android:layout_toStartOf="@id/specialKeysButton"/>
 
         <ImageButton android:id="@+id/specialKeysButton"
-                     android:layout_width="46dp"
+                     android:layout_width="@dimen/tab_layout_height"
                      android:layout_height="@dimen/tab_layout_height"
                      android:background="@color/lightBackground"
                      android:src="@drawable/ic_alt"
@@ -109,8 +109,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
                         android:columnCount="6"
-                        android:paddingStart="@dimen/medium_intent"
-                        android:paddingEnd="@dimen/medium_intent"
+                        android:paddingHorizontal="@dimen/medium_intent"
+                        android:paddingVertical="@dimen/tiny_intent"
                         android:visibility="gone">
 
                 <Button android:id="@+id/ctrlButton"

@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.button_double_action.view.*
 import kotlinx.android.synthetic.main.fragment_special_keyboard.*
 import kotlinx.android.synthetic.main.fragment_special_keyboard.view.*
+import kotlinx.android.synthetic.main.toast_shortcut.view.*
 import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
@@ -104,6 +106,18 @@ class SpecialKeyboardFragment : Fragment() {
         view.pasteButton.setOnClickListener {
             RemoteStickClient.myInstance.keyboardPlugin.sendPasteKeys()
         }
+
+        // Слушатель для кнопок с символами.
+        val symbolClickListener = View.OnClickListener {
+            RemoteStickClient.myInstance.keyboardPlugin.onKeyPress((it as Button).text[0])
+        }
+
+        // Устанавливаем слушатели для кнопок, которые отправляют символы.
+        view.minusButton.setOnClickListener(symbolClickListener)
+        view.plusButton.setOnClickListener(symbolClickListener)
+        view.equalButton.setOnClickListener(symbolClickListener)
+        view.zeroButton.setOnClickListener(symbolClickListener)
+        view.dotButton.setOnClickListener(symbolClickListener)
 
         // Устанавливаем слушатель для кнопки Num-Fn.
         view.numFnButton.setOnClickListener {

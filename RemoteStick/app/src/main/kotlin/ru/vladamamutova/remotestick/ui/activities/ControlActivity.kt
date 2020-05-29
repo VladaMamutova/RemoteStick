@@ -144,6 +144,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
         specialKeysPanel.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             this.layoutParams.height / 6
+                    + resources.getDimension(R.dimen.tiny_intent).toInt() * 2
         )
 
         // Добавляем вкладки.

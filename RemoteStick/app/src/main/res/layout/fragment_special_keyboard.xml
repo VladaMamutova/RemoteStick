@@ -7,8 +7,8 @@
             tools:context=".ui.fragments.SpecialKeyboardFragment"
             android:orientation="horizontal"
             android:columnCount="6"
-            android:paddingStart="@dimen/medium_intent"
-            android:paddingEnd="@dimen/medium_intent">
+            android:paddingHorizontal="@dimen/medium_intent"
+            android:paddingVertical="@dimen/tiny_intent">
 
         <Button android:id="@+id/escButton"
                 style="@style/SpecialKeyButton"
@@ -36,7 +36,7 @@
                 custom:mainActionText="*"
                 custom:additionalActionText="F3"/>
 
-        <Button
+        <Button android:id="@+id/minusButton"
                 style="@style/SpecialKeyButton"
                 android:text="@string/minus_symbol"/>
 
@@ -66,7 +66,7 @@
                 custom:mainActionText="9"
                 custom:additionalActionText="F6"/>
 
-        <Button
+        <Button android:id="@+id/plusButton"
                 style="@style/SpecialKeyButton"
                 android:text="@string/plus_symbol"/>
 
@@ -97,7 +97,7 @@
                 custom:mainActionText="6"
                 custom:additionalActionText="F9"/>
 
-        <Button
+        <Button android:id="@+id/equalButton"
                 style="@style/SpecialKeyButton"
                 android:text="@string/equal_symbol"/>
 
@@ -129,7 +129,7 @@
                 custom:mainActionText="3"
                 custom:additionalActionText="F12"/>
 
-        <Button
+        <Button android:id="@+id/zeroButton"
                 style="@style/SpecialKeyButton"
                 android:text="@string/zero_symbol"/>
 
@@ -152,7 +152,7 @@
                      android:src="@drawable/ic_arrow_up"
                      android:contentDescription="@string/arrow_up_button_description"/>
 
-        <Button
+        <Button android:id="@+id/dotButton"
                 style="@style/SpecialKeyButton"
                 android:text="@string/dot_symbol"/>
 
