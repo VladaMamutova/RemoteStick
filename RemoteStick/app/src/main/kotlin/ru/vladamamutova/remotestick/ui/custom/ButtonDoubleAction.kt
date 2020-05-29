@@ -11,6 +11,9 @@ import ru.vladamamutova.remotestick.R
 class ButtonDoubleAction(context: Context, attrs: AttributeSet?) :
     LinearLayout(context, attrs) {
 
+    private var mainAction: String?
+    private var additionalAction: String?
+
     init {
         val inflater = context
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -21,12 +24,25 @@ class ButtonDoubleAction(context: Context, attrs: AttributeSet?) :
             R.styleable.ButtonDoubleAction, 0, 0
         )
         try {
-            mainActionText.text = attrsArray.
+            mainAction = attrsArray.
             getString(R.styleable.ButtonDoubleAction_mainActionText)
-            additionActionText.text = attrsArray.
-            getString(R.styleable.ButtonDoubleAction_additionActionText)
+            additionalAction = attrsArray.
+            getString(R.styleable.ButtonDoubleAction_additionalActionText)
+
+            mainActionText.text = mainAction
+            additionalActionText.text = additionalAction
         } finally {
             attrsArray.recycle()
+        }
+    }
+
+    fun switchActions(isInitial: Boolean) {
+        if (isInitial) {
+            mainActionText.text = mainAction
+            additionalActionText.text = additionalAction
+        } else {
+            mainActionText.text = additionalAction
+            additionalActionText.text = mainAction
         }
     }
 }

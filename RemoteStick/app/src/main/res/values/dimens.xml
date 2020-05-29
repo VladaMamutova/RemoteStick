@@ -5,9 +5,8 @@
     <dimen name="medium_intent">8dp</dimen>
     <dimen name="big_intent">14dp</dimen>
     <dimen name="button_radius">4dp</dimen>
-    <dimen name="additional_action_text">10sp</dimen>
+    <dimen name="tiny_text">10sp</dimen>
     <dimen name="small_text">12sp</dimen>
-    <dimen name="main_action_text">14sp</dimen>
     <dimen name="body_text">18sp</dimen>
     <dimen name="tab_layout_height">48dp</dimen>
     <dimen name="toast_height">40dp</dimen>

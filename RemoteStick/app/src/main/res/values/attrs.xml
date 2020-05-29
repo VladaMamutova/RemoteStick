@@ -2,6 +2,6 @@
 <resources>
     <declare-styleable name="ButtonDoubleAction">
         <attr name="mainActionText" format="string" />
-        <attr name="additionActionText" format="string" />
+        <attr name="additionalActionText" format="string" />
     </declare-styleable>
 </resources>

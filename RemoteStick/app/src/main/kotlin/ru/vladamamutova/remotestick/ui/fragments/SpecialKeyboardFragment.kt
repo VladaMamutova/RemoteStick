@@ -1,59 +1,87 @@
 package ru.vladamamutova.remotestick.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_special_keyboard.*
+import kotlinx.android.synthetic.main.fragment_special_keyboard.view.*
 import ru.vladamamutova.remotestick.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_IS_NUM = "isNum"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SpecialKeyboardFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SpecialKeyboardFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var isNum: Boolean = true
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(ARG_IS_NUM, isNum)
+        super.onSaveInstanceState(outState)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_special_keyboard, container, false)
+        val view = inflater.inflate(R.layout.fragment_special_keyboard,
+            container, false)
+
+        if (savedInstanceState != null) {
+            isNum = savedInstanceState.getBoolean(ARG_IS_NUM)
+            view.numFnButton.setIsNumState(isNum)
+            view.backspaceF1Button.switchActions(isNum)
+            view.divideF2Button.switchActions(isNum)
+            view.multiplyF3Button.switchActions(isNum)
+            view.sevenF4Button.switchActions(isNum)
+            view.eightF5Button.switchActions(isNum)
+            view.nineF6Button.switchActions(isNum)
+            view.fourF7Button.switchActions(isNum)
+            view.fiveF8Button.switchActions(isNum)
+            view.sixF9Button.switchActions(isNum)
+            view.oneF10Button.switchActions(isNum)
+            view.twoF11Button.switchActions(isNum)
+            view.threeF12Button.switchActions(isNum)
+        }
+
+        view.numFnButton.setOnClickListener {
+           switchIsNumState()
+        }
+
+        return view
+    }
+
+    private fun switchIsNumState() {
+        isNum = !isNum
+        numFnButton.setIsNumState(isNum)
+        backspaceF1Button.switchActions(isNum)
+        divideF2Button.switchActions(isNum)
+        multiplyF3Button.switchActions(isNum)
+        sevenF4Button.switchActions(isNum)
+        eightF5Button.switchActions(isNum)
+        nineF6Button.switchActions(isNum)
+        fourF7Button.switchActions(isNum)
+        fiveF8Button.switchActions(isNum)
+        sixF9Button.switchActions(isNum)
+        oneF10Button.switchActions(isNum)
+        twoF11Button.switchActions(isNum)
+        threeF12Button.switchActions(isNum)
+    }
+
+    private fun ImageButton.setIsNumState(isNum: Boolean) {
+        if (isNum) {
+            this.setImageDrawable(
+                ContextCompat.getDrawable(activity!!, R.drawable.ic_num_fn)
+            )
+        } else {
+            this.setImageDrawable(
+                ContextCompat.getDrawable(activity!!, R.drawable.ic_fn_num)
+            )
+        }
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SpecialKeyboardFragment.
-         */
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SpecialKeyboardFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        fun newInstance() = SpecialKeyboardFragment()
     }
 }
