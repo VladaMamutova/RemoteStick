@@ -156,6 +156,21 @@ class KeyboardPlugin(owner: PluginMediator) : Plugin(owner), KeyboardListener {
         owner.sendPacket(createPacket(arrayOf(SpecialKey.WIN), 'E'))
     }
 
+    fun sendDesktopKeys() {
+        sendShortcutToHandler(arrayOf(SpecialKey.WIN), 'D')
+        owner.sendPacket(createPacket(arrayOf(SpecialKey.WIN), 'D'))
+    }
+
+    fun sendCopyKeys() {
+        sendShortcutToHandler(arrayOf(SpecialKey.CTRL), 'C')
+        owner.sendPacket(createPacket(arrayOf(SpecialKey.CTRL), 'C'))
+    }
+
+    fun sendPasteKeys() {
+        sendShortcutToHandler(arrayOf(SpecialKey.CTRL), 'V')
+        owner.sendPacket(createPacket(arrayOf(SpecialKey.CTRL), 'V'))
+    }
+
     fun setShortcutHandler(shortcutHandler: Handler) {
         this.shortcutHandler = shortcutHandler
     }

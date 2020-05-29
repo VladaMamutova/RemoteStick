@@ -7,9 +7,12 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.button_double_action.view.*
 import kotlinx.android.synthetic.main.fragment_special_keyboard.*
 import kotlinx.android.synthetic.main.fragment_special_keyboard.view.*
 import ru.vladamamutova.remotestick.R
+import ru.vladamamutova.remotestick.plugins.SpecialKey
+import ru.vladamamutova.remotestick.service.RemoteStickClient
 
 private const val ARG_IS_NUM = "isNum"
 
@@ -17,6 +20,7 @@ class SpecialKeyboardFragment : Fragment() {
     private var isNum: Boolean = true
 
     override fun onSaveInstanceState(outState: Bundle) {
+        // Сохраняем состояние кнопки-переключателя Num-Fn.
         outState.putBoolean(ARG_IS_NUM, isNum)
         super.onSaveInstanceState(outState)
     }
@@ -27,6 +31,9 @@ class SpecialKeyboardFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_special_keyboard,
             container, false)
 
+        // Получаем состояние кнопки-переключателя Num-Fn
+        // и изменяем состояние кнопок двойного действия:
+        // устанавливаем кнопки типа Fn или кнопки с цифрами.
         if (savedInstanceState != null) {
             isNum = savedInstanceState.getBoolean(ARG_IS_NUM)
             view.numFnButton.setIsNumState(isNum)
@@ -44,6 +51,61 @@ class SpecialKeyboardFragment : Fragment() {
             view.threeF12Button.switchActions(isNum)
         }
 
+        // Слушатель для обычных кнопок со специальными клавишами.
+        val specialKeyClickListener = View.OnClickListener {
+            val specialKey: SpecialKey? = when (it.id) {
+                R.id.escButton -> SpecialKey.ESC
+                R.id.tabButton -> SpecialKey.TAB
+                R.id.insertButton -> SpecialKey.INSERT
+                R.id.deleteButton -> SpecialKey.DELETE
+                R.id.homeButton -> SpecialKey.HOME
+                R.id.endButton -> SpecialKey.END
+                R.id.pageUpButton -> SpecialKey.PAGE_UP
+                R.id.pageDownButton -> SpecialKey.PAGE_DOWN
+                R.id.enterButton -> SpecialKey.ENTER
+                R.id.arrowUpButton -> SpecialKey.UP
+                R.id.arrowLeftButton -> SpecialKey.LEFT
+                R.id.arrowRightButton -> SpecialKey.RIGHT
+                R.id.arrowDownButton -> SpecialKey.DOWN
+                R.id.printScreenButton -> SpecialKey.PRINT_SCREEN
+                else -> null
+            }
+
+            specialKey?.let { key ->
+                RemoteStickClient.myInstance.keyboardPlugin.onSpecialKeyPress(key)
+            }
+        }
+
+        // Устанавливаем слушатели для обычных кнопок со специальными клавишами.
+        with(view) {
+            escButton.setOnClickListener(specialKeyClickListener)
+            tabButton.setOnClickListener(specialKeyClickListener)
+            insertButton.setOnClickListener(specialKeyClickListener)
+            deleteButton.setOnClickListener(specialKeyClickListener)
+            homeButton.setOnClickListener(specialKeyClickListener)
+            endButton.setOnClickListener(specialKeyClickListener)
+            pageUpButton.setOnClickListener(specialKeyClickListener)
+            pageDownButton.setOnClickListener(specialKeyClickListener)
+            enterButton.setOnClickListener(specialKeyClickListener)
+            arrowUpButton.setOnClickListener(specialKeyClickListener)
+            arrowLeftButton.setOnClickListener(specialKeyClickListener)
+            arrowRightButton.setOnClickListener(specialKeyClickListener)
+            arrowDownButton.setOnClickListener(specialKeyClickListener)
+            printScreenButton.setOnClickListener(specialKeyClickListener)
+        }
+
+        // Устанавливаем слушатели для кнопок, которые отправляют сочетания клавиш.
+        view.desktopButton.setOnClickListener{
+            RemoteStickClient.myInstance.keyboardPlugin.sendDesktopKeys()
+        }
+        view.copyButton.setOnClickListener {
+            RemoteStickClient.myInstance.keyboardPlugin.sendCopyKeys()
+        }
+        view.pasteButton.setOnClickListener {
+            RemoteStickClient.myInstance.keyboardPlugin.sendPasteKeys()
+        }
+
+        // Устанавливаем слушатель для кнопки Num-Fn.
         view.numFnButton.setOnClickListener {
            switchIsNumState()
         }
