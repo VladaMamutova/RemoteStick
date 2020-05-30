@@ -18,23 +18,23 @@
                 style="@style/SpecialKeyButton"
                 android:text="@string/insert"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/backspaceF1Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="←"
-                custom:additionalActionText="F1"/>
+                custom:mainKeyText="←"
+                custom:additionalKeyText="F1"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/divideF2Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="/"
-                custom:additionalActionText="F2"/>
+                custom:mainKeyText="/"
+                custom:additionalKeyText="F2"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/multiplyF3Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="*"
-                custom:additionalActionText="F3"/>
+                custom:mainKeyText="*"
+                custom:additionalKeyText="F3"/>
 
         <Button android:id="@+id/minusButton"
                 style="@style/SpecialKeyButton"
@@ -48,23 +48,23 @@
                 style="@style/SpecialKeyButton"
                 android:text="@string/delete"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/sevenF4Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="7"
-                custom:additionalActionText="F4"/>
+                custom:mainKeyText="7"
+                custom:additionalKeyText="F4"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/eightF5Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="8"
-                custom:additionalActionText="F5"/>
+                custom:mainKeyText="8"
+                custom:additionalKeyText="F5"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/nineF6Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="9"
-                custom:additionalActionText="F6"/>
+                custom:mainKeyText="9"
+                custom:additionalKeyText="F6"/>
 
         <Button android:id="@+id/plusButton"
                 style="@style/SpecialKeyButton"
@@ -79,23 +79,23 @@
                 style="@style/SpecialKeyButton"
                 android:text="@string/prt_sc"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/fourF7Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="4"
-                custom:additionalActionText="F7"/>
+                custom:mainKeyText="4"
+                custom:additionalKeyText="F7"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/fiveF8Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="5"
-                custom:additionalActionText="F8"/>
+                custom:mainKeyText="5"
+                custom:additionalKeyText="F8"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/sixF9Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="6"
-                custom:additionalActionText="F9"/>
+                custom:mainKeyText="6"
+                custom:additionalKeyText="F9"/>
 
         <Button android:id="@+id/equalButton"
                 style="@style/SpecialKeyButton"
@@ -111,23 +111,23 @@
                      android:src="@drawable/ic_paste"
                      android:contentDescription="@string/paste_button_description"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/oneF10Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="1"
-                custom:additionalActionText="F10"/>
+                custom:mainKeyText="1"
+                custom:additionalKeyText="F10"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/twoF11Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="2"
-                custom:additionalActionText="F11"/>
+                custom:mainKeyText="2"
+                custom:additionalKeyText="F11"/>
 
-        <ru.vladamamutova.remotestick.ui.custom.ButtonDoubleAction
+        <ru.vladamamutova.remotestick.ui.custom.DoubleKeyButton
                 android:id="@+id/threeF12Button"
                 style="@style/SpecialKeyButton"
-                custom:mainActionText="3"
-                custom:additionalActionText="F12"/>
+                custom:mainKeyText="3"
+                custom:additionalKeyText="F12"/>
 
         <Button android:id="@+id/zeroButton"
                 style="@style/SpecialKeyButton"

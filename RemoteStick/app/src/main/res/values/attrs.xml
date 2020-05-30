@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ButtonDoubleAction">
-        <attr name="mainActionText" format="string" />
-        <attr name="additionalActionText" format="string" />
+    <declare-styleable name="DoubleKeyButton">
+        <attr name="mainKeyText" format="string" />
+        <attr name="additionalKeyText" format="string" />
     </declare-styleable>
 </resources>
