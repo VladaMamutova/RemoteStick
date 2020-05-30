@@ -29,6 +29,7 @@ class Win32 {
     external fun leftDown()
     external fun leftUp()
     external fun move(dx: Int, dy: Int)
+    external fun scroll(dy: Int)
     external fun sendSymbol(symbol: Char)
     external fun sendSpecialKeys(specialKeys: IntArray)
     external fun sendKeys(specialKeys: IntArray, symbol: Char)

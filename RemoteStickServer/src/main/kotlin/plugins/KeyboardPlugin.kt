@@ -1,8 +1,6 @@
 package main.kotlin.plugins
 
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
 import main.kotlin.Win32
 import main.kotlin.service.NetworkPacket
 import main.kotlin.service.PacketTypes

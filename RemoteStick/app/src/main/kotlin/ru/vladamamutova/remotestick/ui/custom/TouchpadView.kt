@@ -2,33 +2,28 @@ package ru.vladamamutova.remotestick.ui.custom
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.os.Handler
 import android.os.SystemClock
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import androidx.core.content.ContextCompat
+import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.utils.MouseActionListener
+import kotlin.math.abs
 
 
 class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     companion object {
-        private const val DOUBLE_CLICK_DELAY: Long = 200
         private const val LEFT_CLICK_TIME: Long = 100
+        private const val START_DRAG_TIME: Long = 500
     }
 
     private var downTime: Long = 0
-
-    //private var isSingleClick = false
-    private var lastClickDelay: Long = 0
-    //private var firstMoveDelay: Long = 0
-    private var clickHandler: Handler = Handler()
-    private var runnable = Runnable {
-      /*  if (isSingleClick) {
-            mouseListener?.onLeftClick()
-            Log.d("ACTION--------", "left click")
-        }*/
-    }
+    private var scrollPanelX = 0f
+    private val scrollPanelWidth = resources.getDimension(R.dimen.tab_layout_height)
 
     private var prevX = 0f
     private var prevY = 0f
@@ -55,6 +50,8 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
 
     private var isRightClick = false
     private var isMove = false
+    private var isScroll = false
+    private var isDrag = false
 
     private var isLeftBtnDown = false
     private var isMidBtnDown = false
@@ -63,12 +60,22 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
     private var isWY = false
     private var mouseListener: MouseActionListener? = null
 
+    private val scrollPaint: Paint = Paint().apply {
+        style = Paint.Style.FILL;
+        color = ContextCompat.getColor(context!!, R.color.whiteTransparent);}
+
     fun setOnMouseActionListener(mouseActionListener: MouseActionListener) {
         mouseListener = mouseActionListener
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+
+        scrollPanelX = width - scrollPanelWidth
+        canvas.drawRect(width - scrollPanelWidth,
+            0f, width.toFloat(),
+            height.toFloat() - scrollPanelWidth - 15f,
+            scrollPaint)
 /*        viewWidth = width.toFloat()
         viewHeight = height.toFloat()
 
@@ -142,32 +149,38 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
         prevX = event.x
         prevY = event.y
         downTime = SystemClock.elapsedRealtime()
+
+        // Если координаты первого нажатия попали в область панели скролла,
+        // устанавливаем действие скролла.
+        if (prevX > scrollPanelX) {
+            isScroll = true
+        }
         //isLeftDown = true
 
-       /* // 左键点击
-        if (x1 < btnLeftXend && y1 > btnY) { // Координаты клика в левой области
-            isLeftBtnDown = true // Щелчок левой кнопкой мыши
-            //mouseListener.sendMouseAction(MouseAction.LEFT_DOWN, 0, 0)
-            Log.d("TAG", "LEFT_DOWN: ")
-            // Обесцвечивание зон
-            invalidate()
-        }
+        /* // 左键点击
+         if (x1 < btnLeftXend && y1 > btnY) { // Координаты клика в левой области
+             isLeftBtnDown = true // Щелчок левой кнопкой мыши
+             //mouseListener.sendMouseAction(MouseAction.LEFT_DOWN, 0, 0)
+             Log.d("TAG", "LEFT_DOWN: ")
+             // Обесцвечивание зон
+             invalidate()
+         }
 
-        // 中键点击
-        if (x1 > btnLeftXend && x1 < btnMidXend && y1 > btnY) {
-            //mouseListener.sendMouseAction(MouseAction.MIDDLE_DOWN, 0, 0)
-            Log.d("TAG", "MIDDLE_DOWN: ")
-            isMidBtnDown = true
-            invalidate()
-        }
+         // 中键点击
+         if (x1 > btnLeftXend && x1 < btnMidXend && y1 > btnY) {
+             //mouseListener.sendMouseAction(MouseAction.MIDDLE_DOWN, 0, 0)
+             Log.d("TAG", "MIDDLE_DOWN: ")
+             isMidBtnDown = true
+             invalidate()
+         }
 
-        // 右键点击
-        if (x1 > btnMidXend && y1 > btnY) {
-            //mouseListener.sendMouseAction(MouseAction.RIGHT_DOWN, 0, 0)
-            Log.d("TAG", "RIGHT_DOWN: ")
-            isRightBtnDown = true
-            invalidate()
-        }*/
+         // 右键点击
+         if (x1 > btnMidXend && y1 > btnY) {
+             //mouseListener.sendMouseAction(MouseAction.RIGHT_DOWN, 0, 0)
+             Log.d("TAG", "RIGHT_DOWN: ")
+             isRightBtnDown = true
+             invalidate()
+         }*/
     }
 
     /**
@@ -204,18 +217,41 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
         currX = event.x
         currY = event.y
         if (event.pointerCount == 1 && !isRightClick) {
-            if (isMove || SystemClock.elapsedRealtime() - downTime > LEFT_CLICK_TIME) {
-                isMove = true
-                //isSingleClick = false
-                val dx = (currX - prevX).toInt() //* dpi * sensitivity
-                val dy = (currY - prevY).toInt() //* dpi * sensitivity
-
-                if (dx != 0 || dy != 0) {
-                    mouseListener?.onMove(dx, dy)
-                    Log.d("ACTION--------", "move: (${dx}, ${dy})")
+            if (isScroll) {
+                val dy = (currY - prevY).toInt()
+                if (dy != 0) {
+                    mouseListener?.onScroll(dy)
+                    Log.d("ACTION--------", "scroll: (${dy})")
                 }
             } else {
-                //isSingleClick = true
+                // Начинаем перемещение, когда время текущего нажатия превышает
+                // время левого клика, во избежание ошибочных перемещений.
+                if (isMove || SystemClock.elapsedRealtime() - downTime > LEFT_CLICK_TIME) {
+                    // Если текущее действие ещё не определено (перемещение или
+                    // перетаскивание), то проверяем время удерживания.
+                    // Если оно превышает время для перетаскивания, устанавливаем
+                    // действие перетаскивания.
+                    if (!isMove && !isDrag &&
+                        SystemClock.elapsedRealtime() - downTime > START_DRAG_TIME) {
+                        isDrag = true
+                        mouseListener?.onLeftDown()
+                        Log.d("TAG", "left down")
+                    }
+
+                    val dx = (currX - prevX).toInt() //* dpi * sensitivity
+                    val dy = (currY - prevY).toInt() //* dpi * sensitivity
+
+                    // Первое перемещение позволяем, когда перемещение координат
+                    // по одной из оси больше единицы.
+                    if(!isMove && (abs(dx) > 1 || abs(dy) > 1)) {
+                        isMove = true
+                    }
+
+                    if (isMove && (dx != 0 || dy != 0)) {
+                        mouseListener?.onMove(dx, dy)
+                        Log.d("ACTION--------", "move: (${dx}, ${dy})")
+                    }
+                }
             }
         }
         prevX = currX
@@ -266,61 +302,55 @@ class TouchpadView(context: Context?, attrs: AttributeSet?) : View(context, attr
             isRightClick = false
             mouseListener?.onRightClick()
             Log.d("ACTION--------", "right click")
+        } else if (isDrag) {
+            isDrag = false
+            mouseListener?.onLeftUp()
+            Log.d("TAG", "left up")
         } else if (upTime < LEFT_CLICK_TIME) {
             mouseListener?.onLeftClick()
             Log.d("ACTION--------", "left click")
-        }/* else if(isSingleClick || !isMove) {
-            if (SystemClock.elapsedRealtime() - lastClickDelay < DOUBLE_CLICK_DELAY) {
-                isSingleClick = false
-                clickHandler.removeCallbacks(runnable)
-                Log.d("ACTION--------", "double click")
-                mouseListener?.onDoubleClick()
-            } else {
-                isSingleClick = true
-                clickHandler.postDelayed(runnable, DOUBLE_CLICK_DELAY)
-                lastClickDelay = SystemClock.elapsedRealtime()
-            }
-        }*/
+            //lastClickTime = SystemClock.elapsedRealtime()
+        }
 
         isMove = false
-
+        isScroll = false
         // Левая кнопка вверх
-    /*    if (x1 < btnLeftXend && y1 > btnY) {
-            isLeftBtnDown = false
-            isLeftMove = false
-            //mouseListener.sendMouseAction(MouseAction.LEFT_UP, 0, 0)
-            Log.d("TAG", "LEFT_UP: ")
-            invalidate()
-        }
-        // Средняя кнопка вверх
-        if (x1 > btnLeftXend && x1 < btnMidXend && y1 > btnY) {
-            //mouseListener.sendMouseAction(MouseAction.MIDDLE_UP, 0, 0)
-            Log.d("TAG", "MIDDLE_UP: ")
-            //区域变色
-            isMidBtnDown = false
-            invalidate()
-        }
-        // Правая кнопка вверх
-        if (x1 > btnMidXend && y1 > btnY) {
-            isRightBtnDown = false
-            isLeftMove = false
-            //mouseListener.sendMouseAction(MouseAction.RIGHT_UP, 0, 0)
-            Log.d("TAG", "RIGHT_UP: ")
-            isRightBtnDown = false
-            invalidate()
-        }
-        if (y1 < btnY && !isWY) { // Если это не режим смещения, а в области трекпада,
-            // быстрый щелчок, чтобы поднять, это эквивалентно событию левой кнопки мыши
-            //mouseListener.sendMouseAction(MouseAction.LEFT_DOWN, 0, 0)
-            //mouseListener.sendMouseAction(MouseAction.LEFT_UP, 0, 0)
-            Log.d("TAG", "LEFT_DOWN-LEFT_UP: ")
-        }
-        if (y1 < btnY && isWY) { // Отмените состояние режима смещения
-            isWY = false
-        }
-        x1 = 0f
-        y1 = 0f
-        x2 = 0f
-        y2 = 0f*/
+        /*    if (x1 < btnLeftXend && y1 > btnY) {
+                isLeftBtnDown = false
+                isLeftMove = false
+                //mouseListener.sendMouseAction(MouseAction.LEFT_UP, 0, 0)
+                Log.d("TAG", "LEFT_UP: ")
+                invalidate()
+            }
+            // Средняя кнопка вверх
+            if (x1 > btnLeftXend && x1 < btnMidXend && y1 > btnY) {
+                //mouseListener.sendMouseAction(MouseAction.MIDDLE_UP, 0, 0)
+                Log.d("TAG", "MIDDLE_UP: ")
+                //区域变色
+                isMidBtnDown = false
+                invalidate()
+            }
+            // Правая кнопка вверх
+            if (x1 > btnMidXend && y1 > btnY) {
+                isRightBtnDown = false
+                isLeftMove = false
+                //mouseListener.sendMouseAction(MouseAction.RIGHT_UP, 0, 0)
+                Log.d("TAG", "RIGHT_UP: ")
+                isRightBtnDown = false
+                invalidate()
+            }
+            if (y1 < btnY && !isWY) { // Если это не режим смещения, а в области трекпада,
+                // быстрый щелчок, чтобы поднять, это эквивалентно событию левой кнопки мыши
+                //mouseListener.sendMouseAction(MouseAction.LEFT_DOWN, 0, 0)
+                //mouseListener.sendMouseAction(MouseAction.LEFT_UP, 0, 0)
+                Log.d("TAG", "LEFT_DOWN-LEFT_UP: ")
+            }
+            if (y1 < btnY && isWY) { // Отмените состояние режима смещения
+                isWY = false
+            }
+            x1 = 0f
+            y1 = 0f
+            x2 = 0f
+            y2 = 0f*/
     }
 }

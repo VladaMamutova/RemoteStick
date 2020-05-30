@@ -12,7 +12,8 @@ class MousePlugin(owner: PluginMediator) : Plugin(owner), MouseActionListener {
         LEFT_CLICK("left click"),
         LEFT_DOWN("left down"),
         LEFT_UP("left up"),
-        MOVE("move");
+        MOVE("move"),
+        SCROLL("scroll");
 
         companion object {
             const val name = "action"
@@ -58,6 +59,14 @@ class MousePlugin(owner: PluginMediator) : Plugin(owner), MouseActionListener {
         owner.sendPacket(
             createPacket(
                 Action.MOVE, mapOf("dx" to dx.toString(), "dy" to dy.toString())
+            )
+        )
+    }
+
+    override fun onScroll(dy: Int) {
+        owner.sendPacket(
+            createPacket(
+                Action.SCROLL, mapOf("dy" to dy.toString())
             )
         )
     }

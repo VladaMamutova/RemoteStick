@@ -7,4 +7,5 @@ interface MouseActionListener {
     fun onLeftDown()
     fun onLeftUp()
     fun onMove(dx: Int, dy: Int)
+    fun onScroll(dy: Int)
 }

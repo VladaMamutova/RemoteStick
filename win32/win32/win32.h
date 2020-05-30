@@ -38,7 +38,7 @@ extern "C" {
 	* Signature: ()V
 	*/
 	JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftDown
-	(JNIEnv*, jobject, jint, jint);
+	(JNIEnv*, jobject);
 
 	/*
 	* Class:     Java_main_kotlin_Win32
@@ -46,7 +46,7 @@ extern "C" {
 	* Signature: ()V
 	*/
 	JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftUp
-	(JNIEnv*, jobject, jint, jint);
+	(JNIEnv*, jobject);
 
 	/*
 	* Class:     Java_main_kotlin_Win32
@@ -55,6 +55,14 @@ extern "C" {
 	*/
 	JNIEXPORT void JNICALL Java_main_kotlin_Win32_move
 	(JNIEnv*, jobject, jint, jint);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    move
+	* Signature: (I)V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_scroll
+	(JNIEnv*, jobject, jint);
 
 	/*
 	* Class:     Java_main_kotlin_Win32

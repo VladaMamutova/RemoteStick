@@ -11,7 +11,8 @@ class MousePlugin : Plugin() {
         LEFT_CLICK("left click"),
         LEFT_DOWN("left down"),
         LEFT_UP("left up"),
-        MOVE("move");
+        MOVE("move"),
+        SCROLL("scroll");
 
         companion object {
             const val name = "action"
@@ -31,8 +32,12 @@ class MousePlugin : Plugin() {
                     Action.LEFT_DOWN.value -> onLeftDown()
                     Action.LEFT_UP.value -> onLeftUp()
                     Action.MOVE.value -> {
-                        onMove(packet.body.get("dx").asInt, packet.body.get("dy").asInt)
+                        onMove(
+                            packet.body.get("dx").asInt,
+                            packet.body.get("dy").asInt
+                        )
                     }
+                    Action.SCROLL.value -> onScroll(packet.body.get("dy").asInt)
                 }
             }
         } catch (ex: Exception) {
@@ -62,5 +67,9 @@ class MousePlugin : Plugin() {
 
     private fun onMove(dx: Int, dy: Int) {
         Win32().move(dx, dy)
+    }
+
+    private fun onScroll(dy: Int) {
+        Win32().scroll(dy)
     }
 }
