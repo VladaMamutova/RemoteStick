@@ -39,7 +39,7 @@
 
         <LinearLayout android:id="@+id/buttonPanel"
                       android:layout_width="match_parent"
-                      android:layout_height="wrap_content"
+                      android:layout_height="@dimen/tab_layout_height"
                       android:orientation="horizontal"
                       app:layout_constraintBottom_toBottomOf="parent"
                       app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,7 @@
                       android:layout_margin="@dimen/small_intent">
 
             <Button android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/mouse_button_background"
                     android:onClick="onLeftClick"/>
@@ -56,7 +56,7 @@
                       android:layout_height="match_parent"/>
 
             <Button android:layout_width="60dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:background="@drawable/mouse_button_background"
                     android:onClick="onMiddleClick"/>
 
@@ -64,7 +64,7 @@
                       android:layout_height="match_parent"/>
 
             <Button android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/mouse_button_background"
                     android:onClick="onRightClick"/>

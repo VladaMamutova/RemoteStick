@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#42A5F5</color>
     <color name="colorPrimaryDark">#1665C0</color>
-    <color name="colorAccent">#f542a5</color>
+    <color name="colorAccent">#f542A5</color>
     <color name="lightBackground">#F1F1F1</color>
     <color name="lightGrey">#E0E0E0</color>
     <color name="grey">#BDBDBD</color>
@@ -16,5 +16,6 @@
     <color name="azure">#56B9D1</color>
     <color name="blue">#4794EB</color>
     <color name="darkBlue">#2C7EDD</color>
-    <color name="whiteTransparent">#25FFFFFF</color>
+    <color name="whiteOpacity30">#25FFFFFF</color>
+    <color name="whiteOpacity60">#A6FFFFFF</color>
 </resources>
