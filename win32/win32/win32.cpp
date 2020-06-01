@@ -3,6 +3,7 @@
 #include "pch.h"
 #include <jni.h>
 #include <windows.h>
+#include <mmdeviceapi.h>
 #include <vector>
 #include <string>
 #include "win32.h"
@@ -11,6 +12,55 @@
 using namespace std;
 
 int GetSpecialKeyVk(int specialKey);
+void SendKeyboardInput(WORD wVK);
+
+JNIEXPORT jboolean JNICALL Java_main_kotlin_Win32_init
+(JNIEnv* env, jobject obj) {
+	HRESULT result;
+
+	CoInitialize(NULL);
+	IMMDeviceEnumerator* deviceEnumerator = NULL;
+	result = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_INPROC_SERVER,
+		__uuidof(IMMDeviceEnumerator), (LPVOID*)&deviceEnumerator);
+	if (FAILED(result))
+	{
+
+	}
+
+	IMMDevice* defaultDevice = NULL;
+	result = deviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole,
+		&defaultDevice);
+	deviceEnumerator->Release();
+	deviceEnumerator = NULL;
+
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	result = defaultDevice->Activate(__uuidof(IAudioEndpointVolume),
+		CLSCTX_INPROC_SERVER, NULL, (LPVOID*)&endpointVolume);
+	defaultDevice->Release();
+	defaultDevice = NULL;
+
+	if (FAILED(result))
+	{
+		return false;
+	}
+
+	isVolumeValid = true;
+	return isVolumeValid;
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_release
+(JNIEnv* env, jobject obj) {
+	if (isVolumeValid && endpointVolume != NULL) {
+		endpointVolume->Release();
+		endpointVolume = NULL;
+	}
+
+	CoUninitialize();
+}
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftClick
 (JNIEnv* env, jobject obj) {
@@ -213,4 +263,72 @@ int GetSpecialKeyVk(int specialKey) {
 	case F12: return VK_F12;
 	default: return -1;
 	}
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeUp
+(JNIEnv* env, jobject obj) {
+	SendKeyboardInput(VK_VOLUME_UP);
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeDown
+(JNIEnv* env, jobject obj) {
+	SendKeyboardInput(VK_VOLUME_DOWN);
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeMute
+(JNIEnv* env, jobject obj) {
+	SendKeyboardInput(VK_VOLUME_MUTE);
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_playPause
+(JNIEnv* env, jobject obj) {
+	SendKeyboardInput(VK_MEDIA_PLAY_PAUSE);
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_nextTrack
+(JNIEnv* env, jobject obj) {
+	SendKeyboardInput(VK_MEDIA_NEXT_TRACK);
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_prevTrack
+(JNIEnv* env, jobject obj) {
+	SendKeyboardInput(VK_MEDIA_PREV_TRACK);
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_stopTrack
+(JNIEnv* env, jobject obj) {
+	SendKeyboardInput(VK_MEDIA_STOP);
+}
+
+void SendKeyboardInput(WORD wVK) {
+	INPUT input = { 0 };
+	input.type = INPUT_KEYBOARD;
+	input.ki.wVk = wVK;
+	input.ki.dwFlags = 0;
+	SendInput(1, &input, sizeof(INPUT));
+
+	input.ki.dwFlags = KEYEVENTF_KEYUP;
+	SendInput(1, &input, sizeof(INPUT));
+}
+
+JNIEXPORT jintArray JNICALL Java_main_kotlin_Win32_getVolumeAndMute
+(JNIEnv* env, jobject obj) {
+	jintArray result = env->NewIntArray(SOUND_SETTINGS_NUMBER);
+	jint soundSettings[SOUND_SETTINGS_NUMBER];
+	for (int i = 0; i < SOUND_SETTINGS_NUMBER; i++) {
+		soundSettings[i] = -1;
+	}
+
+	if (isVolumeValid) {
+		float volume = 0;
+		endpointVolume->GetMasterVolumeLevelScalar(&volume);
+		soundSettings[0] = (int)(MAX_VOLUME * volume + 0.5);
+
+		BOOL mute;
+		endpointVolume->GetMute(&mute);
+		soundSettings[1] = mute;
+	}
+
+	env->SetIntArrayRegion(result, 0, SOUND_SETTINGS_NUMBER, soundSettings);
+	return result;
 }

@@ -1,13 +1,36 @@
 #pragma once
+/* Header for class Java_main_kotlin_Win32 */
 
 #include <jni.h>
-/* Header for class Java_main_kotlin_Win32 */
+#include <endpointvolume.h>
+
+#define MAX_VOLUME  100
+#define SOUND_SETTINGS_NUMBER  2
 
 #ifndef _Included_win32
 #define _Included_win32
 #ifdef __cplusplus
 extern "C" {
 #endif
+	IAudioEndpointVolume* endpointVolume = NULL;
+	bool isVolumeValid = false;
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    init
+	* Signature: ()Z
+	*/
+	JNIEXPORT jboolean JNICALL Java_main_kotlin_Win32_init
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    release
+	* Signature: ()
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_release
+	(JNIEnv*, jobject);
+
 	/*
 	* Class:     Java_main_kotlin_Win32
 	* Method:    leftClick
@@ -87,6 +110,38 @@ extern "C" {
 	*/
 	JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendKeys
 	(JNIEnv*, jobject, jintArray, jchar);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    volumeUp
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeUp
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    playPause
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_playPause
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    nextTrack
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_nextTrack
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    init
+	* Signature: ()I
+	*/
+	JNIEXPORT jintArray JNICALL Java_main_kotlin_Win32_getVolumeAndMute
+	(JNIEnv*, jobject);
 
 #ifdef __cplusplus
 }

@@ -35,8 +35,8 @@ class Main : Application() {
         clientName.text = remoteControlManager.getClientName()
 
         try {
-            // Пытаемся загрузить библиотеку.
-            Win32()
+            // Пытаемся загрузить библиотеку и выполнить необходимую инициалиацию.
+            Win32().initialize()
             Thread(remoteControlManager).start()
             thread {
                 while (remoteControlManager.isRunning()) {
@@ -69,6 +69,7 @@ class Main : Application() {
 
     override fun stop() {
         remoteControlManager.stop()
+        Win32().release()
         super.stop()
     }
 
