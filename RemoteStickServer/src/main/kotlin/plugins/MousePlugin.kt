@@ -45,31 +45,11 @@ class MousePlugin : Plugin() {
         }
     }
 
-    private fun onLeftClick() {
-        Win32().leftClick()
-    }
-
-    private fun onMiddleClick() {
-        Win32().middleClick()
-    }
-
-    private fun onRightClick() {
-        Win32().rightClick()
-    }
-
-    private fun onLeftDown() {
-        Win32().leftDown()
-    }
-
-    private fun onLeftUp() {
-        Win32().leftUp()
-    }
-
-    private fun onMove(dx: Int, dy: Int) {
-        Win32().move(dx, dy)
-    }
-
-    private fun onScroll(dy: Int) {
-        Win32().scroll(dy)
-    }
+    private fun onLeftClick() = Win32().leftClick()
+    private fun onMiddleClick() = Win32().middleClick()
+    private fun onRightClick() = Win32().rightClick()
+    private fun onLeftDown() = Win32().leftDown()
+    private fun onLeftUp() = Win32().leftUp()
+    private fun onMove(dx: Int, dy: Int) = Win32().move(dx, dy)
+    private fun onScroll(dy: Int) = Win32().scroll(dy)
 }

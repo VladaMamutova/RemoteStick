@@ -2,6 +2,7 @@ package ru.vladamamutova.remotestick.service
 
 import android.os.Build
 import ru.vladamamutova.remotestick.plugins.KeyboardPlugin
+import ru.vladamamutova.remotestick.plugins.MediaPlugin
 import ru.vladamamutova.remotestick.plugins.MousePlugin
 import ru.vladamamutova.remotestick.plugins.PluginMediator
 import ru.vladamamutova.remotestick.service.PacketTypes.*
@@ -26,6 +27,7 @@ class RemoteStickClient private constructor() : PluginMediator {
 
     val mousePlugin = MousePlugin(this)
     val keyboardPlugin = KeyboardPlugin(this)
+    val mediaPlugin = MediaPlugin(this)
 
     companion object {
         private const val PORT: Int = 56000

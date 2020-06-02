@@ -121,6 +121,22 @@ extern "C" {
 
 	/*
 	* Class:     Java_main_kotlin_Win32
+	* Method:    volumeDown
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeDown
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    volumeMute
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeMute
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
 	* Method:    playPause
 	* Signature: ()V
 	*/
@@ -133,6 +149,22 @@ extern "C" {
 	* Signature: ()V
 	*/
 	JNIEXPORT void JNICALL Java_main_kotlin_Win32_nextTrack
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    prevTrack
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_prevTrack
+	(JNIEnv*, jobject);
+
+	/*
+	* Class:     Java_main_kotlin_Win32
+	* Method:    stop
+	* Signature: ()V
+	*/
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_stop
 	(JNIEnv*, jobject);
 
 	/*

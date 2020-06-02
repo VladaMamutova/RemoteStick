@@ -295,7 +295,7 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_prevTrack
 	SendKeyboardInput(VK_MEDIA_PREV_TRACK);
 }
 
-JNIEXPORT void JNICALL Java_main_kotlin_Win32_stopTrack
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_stop
 (JNIEnv* env, jobject obj) {
 	SendKeyboardInput(VK_MEDIA_STOP);
 }

@@ -44,4 +44,8 @@
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_media_fragment">Hello media fragment</string>
+    <string name="play_pause_button_description">play/pause button</string>
+    <string name="previous_track_button_description">previous track button</string>
+    <string name="next_track_button_description">next track button</string>
+    <string name="mute_button_description">mute button</string>
 </resources>

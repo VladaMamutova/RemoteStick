@@ -24,12 +24,15 @@ class SpecialKeyboardFragment : Fragment() {
         outState.putBoolean(ARG_IS_NUM, isNum)
         super.onSaveInstanceState(outState)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_special_keyboard,
-            container, false)
+        val view = inflater.inflate(
+            R.layout.fragment_special_keyboard,
+            container, false
+        )
 
         // Получаем состояние кнопки-переключателя Num-Fn
         // и изменяем состояние кнопок двойного действия:
@@ -95,7 +98,7 @@ class SpecialKeyboardFragment : Fragment() {
         }
 
         // Устанавливаем слушатели для кнопок, которые отправляют сочетания клавиш.
-        view.desktopButton.setOnClickListener{
+        view.desktopButton.setOnClickListener {
             RemoteStickClient.myInstance.keyboardPlugin.sendDesktopKeys()
         }
         view.copyButton.setOnClickListener {
@@ -120,7 +123,7 @@ class SpecialKeyboardFragment : Fragment() {
 
         // Устанавливаем слушатель для кнопки Num-Fn.
         view.numFnButton.setOnClickListener {
-           switchIsNumState()
+            switchIsNumState()
         }
 
         return view

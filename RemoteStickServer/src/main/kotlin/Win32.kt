@@ -68,5 +68,5 @@ class Win32 {
     external fun playPause()
     external fun nextTrack()
     external fun prevTrack()
-    external fun stopTrack()
+    external fun stop()
 }

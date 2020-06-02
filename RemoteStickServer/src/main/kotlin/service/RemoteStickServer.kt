@@ -1,6 +1,7 @@
 package main.kotlin.service
 
 import main.kotlin.plugins.KeyboardPlugin
+import main.kotlin.plugins.MediaPlugin
 import main.kotlin.plugins.MousePlugin
 import main.kotlin.service.PacketTypes.*
 import java.net.*
@@ -18,6 +19,7 @@ class RemoteStickServer: Runnable {
     private val clientMap: MutableMap<String, SocketAddress> = mutableMapOf()
     private val mousePlugin = MousePlugin()
     private val keyboardPlugin = KeyboardPlugin()
+    private val mediaPlugin = MediaPlugin()
 
     private fun closeServer() {
         if (server.isBound && !server.isClosed) {
@@ -65,6 +67,7 @@ class RemoteStickServer: Runnable {
                         }
                         MOUSE -> mousePlugin.handlePacket(networkPacket)
                         KEYBOARD -> keyboardPlugin.handlePacket(networkPacket)
+                        MEDIA -> mediaPlugin.handlePacket(networkPacket)
                         BYE -> {
                             if (clientMap.containsValue(packet.socketAddress)) {
                                 val name = clientMap.filterValues {
@@ -77,10 +80,8 @@ class RemoteStickServer: Runnable {
                             }
                         }
                         else -> {
-                            println(
-                                "The packet $networkPacket from " +
-                                        "${packet.socketAddress} is not defined"
-                            )
+                            val hostname = (packet.socketAddress as InetSocketAddress).hostName
+                            println("The packet $networkPacket from $hostname is not defined")
                         }
                     }
                 } catch (ex: Exception) {
