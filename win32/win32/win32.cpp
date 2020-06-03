@@ -265,14 +265,25 @@ int GetSpecialKeyVk(int specialKey) {
 	}
 }
 
-JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeUp
-(JNIEnv* env, jobject obj) {
-	SendKeyboardInput(VK_VOLUME_UP);
-}
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_changeVolume
+(JNIEnv* env, jobject obj, jint volumeDifference) {
+	volumeDifference = min(100, volumeDifference);
+	volumeDifference = max(-100, volumeDifference);
 
-JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeDown
-(JNIEnv* env, jobject obj) {
-	SendKeyboardInput(VK_VOLUME_DOWN);
+	int volumeSteps = volumeDifference / 2;
+	int wVk = -1;
+	if (volumeSteps < 0) {
+		wVk = VK_VOLUME_DOWN;
+	}
+	else if (volumeSteps > 0) {
+		wVk = VK_VOLUME_UP;
+	}
+
+	if (wVk != -1) {
+		for (int i = 0; i < abs(volumeSteps); i++) {
+			SendKeyboardInput(wVk);
+		}
+	}
 }
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeMute

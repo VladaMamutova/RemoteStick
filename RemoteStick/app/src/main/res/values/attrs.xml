@@ -4,4 +4,24 @@
         <attr name="mainKeyText" format="string" />
         <attr name="additionalKeyText" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="VolumeControlView">
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="step" format="integer" />
+
+        <attr name="value" format="integer" />
+        <attr name="value_color" format="color" />
+        <attr name="value_size" format="dimension" />
+
+        <attr name="arc_width" format="dimension" />
+        <attr name="arc_color" format="color" />
+        <attr name="highlight_arc_color" format="color" />
+        <attr name="thumb_color" format="color" />
+
+        <attr name="start_angle" format="integer" />
+        <attr name="end_angle" format="integer" />
+
+        <attr name="padding" format="dimension" />
+    </declare-styleable>
 </resources>

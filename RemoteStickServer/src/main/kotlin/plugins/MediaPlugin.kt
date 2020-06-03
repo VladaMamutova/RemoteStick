@@ -6,12 +6,12 @@ import main.kotlin.service.PacketTypes
 
 class MediaPlugin : Plugin() {
     private enum class Volume(val value: String) {
-        UP("up"),
-        DOWN("down"),
+        CHANGE("change"),
         MUTE("mute");
 
         companion object {
             const val name = "volume"
+            const val changeValue = "value"
         }
     }
 
@@ -34,8 +34,9 @@ class MediaPlugin : Plugin() {
             if (packet.type == type) {
                 if (packet.body.has(Volume.name)) {
                     when (packet.body.get(Volume.name).asString) {
-                        Volume.UP.value -> volumeUp()
-                        Volume.DOWN.value -> volumeDown()
+                        Volume.CHANGE.value -> {
+                            changeVolume(packet.body.get(Volume.changeValue).asInt)
+                        }
                         Volume.MUTE.value -> volumeMute()
                     }
                 } else if (packet.body.has(Playback.name)) {
@@ -52,12 +53,13 @@ class MediaPlugin : Plugin() {
         }
     }
 
-    private var mute: Boolean = false
-    private var volume: Int = 0
+    private fun changeVolume(volumeDifference: Int) {
+        if (volumeDifference != 0) {
+            Win32().changeVolume(volumeDifference)
+        }
+    }
 
-    private fun volumeUp() = Win32().volumeUp()
-    fun volumeDown() = Win32().volumeDown()
-    fun volumeMute() = Win32().volumeMute()
+    private fun volumeMute() = Win32().volumeMute()
 
     private fun playPause() = Win32().playPause()
     private fun nextTrack() = Win32().nextTrack()

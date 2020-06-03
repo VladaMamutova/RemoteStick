@@ -113,19 +113,11 @@ extern "C" {
 
 	/*
 	* Class:     Java_main_kotlin_Win32
-	* Method:    volumeUp
-	* Signature: ()V
+	* Method:    changeVolume
+	* Signature: (I)V
 	*/
-	JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeUp
-	(JNIEnv*, jobject);
-
-	/*
-	* Class:     Java_main_kotlin_Win32
-	* Method:    volumeDown
-	* Signature: ()V
-	*/
-	JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeDown
-	(JNIEnv*, jobject);
+	JNIEXPORT void JNICALL Java_main_kotlin_Win32_changeVolume
+	(JNIEnv*, jobject, jint);
 
 	/*
 	* Class:     Java_main_kotlin_Win32

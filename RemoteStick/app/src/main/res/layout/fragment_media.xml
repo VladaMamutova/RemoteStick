@@ -1,14 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".ui.fragments.MediaFragment">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                xmlns:custom="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ui.fragments.MediaFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/hello_media_fragment"/>
+    <ru.vladamamutova.remotestick.ui.custom.VolumeControlView
+            android:id="@+id/volumeControl"
+            android:layout_width="210dp"
+            android:layout_height="210dp"
+            android:layout_centerInParent="true"
+            custom:min="0"
+            custom:max="100"
+            custom:value="0"
+            custom:step="2"
+            custom:arc_width="32dp"
+            custom:start_angle="140"
+            custom:end_angle="40"
+            custom:arc_color="@color/lightGrey"
+            custom:highlight_arc_color="@color/colorPrimary"
+            custom:thumb_color="@android:color/white"
+            custom:value_size="32dp"
+            custom:value_color="@color/colorPrimary"/>
 
-</FrameLayout>
+    <ImageButton android:id="@+id/playPauseButton"
+                 android:layout_width="@dimen/big_round_button_width"
+                 android:layout_height="@dimen/big_round_button_width"
+                 android:background="@drawable/round_button_background"
+                 android:src="@drawable/ic_play_pause"
+                 android:tint="@android:color/white"
+                 android:layout_centerInParent="true"
+                 android:contentDescription="@string/play_pause_button_description"/>
+
+    <ImageButton android:id="@+id/previousTrackButton"
+                 android:layout_width="@dimen/medium_round_button_width"
+                 android:layout_height="@dimen/medium_round_button_width"
+                 android:layout_centerVertical="true"
+                 android:layout_marginStart="20dp"
+                 android:background="@drawable/round_button_background"
+                 android:src="@drawable/ic_previous"
+                 android:tint="@android:color/white"
+                 android:contentDescription="@string/previous_track_button_description"/>
+
+    <ImageButton android:id="@+id/nextTrackButton"
+                 android:layout_width="@dimen/medium_round_button_width"
+                 android:layout_height="@dimen/medium_round_button_width"
+                 android:layout_centerVertical="true"
+                 android:layout_alignParentEnd="true"
+                 android:layout_marginEnd="20dp"
+                 android:background="@drawable/round_button_background"
+                 android:src="@drawable/ic_next"
+                 android:tint="@android:color/white"
+                 android:contentDescription="@string/next_track_button_description"/>
+
+    <ImageButton android:id="@+id/muteButton"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_below="@id/volumeControl"
+                 android:layout_marginTop="-32dp"
+                 android:layout_centerHorizontal="true"
+                 android:background="@android:color/transparent"
+                 android:src="@drawable/ic_sound_on"
+                 android:tint="@color/colorPrimary"
+                 android:contentDescription="@string/mute_button_description"/>
+
+    <ImageButton android:id="@+id/stopButton"
+                 android:layout_width="@dimen/small_round_button_width"
+                 android:layout_height="@dimen/small_round_button_width"
+                 android:layout_centerVertical="true"
+                 android:layout_alignParentBottom="true"
+                 android:layout_marginStart="20dp"
+                 android:layout_marginBottom="20dp"
+                 android:background="@drawable/round_button_background"
+                 android:src="@drawable/ic_stop"
+                 android:tint="@android:color/white"
+                 android:contentDescription="@string/next_track_button_description"/>
+</RelativeLayout>

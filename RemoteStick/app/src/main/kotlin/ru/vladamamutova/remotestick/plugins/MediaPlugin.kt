@@ -6,12 +6,12 @@ import ru.vladamamutova.remotestick.service.PacketTypes
 
 class MediaPlugin(owner: PluginMediator) : Plugin(owner) {
     private enum class Volume(val value: String) {
-        UP("up"),
-        DOWN("down"),
+        CHANGE("change"),
         MUTE("mute");
 
         companion object {
             const val name = "volume"
+            const val changeValue = "value"
         }
     }
 
@@ -32,22 +32,31 @@ class MediaPlugin(owner: PluginMediator) : Plugin(owner) {
     private var mute: Boolean = false
     private var volume: Int = 0
 
-    private fun createPacket(volume: Volume): NetworkPacket {
-        return createPacket(JsonObject().apply {
-            addProperty(Volume.name, volume.value)
-        })
-    }
-
     private fun createPacket(playback: Playback): NetworkPacket {
         return createPacket(JsonObject().apply {
             addProperty(Playback.name, playback.value)
         })
     }
 
-    fun volumeUp() = owner.sendPacket(createPacket(Volume.UP))
-    fun volumeDown() = owner.sendPacket(createPacket(Volume.DOWN))
+    fun changeVolume(value: Int, step: Int) {
+        val volumeDifference = (value - volume) / step
+        if (volumeDifference != 0) {
+            owner.sendPacket(createPacket(JsonObject().apply {
+                addProperty(Volume.name, Volume.CHANGE.value)
+                addProperty(Volume.changeValue, volumeDifference * step)
+            }))
+            // Если изменяется громкость, беззвучный режим выключается.
+            if (mute) {
+                mute = false
+            }
+        }
+        volume = value
+    }
+
     fun volumeMute(): Boolean {
-        owner.sendPacket(createPacket(Volume.MUTE))
+        owner.sendPacket(createPacket(JsonObject().apply {
+            addProperty(Volume.name, Volume.MUTE.value)
+        }))
         mute = !mute
         return mute
     }
@@ -56,4 +65,6 @@ class MediaPlugin(owner: PluginMediator) : Plugin(owner) {
     fun nextTrack() = owner.sendPacket(createPacket(Playback.NEXT))
     fun previousTrack() = owner.sendPacket(createPacket(Playback.PREVIOUS))
     fun stop() = owner.sendPacket(createPacket(Playback.STOP))
+
+    fun getMute() = mute
 }

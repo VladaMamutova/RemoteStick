@@ -54,8 +54,7 @@ class Win32 {
     external fun sendSpecialKeys(specialKeys: IntArray)
     external fun sendKeys(specialKeys: IntArray, symbol: Char)
 
-    external fun volumeUp()
-    external fun volumeDown()
+    external fun changeVolume(volumeDifference: Int)
     external fun volumeMute()
 
     /**
