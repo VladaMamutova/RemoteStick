@@ -16,7 +16,8 @@
 
         <attr name="arc_width" format="dimension" />
         <attr name="arc_color" format="color" />
-        <attr name="highlight_arc_color" format="color" />
+        <attr name="arc_highlight_start_color" format="color" />
+        <attr name="arc_highlight_end_color" format="color" />
         <attr name="thumb_color" format="color" />
 
         <attr name="start_angle" format="integer" />

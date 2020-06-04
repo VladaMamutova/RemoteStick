@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.fragment_media.*
 import kotlinx.android.synthetic.main.fragment_media.view.*
 import kotlinx.android.synthetic.main.fragment_media.view.playPauseButton
@@ -31,13 +30,7 @@ class MediaFragment : Fragment() {
             override fun volumeChanged(value: Int, step: Int) {
                 RemoteStickClient.myInstance.mediaPlugin.changeVolume(value, step)
                 mute = RemoteStickClient.myInstance.mediaPlugin.getMute()
-                muteButton.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        activity!!,
-                        if (mute) R.drawable.ic_sound_off
-                        else R.drawable.ic_sound_on
-                    )
-                )
+                muteButton.isSelected = mute
             }
 
             override fun afterVolumeChanged(value: Int) {
@@ -62,13 +55,7 @@ class MediaFragment : Fragment() {
             }
             muteButton.setOnClickListener {
                 mute = RemoteStickClient.myInstance.mediaPlugin.volumeMute()
-                (it as ImageButton).setImageDrawable(
-                    ContextCompat.getDrawable(
-                        activity!!,
-                        if (mute) R.drawable.ic_sound_off
-                        else R.drawable.ic_sound_on
-                    )
-                )
+                (it as ImageButton).isSelected = mute
             }
         }
         return view

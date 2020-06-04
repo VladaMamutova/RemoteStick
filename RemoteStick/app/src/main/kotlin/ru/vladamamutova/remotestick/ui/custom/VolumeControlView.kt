@@ -31,7 +31,7 @@ class VolumeControlView (context: Context, attrs: AttributeSet? = null)
 
         private const val DEFAULT_THUMB_COLOR = Color.WHITE
         private const val DEFAULT_ARC_COLOR = Color.GRAY
-        private const val DEFAULT_HIGHLIGHT_ARC_COLOR = Color.BLACK
+        private const val DEFAULT_ARC_HIGHLIGHT_COLOR = Color.BLACK
         private const val DEFAULT_VALUE_COLOR = Color.BLACK
 
         /**
@@ -55,7 +55,7 @@ class VolumeControlView (context: Context, attrs: AttributeSet? = null)
         }
 
         val strokePaint: Paint = Paint().apply {
-            color = DEFAULT_HIGHLIGHT_ARC_COLOR
+            color = DEFAULT_ARC_HIGHLIGHT_COLOR
             style = Paint.Style.STROKE
             strokeWidth = border
             isAntiAlias = true
@@ -80,7 +80,8 @@ class VolumeControlView (context: Context, attrs: AttributeSet? = null)
 
     private var arcWidth: Float = DEFAULT_ARC_WIDTH.toFloat()
     private var arcColor = DEFAULT_ARC_COLOR
-    private var highlightArcColor = DEFAULT_HIGHLIGHT_ARC_COLOR
+    private var arcHighlightStartColor = DEFAULT_ARC_HIGHLIGHT_COLOR
+    private var arcHighlightEndColor = DEFAULT_ARC_HIGHLIGHT_COLOR
     private val arcPaint: Paint = Paint().apply {
         color = arcColor
         style = Paint.Style.STROKE
@@ -154,15 +155,19 @@ class VolumeControlView (context: Context, attrs: AttributeSet? = null)
         arcColor = attributes.getColor(
             R.styleable.VolumeControlView_arc_color, DEFAULT_ARC_COLOR
         )
-        highlightArcColor = attributes.getColor(
-            R.styleable.VolumeControlView_highlight_arc_color,
-            DEFAULT_HIGHLIGHT_ARC_COLOR
+        arcHighlightStartColor = attributes.getColor(
+            R.styleable.VolumeControlView_arc_highlight_start_color,
+            DEFAULT_ARC_HIGHLIGHT_COLOR
+        )
+        arcHighlightEndColor = attributes.getColor(
+            R.styleable.VolumeControlView_arc_highlight_end_color,
+            DEFAULT_ARC_HIGHLIGHT_COLOR
         )
 
         thumb.paint.color = attributes.getColor(
             R.styleable.VolumeControlView_thumb_color, DEFAULT_THUMB_COLOR
         )
-        thumb.strokePaint.color = highlightArcColor
+        thumb.strokePaint.color = arcHighlightEndColor
 
         var startAngle = attributes.getInteger(
             R.styleable.VolumeControlView_start_angle, DEFAULT_START_ANGLE
@@ -187,28 +192,54 @@ class VolumeControlView (context: Context, attrs: AttributeSet? = null)
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        // Отрисовываем основу арки и подсвечиваем выделенную часть.
+
+        // Отрисовываем основу арки.
         arcPaint.color = arcColor
         canvas.drawArc(arcRect, arcStartAngle, arcSweepAngle, false, arcPaint)
-        arcPaint.color = highlightArcColor
-        val angle: Double = calcReverseSweepAngle(Math.toDegrees(thumb.angle), arcStartAngle)
-        canvas.drawArc(
-            arcRect, arcStartAngle, angle.toFloat(), false, arcPaint
-        )
+
+        // Подсвечиваем выделенную бегунком арку.
+
+        // Текущий угол бегунка в диапазоне от 0 до 360 градусов.
+        val angle: Float = calcReverseSweepAngle(
+            Math.toDegrees(thumb.angle),
+            arcStartAngle
+        ).toFloat()
+
+        if (arcHighlightStartColor == arcHighlightEndColor) { // однотонная арка
+            arcPaint.color = arcHighlightStartColor
+        } else { // арка с градиентом
+            // Так как дуга отрисовывается с закруглёнными углами, то при нанесении
+            // разверточного градиента, необходимо учесть радиус скругления (радиус бегунка).
+
+            // Угол в градусах, который опирается на хорду, равную радиусу бегунка.
+            val thumbRadiusAngle = Math.toDegrees(
+                asin((thumb.radius + thumb.border) / radius).toDouble()
+            ).toFloat()
+            val colors = intArrayOf(
+                arcHighlightStartColor, arcHighlightEndColor, arcColor, arcColor
+            )
+            val positions = floatArrayOf(
+                0f, ((angle + thumbRadiusAngle) / 360f),
+                ((angle + thumbRadiusAngle + 1) / 360f), 1f
+            )
+            val gradient = SweepGradient(x0, y0, colors, positions)
+            val angleRotate = arcStartAngle - thumbRadiusAngle
+            val gradientMatrix = Matrix()
+            gradientMatrix.preRotate(angleRotate, x0, y0)
+            gradient.setLocalMatrix(gradientMatrix)
+            arcPaint.shader = gradient
+        }
+
+        canvas.drawArc(arcRect, arcStartAngle, angle, false, arcPaint)
+        arcPaint.clearShadowLayer()
 
         // Отрисовываем бегунок.
         thumb.x = (x0 + radius * cos(thumb.angle)).toFloat()
         thumb.y = (y0 - radius * sin(thumb.angle)).toFloat()
         canvas.drawCircle(thumb.x, thumb.y, thumb.radius, thumb.paint)
-
-        // Если текущее значение бегунка является минимальным, то отдельно
-        // отрисовываем контур бегунка. В противном случае, бегунок уже
-        // будет выделен на фоне подсвеченной арки.
-        if (value == min) {
-            canvas.drawCircle(
-                thumb.x, thumb.y, thumb.radius + thumb.border / 2, thumb.strokePaint
-            )
-        }
+        canvas.drawCircle(
+            thumb.x, thumb.y, thumb.radius + thumb.border / 2, thumb.strokePaint
+        )
 
         // Отрисовываем текущее значение бегунка в центре компонента.
         val text = value.toString()
@@ -220,7 +251,6 @@ class VolumeControlView (context: Context, attrs: AttributeSet? = null)
             text, x0 - textWidth / 2f, y0 + textBounds.height() / 2f, valuePaint
         )
     }
-
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
         when (motionEvent.action) {
@@ -241,6 +271,7 @@ class VolumeControlView (context: Context, attrs: AttributeSet? = null)
             }
             MotionEvent.ACTION_UP -> {
                 isThumbSelected = false
+                updateThumbState(thumb, motionEvent.x, motionEvent.y)
                 volumeListener?.afterVolumeChanged(value)
                 invalidate()
             }

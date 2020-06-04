@@ -4,6 +4,7 @@
     <dimen name="small_intent">4dp</dimen>
     <dimen name="medium_intent">8dp</dimen>
     <dimen name="big_intent">14dp</dimen>
+    <dimen name="large_intent">18dp</dimen>
     <dimen name="button_radius">4dp</dimen>
     <dimen name="tiny_text">10sp</dimen>
     <dimen name="small_text">12sp</dimen>
