@@ -8,6 +8,7 @@
 #include <string>
 #include "win32.h"
 #include "SpecialKeys.h"
+#include "BrowserKeys.h"
 
 using namespace std;
 
@@ -309,6 +310,26 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_prevTrack
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_stop
 (JNIEnv* env, jobject obj) {
 	SendKeyboardInput(VK_MEDIA_STOP);
+}
+
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendBrowserKey
+(JNIEnv* env, jobject obj, jint browserKey) {
+	int wVk = -1;
+	switch (browserKey)
+	{
+	case BACK: wVk = VK_BROWSER_BACK;
+	case FORWARD: wVk = VK_BROWSER_FORWARD;
+	case REFRESH: wVk = VK_BROWSER_REFRESH;
+	case STOP: wVk = VK_BROWSER_STOP;
+	case SEARCH: wVk = VK_BROWSER_SEARCH;
+	case FAVORITES: wVk = VK_BROWSER_FAVORITES;
+	case BROWSER_HOME: wVk = VK_BROWSER_HOME;
+	default: break;
+	}
+
+	if (wVk != -1) {
+		SendKeyboardInput(wVk);
+	}
 }
 
 void SendKeyboardInput(WORD wVK) {

@@ -1,5 +1,6 @@
 package main.kotlin.service
 
+import main.kotlin.plugins.BrowserPlugin
 import main.kotlin.plugins.KeyboardPlugin
 import main.kotlin.plugins.MediaPlugin
 import main.kotlin.plugins.MousePlugin
@@ -20,6 +21,7 @@ class RemoteStickServer: Runnable {
     private val mousePlugin = MousePlugin()
     private val keyboardPlugin = KeyboardPlugin()
     private val mediaPlugin = MediaPlugin()
+    private val browserPlugin = BrowserPlugin()
 
     private fun closeServer() {
         if (server.isBound && !server.isClosed) {
@@ -68,6 +70,7 @@ class RemoteStickServer: Runnable {
                         MOUSE -> mousePlugin.handlePacket(networkPacket)
                         KEYBOARD -> keyboardPlugin.handlePacket(networkPacket)
                         MEDIA -> mediaPlugin.handlePacket(networkPacket)
+                        BROWSER -> browserPlugin.handlePacket(networkPacket)
                         BYE -> {
                             if (clientMap.containsValue(packet.socketAddress)) {
                                 val name = clientMap.filterValues {

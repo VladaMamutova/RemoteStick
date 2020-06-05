@@ -68,4 +68,6 @@ class Win32 {
     external fun nextTrack()
     external fun prevTrack()
     external fun stop()
+
+    external fun sendBrowserKey(browserKey: Int)
 }
