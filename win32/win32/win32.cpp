@@ -12,8 +12,9 @@
 
 using namespace std;
 
-int GetSpecialKeyVk(int specialKey);
+void SendMouseInput(DWORD flags);
 void SendKeyboardInput(WORD wVK);
+int GetSpecialKeyVk(int specialKey);
 
 JNIEXPORT jboolean JNICALL Java_main_kotlin_Win32_init
 (JNIEnv* env, jobject obj) {
@@ -25,7 +26,7 @@ JNIEXPORT jboolean JNICALL Java_main_kotlin_Win32_init
 		__uuidof(IMMDeviceEnumerator), (LPVOID*)&deviceEnumerator);
 	if (FAILED(result))
 	{
-
+		return false;
 	}
 
 	IMMDevice* defaultDevice = NULL;
@@ -65,41 +66,34 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_release
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftClick
 (JNIEnv* env, jobject obj) {
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP;
-	SendInput(1, &input, sizeof(INPUT));
+	SendMouseInput(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP);
 }
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_rightClick
 (JNIEnv* env, jobject obj) {
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP;
-	SendInput(1, &input, sizeof(INPUT));
+	SendMouseInput(MOUSEEVENTF_RIGHTDOWN | MOUSEEVENTF_RIGHTUP);
 }
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_middleClick
 (JNIEnv* env, jobject obj) {
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP;
-	SendInput(1, &input, sizeof(INPUT));
+	SendMouseInput(MOUSEEVENTF_MIDDLEDOWN | MOUSEEVENTF_MIDDLEUP);
 }
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftDown
 (JNIEnv* env, jobject obj) {
-	INPUT input = { 0 };
-	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
-	SendInput(1, &input, sizeof(INPUT));
+	SendMouseInput(MOUSEEVENTF_LEFTDOWN);
 }
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftUp
 (JNIEnv* env, jobject obj) {
+	SendMouseInput(MOUSEEVENTF_LEFTUP);
+}
+
+void SendMouseInput(DWORD flags) {
 	INPUT input = { 0 };
 	input.type = INPUT_MOUSE;
-	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
+	input.ki.wVk = 0;
+	input.ki.dwFlags = flags;
 	SendInput(1, &input, sizeof(INPUT));
 }
 
@@ -267,22 +261,17 @@ int GetSpecialKeyVk(int specialKey) {
 }
 
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_changeVolume
-(JNIEnv* env, jobject obj, jint volumeDifference) {
-	volumeDifference = min(100, volumeDifference);
-	volumeDifference = max(-100, volumeDifference);
+(JNIEnv* env, jobject obj, jint dv) {
+	dv = min(100, dv);
+	dv = max(-100, dv);
 
-	int volumeSteps = volumeDifference / 2;
-	int wVk = -1;
-	if (volumeSteps < 0) {
-		wVk = VK_VOLUME_DOWN;
-	}
-	else if (volumeSteps > 0) {
-		wVk = VK_VOLUME_UP;
-	}
-
-	if (wVk != -1) {
-		for (int i = 0; i < abs(volumeSteps); i++) {
-			SendKeyboardInput(wVk);
+	int volumeSteps = dv / 2;
+	for (int i = 0; i < abs(volumeSteps); i++) {
+		if (volumeSteps < 0) {
+			SendKeyboardInput(VK_VOLUME_DOWN);
+		}
+		else {
+			SendKeyboardInput(VK_VOLUME_UP);
 		}
 	}
 }
