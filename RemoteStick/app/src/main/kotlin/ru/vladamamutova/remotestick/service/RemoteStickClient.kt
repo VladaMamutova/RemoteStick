@@ -1,10 +1,7 @@
 package ru.vladamamutova.remotestick.service
 
 import android.os.Build
-import ru.vladamamutova.remotestick.plugins.KeyboardPlugin
-import ru.vladamamutova.remotestick.plugins.MediaPlugin
-import ru.vladamamutova.remotestick.plugins.MousePlugin
-import ru.vladamamutova.remotestick.plugins.PluginMediator
+import ru.vladamamutova.remotestick.plugins.*
 import ru.vladamamutova.remotestick.service.PacketTypes.*
 import java.net.*
 import java.util.concurrent.BlockingQueue
@@ -28,6 +25,7 @@ class RemoteStickClient private constructor() : PluginMediator {
     val mousePlugin = MousePlugin(this)
     val keyboardPlugin = KeyboardPlugin(this)
     val mediaPlugin = MediaPlugin(this)
+    val browserPlugin = BrowserPlugin(this)
 
     companion object {
         private const val PORT: Int = 56000
@@ -132,7 +130,7 @@ class RemoteStickClient private constructor() : PluginMediator {
                             client.sendPacket(packetQueue.take(), serverAddress)
                         }
                     }
-                    client.sendPacket(NetworkPacket(BYE), serverAddress)
+                    client.sendByePacket(serverAddress)
                 }
             } catch (ex: Exception) {
                 ex.printStackTrace()

@@ -48,4 +48,5 @@
     <string name="previous_track_button_description">previous track button</string>
     <string name="next_track_button_description">next track button</string>
     <string name="mute_button_description">mute button</string>
+    <string name="go_back_button_description">go back button</string>
 </resources>

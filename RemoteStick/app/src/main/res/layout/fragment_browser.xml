@@ -1,13 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context=".ui.fragments.BrowserFragment">
-
-    <TextView
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/hello_blank_fragment"/>
+            tools:context=".ui.fragments.BrowserFragment"
+            android:orientation="horizontal"
+            android:columnCount="5"
+            android:paddingHorizontal="@dimen/medium_intent"
+            android:padding="@dimen/large_intent">
 
-</FrameLayout>
+    <ImageButton android:id="@+id/backButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_back"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/forwardButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_forward"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/newTabButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_new_tab"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/closeTabButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_close_tab"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton
+                 style="@style/BrowserKeyButton"
+
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/zoomInButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_zoom_in"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/zoomOutButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_zoom_out"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/homeButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_home"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/refreshButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_refresh"
+                 android:contentDescription="@string/go_back_button_description"/>
+
+    <ImageButton android:id="@+id/fullScreenButton"
+                 style="@style/BrowserKeyButton"
+                 android:src="@drawable/ic_full_screen"
+                 android:contentDescription="@string/go_back_button_description"/>
+</GridLayout>

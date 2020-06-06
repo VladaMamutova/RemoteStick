@@ -5,19 +5,47 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_browser.view.*
 import ru.vladamamutova.remotestick.R
+import ru.vladamamutova.remotestick.service.RemoteStickClient
 
 class BrowserFragment : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_browser, container, false)
+        val view = inflater.inflate(R.layout.fragment_browser, container, false)
+
+        with(view) {
+            backButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.back()
+            }
+            forwardButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.forward()
+            }
+            homeButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.home()
+            }
+            refreshButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.refresh()
+            }
+            newTabButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.newTab()
+            }
+            closeTabButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.closeTab()
+            }
+            zoomInButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.zoomIn()
+            }
+            zoomOutButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.zoomOut()
+            }
+            fullScreenButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.fullScreen()
+            }
+        }
+        return view
     }
 }

@@ -44,4 +44,15 @@
         <item name="android:textSize">@dimen/small_text</item>
         <item name="textAllCaps">false</item>
     </style>
+
+    <style name="BrowserKeyButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/tab_layout_height</item>
+        <item name="android:minWidth">0dp</item> <!--Убираем отступы кнопки по умолчанию-->
+        <item name="android:layout_margin">@dimen/tiny_intent</item>
+        <item name="android:padding">@dimen/small_intent</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:tint">@color/darkText</item>
+    </style>
 </resources>

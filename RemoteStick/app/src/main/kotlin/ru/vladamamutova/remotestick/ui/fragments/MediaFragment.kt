@@ -38,6 +38,7 @@ class MediaFragment : Fragment() {
             }
 
         }
+
         with(view) {
             volumeControl.setVolumeListener(volumeListener)
 
