@@ -23,6 +23,7 @@ import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
+import ru.vladamamutova.remotestick.ui.fragments.BrowserFragment
 import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
 import ru.vladamamutova.remotestick.ui.fragments.MediaFragment
 import ru.vladamamutova.remotestick.ui.fragments.SpecialKeyboardFragment
@@ -52,7 +53,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
                 if (tab.position == 1) {
                     showKeyboard()
                 }
-                tab.setIconTintList(iconColors.getResourceId(tab.position, R.color.violet))
+                tab.setIconTintList(iconColors.getResourceId(tab.position, R.color.purple))
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -152,8 +153,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
             addFragment(MediaFragment())
             addFragment(KeyboardFragment())
             addFragment(SpecialKeyboardFragment())
-            addFragment(MediaFragment())
-            addFragment(MediaFragment())
+            addFragment(BrowserFragment())
             addFragment(MediaFragment())
             addFragment(MediaFragment())
         }
@@ -163,7 +163,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
     private fun TabLayout.setupIcons(icons: TypedArray, colors: TypedArray) {
         for (i in 0 until this.tabCount) {
             this.getTabAt(i)!!.setIcon(icons.getResourceId(i, R.drawable.ic_keyboard))
-            this.getTabAt(i)!!.setIconTintList(colors.getResourceId(i, R.color.violet))
+            this.getTabAt(i)!!.setIconTintList(colors.getResourceId(i, R.color.colorPrimary))
         }
     }
 
@@ -271,6 +271,11 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
         } else {
             specialKeysPanel.visibility = View.GONE
             (view as ImageButton).isSelected = false
+            RemoteStickClient.myInstance.keyboardPlugin.holdUpModifiers()
+            ctrlButton.isSelected = false
+            shiftButton.isSelected = false
+            altButton.isSelected = false
+            winButton.isSelected = false
         }
     }
 

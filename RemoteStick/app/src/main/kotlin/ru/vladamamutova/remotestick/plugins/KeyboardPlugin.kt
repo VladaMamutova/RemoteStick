@@ -174,4 +174,8 @@ class KeyboardPlugin(owner: PluginMediator) : Plugin(owner), KeyboardListener {
     fun setShortcutHandler(shortcutHandler: Handler) {
         this.shortcutHandler = shortcutHandler
     }
+
+    fun holdUpModifiers() {
+        modifiersPressed.clear()
+    }
 }

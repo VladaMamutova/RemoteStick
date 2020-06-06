@@ -94,8 +94,8 @@
                      android:layout_width="@dimen/tab_layout_height"
                      android:layout_height="@dimen/tab_layout_height"
                      android:background="@color/lightBackground"
-                     android:src="@drawable/ic_alt"
-                     android:tint="@color/special_keys_button_color"
+                     android:src="@drawable/ic_alt_key"
+                     android:tint="@color/pink_selector"
                      android:layout_alignParentEnd="true"
                      android:contentDescription="@string/special_keys_button_description"
                      android:onClick="onSpecialKeysButtonClick"/>
@@ -147,7 +147,7 @@
 
                 <ImageButton android:id="@+id/explorerButton"
                              style="@style/SpecialKeyButton"
-                             android:src="@drawable/ic_explorer"
+                             android:src="@drawable/ic_folder"
                              android:layout_column="5"
                              android:contentDescription="@string/explorer_button_description"
                              android:onClick="onSpecialKeyClick"/>
