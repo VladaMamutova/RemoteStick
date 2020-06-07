@@ -30,11 +30,11 @@ class BrowserFragment : Fragment() {
             refreshButton.setOnClickListener {
                 RemoteStickClient.myInstance.browserPlugin.refresh()
             }
-            newTabButton.setOnClickListener {
-                RemoteStickClient.myInstance.browserPlugin.newTab()
+            previousTabButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.previousTab()
             }
-            closeTabButton.setOnClickListener {
-                RemoteStickClient.myInstance.browserPlugin.closeTab()
+            nextTabButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.nextTab()
             }
             zoomInButton.setOnClickListener {
                 RemoteStickClient.myInstance.browserPlugin.zoomIn()
@@ -44,6 +44,15 @@ class BrowserFragment : Fragment() {
             }
             fullScreenButton.setOnClickListener {
                 RemoteStickClient.myInstance.browserPlugin.fullScreen()
+            }
+            newTabButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.newTab()
+            }
+            closeTabButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.closeTab()
+            }
+            lastTabButton.setOnClickListener {
+                RemoteStickClient.myInstance.browserPlugin.lastTab()
             }
         }
         return view

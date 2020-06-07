@@ -18,7 +18,7 @@
             custom:arc_width="32dp"
             custom:start_angle="140"
             custom:end_angle="40"
-            custom:arc_color="@color/lightGrey"
+            custom:arc_color="@color/lightBackground"
             custom:thumb_color="@android:color/white"
             custom:arc_highlight_start_color="@color/colorPrimaryLight"
             custom:arc_highlight_end_color="@color/colorPrimary"
@@ -28,7 +28,7 @@
     <ImageButton android:id="@+id/playPauseButton"
                  android:layout_width="@dimen/big_round_button_width"
                  android:layout_height="@dimen/big_round_button_width"
-                 android:background="@drawable/round_filled_button_background"
+                 android:background="@drawable/round_button_background"
                  android:src="@drawable/ic_play_pause"
                  android:tint="@android:color/white"
                  android:layout_centerInParent="true"
@@ -40,7 +40,7 @@
                  android:layout_alignParentBottom="true"
                  android:layout_marginStart="@dimen/large_intent"
                  android:layout_marginBottom="@dimen/large_intent"
-                 android:background="@drawable/round_filled_button_background"
+                 android:background="@drawable/round_button_background"
                  android:src="@drawable/ic_previous"
                  android:tint="@android:color/white"
                  android:contentDescription="@string/previous_track_button_description"/>
@@ -53,7 +53,7 @@
                  android:layout_alignParentBottom="true"
                  android:layout_marginEnd="@dimen/large_intent"
                  android:layout_marginBottom="@dimen/large_intent"
-                 android:background="@drawable/round_filled_button_background"
+                 android:background="@drawable/round_button_background"
                  android:src="@drawable/ic_next"
                  android:tint="@android:color/white"
                  android:contentDescription="@string/next_track_button_description"/>
@@ -76,8 +76,8 @@
                  android:layout_alignParentTop="true"
                  android:layout_marginStart="@dimen/large_intent"
                  android:layout_marginTop="@dimen/large_intent"
-                 android:background="@drawable/round_outline_button_background"
+                 android:background="@drawable/light_round_button_background"
                  android:src="@drawable/ic_stop"
                  android:tint="@color/colorPrimary"
-                 android:contentDescription="@string/next_track_button_description"/>
+                 android:contentDescription="@string/stop_button_description"/>
 </RelativeLayout>

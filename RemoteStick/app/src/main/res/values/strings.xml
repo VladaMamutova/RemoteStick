@@ -41,12 +41,24 @@
     <string name="paste_button_description">paste button</string>
     <string name="show_desktop_button_description">show desktop button</string>
     <string name="fn_switch_num_button_description">fn switch num button</string>
-
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="hello_media_fragment">Hello media fragment</string>
     <string name="play_pause_button_description">play/pause button</string>
     <string name="previous_track_button_description">previous track button</string>
     <string name="next_track_button_description">next track button</string>
     <string name="mute_button_description">mute button</string>
-    <string name="go_back_button_description">go back button</string>
+    <string name="stop_button_description">stop button</string>
+    <string name="back_button_description">back button</string>
+    <string name="forward_button_description">forward button</string>
+    <string name="home_button_description">home button</string>
+    <string name="refresh_button_description">refresh button</string>
+    <string name="zoom_in_button_description">zoom in button</string>
+    <string name="zoom_out_button_description">zoom out button</string>
+    <string name="full_screen_button_description">full screen button</string>
+    <string name="previous_tab_button_description">previous tab button</string>
+    <string name="next_tab_button_description">next tab button</string>
+    <string name="new_tab_button_description">new tab button</string>
+    <string name="close_tab_button_description">close tab button</string>
+    <string name="last_tab_button_description">last tab button</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_media_fragment">Hello media fragment</string>
 </resources>

@@ -5,57 +5,67 @@
             android:layout_height="match_parent"
             tools:context=".ui.fragments.BrowserFragment"
             android:orientation="horizontal"
-            android:columnCount="5"
+            android:columnCount="6"
             android:paddingHorizontal="@dimen/medium_intent"
             android:padding="@dimen/large_intent">
 
     <ImageButton android:id="@+id/backButton"
-                 style="@style/BrowserKeyButton"
+                 style="@style/BrowserCommandButton"
                  android:src="@drawable/ic_back"
-                 android:contentDescription="@string/go_back_button_description"/>
+                 android:contentDescription="@string/back_button_description"/>
 
     <ImageButton android:id="@+id/forwardButton"
-                 style="@style/BrowserKeyButton"
+                 style="@style/BrowserCommandButton"
                  android:src="@drawable/ic_forward"
-                 android:contentDescription="@string/go_back_button_description"/>
-
-    <ImageButton android:id="@+id/newTabButton"
-                 style="@style/BrowserKeyButton"
-                 android:src="@drawable/ic_new_tab"
-                 android:contentDescription="@string/go_back_button_description"/>
-
-    <ImageButton android:id="@+id/closeTabButton"
-                 style="@style/BrowserKeyButton"
-                 android:src="@drawable/ic_close_tab"
-                 android:contentDescription="@string/go_back_button_description"/>
-
-    <ImageButton
-                 style="@style/BrowserKeyButton"
-
-                 android:contentDescription="@string/go_back_button_description"/>
-
-    <ImageButton android:id="@+id/zoomInButton"
-                 style="@style/BrowserKeyButton"
-                 android:src="@drawable/ic_zoom_in"
-                 android:contentDescription="@string/go_back_button_description"/>
-
-    <ImageButton android:id="@+id/zoomOutButton"
-                 style="@style/BrowserKeyButton"
-                 android:src="@drawable/ic_zoom_out"
-                 android:contentDescription="@string/go_back_button_description"/>
+                 android:contentDescription="@string/forward_button_description"/>
 
     <ImageButton android:id="@+id/homeButton"
-                 style="@style/BrowserKeyButton"
+                 style="@style/BrowserCommandButton"
                  android:src="@drawable/ic_home"
-                 android:contentDescription="@string/go_back_button_description"/>
+                 android:contentDescription="@string/home"/>
 
     <ImageButton android:id="@+id/refreshButton"
-                 style="@style/BrowserKeyButton"
+                 style="@style/BrowserCommandButton"
                  android:src="@drawable/ic_refresh"
-                 android:contentDescription="@string/go_back_button_description"/>
+                 android:contentDescription="@string/refresh_button_description"/>
+
+    <ImageButton android:id="@+id/previousTabButton"
+                 style="@style/BrowserCommandButton"
+                 android:src="@drawable/ic_previous_tab"
+                 android:contentDescription="@string/previous_tab_button_description"/>
+
+    <ImageButton android:id="@+id/nextTabButton"
+                 style="@style/BrowserCommandButton"
+                 android:src="@drawable/ic_next_tab"
+                 android:contentDescription="@string/next_tab_button_description"/>
+
+    <ImageButton android:id="@+id/zoomInButton"
+                 style="@style/BrowserCommandButton"
+                 android:src="@drawable/ic_zoom_in"
+                 android:contentDescription="@string/zoom_in_button_description"/>
+
+    <ImageButton android:id="@+id/zoomOutButton"
+                 style="@style/BrowserCommandButton"
+                 android:src="@drawable/ic_zoom_out"
+                 android:contentDescription="@string/zoom_out_button_description"/>
 
     <ImageButton android:id="@+id/fullScreenButton"
-                 style="@style/BrowserKeyButton"
+                 style="@style/BrowserCommandButton"
                  android:src="@drawable/ic_full_screen"
-                 android:contentDescription="@string/go_back_button_description"/>
+                 android:contentDescription="@string/full_screen_button_description"/>
+
+    <ImageButton android:id="@+id/newTabButton"
+                 style="@style/BrowserCommandButton"
+                 android:src="@drawable/ic_new_tab"
+                 android:contentDescription="@string/new_tab_button_description"/>
+
+    <ImageButton android:id="@+id/closeTabButton"
+                 style="@style/BrowserCommandButton"
+                 android:src="@drawable/ic_close_tab"
+                 android:contentDescription="@string/close_tab_button_description"/>
+
+    <ImageButton android:id="@+id/lastTabButton"
+                 style="@style/BrowserCommandButton"
+                 android:src="@drawable/ic_last_tab"
+                 android:contentDescription="@string/last_tab_button_description"/>
 </GridLayout>

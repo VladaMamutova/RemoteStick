@@ -10,16 +10,14 @@ class BrowserPlugin(owner: PluginMediator) : Plugin(owner) {
         FORWARD("forward"),
         HOME("home"),
         REFRESH("refresh"),
-        NEW_TAB("new tab"),
-        CLOSE_TAB("close tab"),
         ZOOM_IN("zoom in"),
         ZOOM_OUT("zoom out"),
-        FULL_SCREEN("full screen");
-        // incognito mode
-        // на вкладку вперёд
-        // на вкладку назад
-        // загрузки
-        // выделить строку для поиска
+        FULL_SCREEN("full screen"),
+        PREVIOUS_TAB("previous tab"),
+        NEXT_TAB("next tab"),
+        NEW_TAB("new tab"),
+        CLOSE_TAB("close tab"),
+        LAST_TAB("last tab");
 
         companion object {
             const val name = "command"
@@ -39,9 +37,12 @@ class BrowserPlugin(owner: PluginMediator) : Plugin(owner) {
     fun forward() = owner.sendPacket(createPacket(Command.FORWARD))
     fun home() = owner.sendPacket(createPacket(Command.HOME))
     fun refresh() = owner.sendPacket(createPacket(Command.REFRESH))
-    fun newTab() = owner.sendPacket(createPacket(Command.NEW_TAB))
-    fun closeTab() = owner.sendPacket(createPacket(Command.CLOSE_TAB))
     fun zoomIn() = owner.sendPacket(createPacket(Command.ZOOM_IN))
     fun zoomOut() = owner.sendPacket(createPacket(Command.ZOOM_OUT))
     fun fullScreen() = owner.sendPacket(createPacket(Command.FULL_SCREEN))
+    fun previousTab() = owner.sendPacket(createPacket(Command.PREVIOUS_TAB))
+    fun nextTab() = owner.sendPacket(createPacket(Command.NEXT_TAB))
+    fun newTab() = owner.sendPacket(createPacket(Command.NEW_TAB))
+    fun closeTab() = owner.sendPacket(createPacket(Command.CLOSE_TAB))
+    fun lastTab() = owner.sendPacket(createPacket(Command.LAST_TAB))
 }
