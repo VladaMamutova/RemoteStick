@@ -1,6 +1,7 @@
 package main.kotlin.plugins
 
 import main.kotlin.Win32
+import main.kotlin.plugins.SpecialKey.*
 import main.kotlin.service.NetworkPacket
 import main.kotlin.service.PacketTypes
 
@@ -8,16 +9,13 @@ class BrowserPlugin : Plugin() {
     private enum class Command(val value: String) {
         BACK("back"),
         FORWARD("forward"),
-        REFRESH("refresh"),
         HOME("home"),
-        FAVORITES("favorites"), //
-        SEARCH("search"), //
-        STOP("stop"), //
+        REFRESH("refresh"),
+        NEW_TAB("new tab"),
+        CLOSE_TAB("close tab"),
         ZOOM_IN("zoom in"),
         ZOOM_OUT("zoom out"),
-        FULL_SCREEN("full screen"),
-        OPEN_NEW("open new"),
-        CLOSE_ACTIVE("close active");
+        FULL_SCREEN("full screen");
         // incognito mode
         // на вкладку вперёд
         // на вкладку назад
@@ -37,13 +35,15 @@ class BrowserPlugin : Plugin() {
             if (packet.type == type) {
                 if (packet.body.has(Command.name)) {
                     when (packet.body.get(Command.name).asString) {
-                        Command.BACK.value -> sendBrowserKey(BrowserKey.BACK)
-                        Command.FORWARD.value -> sendBrowserKey(BrowserKey.FORWARD)
-                        Command.REFRESH.value -> sendBrowserKey(BrowserKey.REFRESH)
-                        Command.HOME.value -> sendBrowserKey(BrowserKey.HOME)
-                        Command.FAVORITES.value -> sendBrowserKey(BrowserKey.FAVORITES)
-                        Command.SEARCH.value -> sendBrowserKey(BrowserKey.SEARCH)
-                        Command.STOP.value -> sendBrowserKey(BrowserKey.STOP)
+                        Command.BACK.value -> back()
+                        Command.FORWARD.value -> forward()
+                        Command.HOME.value -> home()
+                        Command.REFRESH.value -> refresh()
+                        Command.NEW_TAB.value -> newTab()
+                        Command.CLOSE_TAB.value -> closeTab()
+                        Command.ZOOM_IN.value -> zoomIn()
+                        Command.ZOOM_OUT.value -> zoomOut()
+                        Command.FULL_SCREEN.value -> fullScreen()
                     }
                 }
             }
@@ -52,7 +52,22 @@ class BrowserPlugin : Plugin() {
         }
     }
 
-    private fun sendBrowserKey(browserKey: BrowserKey) {
-        Win32().sendBrowserKey(browserKey.ordinal)
+    private fun back() {
+        Win32().sendSpecialKeys(intArrayOf(ALT.ordinal, LEFT.ordinal))
     }
+
+    private fun forward() {
+        Win32().sendSpecialKeys(intArrayOf(ALT.ordinal, RIGHT.ordinal))
+    }
+
+    private fun home() {
+        Win32().sendSpecialKeys(intArrayOf(ALT.ordinal, HOME.ordinal))
+    }
+
+    private fun refresh() = Win32().sendSpecialKeys(intArrayOf(F5.ordinal))
+    private fun newTab() = Win32().sendKeys(intArrayOf(CTRL.ordinal), 'T')
+    private fun closeTab() = Win32().sendKeys(intArrayOf(CTRL.ordinal), 'W')
+    private fun zoomIn() = Win32().sendKeys(intArrayOf(CTRL.ordinal), '+')
+    private fun zoomOut() = Win32().sendKeys(intArrayOf(CTRL.ordinal), '-')
+    private fun fullScreen() = Win32().sendSpecialKeys(intArrayOf(F11.ordinal))
 }

@@ -161,14 +161,6 @@ extern "C" {
 
 	/*
 	* Class:     Java_main_kotlin_Win32
-	* Method:    sendBrowserKey
-	* Signature: (I)V
-	*/
-	JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendBrowserKey
-	(JNIEnv*, jobject, jint);
-
-	/*
-	* Class:     Java_main_kotlin_Win32
 	* Method:    init
 	* Signature: ()I
 	*/

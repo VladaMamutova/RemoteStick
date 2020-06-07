@@ -8,7 +8,6 @@
 #include <string>
 #include "win32.h"
 #include "SpecialKeys.h"
-#include "BrowserKeys.h"
 
 using namespace std;
 
@@ -92,8 +91,7 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_leftUp
 void SendMouseInput(DWORD flags) {
 	INPUT input = { 0 };
 	input.type = INPUT_MOUSE;
-	input.ki.wVk = 0;
-	input.ki.dwFlags = flags;
+	input.mi.dwFlags = flags;
 	SendInput(1, &input, sizeof(INPUT));
 }
 
@@ -195,7 +193,7 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendKeys
 		input.ki.wVk = symbolVk & 0xFF;
 		SendInput(1, &input, sizeof(INPUT)); // press the key down
 
-		input.ki.dwFlags |= KEYEVENTF_KEYUP;
+		input.ki.dwFlags = KEYEVENTF_KEYUP;
 		SendInput(1, &input, sizeof(INPUT)); // release the key
 	}
 	else {
@@ -206,6 +204,8 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendKeys
 
 		input.ki.dwFlags |= KEYEVENTF_KEYUP;
 		::SendInput(1, &input, sizeof(INPUT)); // release the key
+
+		input.ki.wScan = 0;
 	}
 
 	// release the special keys in reverse order
@@ -299,26 +299,6 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_prevTrack
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_stop
 (JNIEnv* env, jobject obj) {
 	SendKeyboardInput(VK_MEDIA_STOP);
-}
-
-JNIEXPORT void JNICALL Java_main_kotlin_Win32_sendBrowserKey
-(JNIEnv* env, jobject obj, jint browserKey) {
-	int wVk = -1;
-	switch (browserKey)
-	{
-	case BACK: wVk = VK_BROWSER_BACK;
-	case FORWARD: wVk = VK_BROWSER_FORWARD;
-	case REFRESH: wVk = VK_BROWSER_REFRESH;
-	case STOP: wVk = VK_BROWSER_STOP;
-	case SEARCH: wVk = VK_BROWSER_SEARCH;
-	case FAVORITES: wVk = VK_BROWSER_FAVORITES;
-	case BROWSER_HOME: wVk = VK_BROWSER_HOME;
-	default: break;
-	}
-
-	if (wVk != -1) {
-		SendKeyboardInput(wVk);
-	}
 }
 
 void SendKeyboardInput(WORD wVK) {
