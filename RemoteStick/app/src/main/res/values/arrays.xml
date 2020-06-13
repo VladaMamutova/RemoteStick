@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="icon_colors">
-        <item>@color/teal_selector</item>
-        <item>@color/light_blue_selector</item>
-        <item>@color/blue_selector</item>
-        <item>@color/indigo_selector</item>
-        <item>@color/deep_purple_selector</item>
-        <item>@color/purple_selector</item>
+        <item>@color/grey_teal_selector</item>
+        <item>@color/grey_light_blue_selector</item>
+        <item>@color/grey_blue_selector</item>
+        <item>@color/grey_indigo_selector</item>
+        <item>@color/grey_deep_purple_selector</item>
+        <item>@color/grey_purple_selector</item>
     </array>
     <array name="icons">
         <item>@drawable/ic_music</item>
         <item>@drawable/ic_keyboard</item>
         <item>@drawable/ic_fn_key</item>
         <item>@drawable/ic_browser</item>
-        <item>@drawable/ic_music</item>
-        <item>@drawable/ic_keyboard</item>
+        <item>@drawable/ic_presentation</item>
+        <item>@drawable/ic_power</item>
     </array>
 </resources>

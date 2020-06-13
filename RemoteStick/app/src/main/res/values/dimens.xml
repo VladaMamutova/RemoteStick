@@ -12,7 +12,8 @@
     <dimen name="tab_layout_height">48dp</dimen>
     <dimen name="toast_height">40dp</dimen>
     <dimen name="toast_radius">20dp</dimen>
-    <dimen name="big_round_button_width">100dp</dimen>
-    <dimen name="medium_round_button_width">64dp</dimen>
     <dimen name="small_round_button_width">48dp</dimen>
+    <dimen name="medium_round_button_width">64dp</dimen>
+    <dimen name="big_round_button_width">80dp</dimen>
+    <dimen name="large_round_button_width">96dp</dimen>
 </resources>

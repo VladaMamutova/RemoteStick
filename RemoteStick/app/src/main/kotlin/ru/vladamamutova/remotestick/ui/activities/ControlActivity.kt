@@ -23,10 +23,7 @@ import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
-import ru.vladamamutova.remotestick.ui.fragments.BrowserFragment
-import ru.vladamamutova.remotestick.ui.fragments.KeyboardFragment
-import ru.vladamamutova.remotestick.ui.fragments.MediaFragment
-import ru.vladamamutova.remotestick.ui.fragments.SpecialKeyboardFragment
+import ru.vladamamutova.remotestick.ui.fragments.*
 import ru.vladamamutova.remotestick.utils.OnBackPressedListener
 import kotlin.concurrent.thread
 
@@ -139,9 +136,10 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
             (resources.displayMetrics.heightPixels * 0.39).toInt()
         )
 
-        // Устанавливаем высоту панели с специальными клавишами, чтобы
-        // она была равна высоту специальных клавиш в fragment_special_keyboard
-        // (в фрагменте 6 строк, значит высота = 1/6 от панели инструментов)
+        // Устанавливаем высоту панели со специальными клавишами, чтобы
+        // она была равна высоте специальных клавиш в fragment_special_keyboard
+        // (в фрагменте 6 строк, значит высота = 1/6 от панели инструментов,
+        // также добавляем отступы сверху и снизу)
         specialKeysPanel.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             this.layoutParams.height / 6
@@ -153,8 +151,8 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
             addFragment(MediaFragment())
             addFragment(KeyboardFragment())
             addFragment(SpecialKeyboardFragment())
-            addFragment(BrowserFragment())
-            addFragment(MediaFragment())
+            addFragment(BrowserFragment(this@setupAdapter.layoutParams.height / 6))
+            addFragment(PresentationFragment())
             addFragment(MediaFragment())
         }
         this.adapter = adapter

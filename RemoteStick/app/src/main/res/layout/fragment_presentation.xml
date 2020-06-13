@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ui.fragments.PresentationFragment">
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginStart="@dimen/large_intent"
+                  android:layout_marginTop="@dimen/large_intent">
+
+        <ImageButton android:id="@+id/startButton"
+                     style="@style/SecondaryRoundButton"
+                     android:layout_width="@dimen/big_round_button_width"
+                     android:layout_height="@dimen/big_round_button_width"
+                     android:src="@drawable/ic_start"
+                     android:contentDescription="@string/start_button_description"/>
+
+        <ImageButton android:id="@+id/continueButton"
+                     style="@style/SecondaryRoundButton"
+                     android:layout_width="@dimen/big_round_button_width"
+                     android:layout_height="@dimen/big_round_button_width"
+                     android:layout_marginStart="@dimen/large_intent"
+                     android:src="@drawable/ic_continue"
+                     android:contentDescription="@string/continue_button_description"/>
+
+    </LinearLayout>
+
+    <ImageButton android:id="@+id/stopButton"
+                 style="@style/SecondaryRoundButton"
+                 android:layout_width="@dimen/big_round_button_width"
+                 android:layout_height="@dimen/big_round_button_width"
+                 android:layout_alignParentEnd="true"
+                 android:layout_marginTop="@dimen/large_intent"
+                 android:layout_marginEnd="@dimen/large_intent"
+                 android:src="@drawable/ic_stop_presentation"
+                 android:contentDescription="@string/stop_presentation_button_description"/>
+
+    <ImageButton android:id="@+id/pointerButton"
+                 android:layout_width="@dimen/big_round_button_width"
+                 android:layout_height="@dimen/big_round_button_width"
+                 android:layout_alignParentBottom="true"
+                 android:layout_marginStart="@dimen/large_intent"
+                 android:layout_marginBottom="@dimen/large_intent"
+                 android:src="@drawable/ic_pointer"
+                 android:background="@android:color/transparent"
+                 android:tint="@color/light_grey_blue_selector"
+                 android:contentDescription="@string/pointer_button_description"/>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_alignParentEnd="true"
+                  android:layout_alignParentBottom="true"
+                  android:layout_marginEnd="@dimen/large_intent"
+                  android:layout_marginBottom="@dimen/large_intent">
+
+        <ImageButton android:id="@+id/previousSlideButton"
+                     style="@style/PrimaryRoundButton"
+                     android:src="@drawable/ic_previous_slide"
+                     android:contentDescription="@string/previous_slide_button_description"/>
+
+        <ImageButton android:id="@+id/nextSlideButton"
+                     style="@style/PrimaryRoundButton"
+                     android:layout_marginStart="@dimen/large_intent"
+                     android:src="@drawable/ic_next_slide"
+                     android:contentDescription="@string/next_slide_button_description"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

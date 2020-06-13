@@ -45,6 +45,22 @@
         <item name="textAllCaps">false</item>
     </style>
 
+    <style name="PrimaryRoundButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">@dimen/big_round_button_width</item>
+        <item name="android:layout_height">@dimen/big_round_button_width</item>
+        <item name="android:minWidth">0dp</item> <!--Убираем отступы кнопки по умолчанию-->
+        <item name="android:background">@drawable/primary_round_button_background</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+    <style name="SecondaryRoundButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">@dimen/medium_round_button_width</item>
+        <item name="android:layout_height">@dimen/medium_round_button_width</item>
+        <item name="android:minWidth">0dp</item> <!--Убираем отступы кнопки по умолчанию-->
+        <item name="android:background">@drawable/secondary_round_button_background</item>
+        <item name="android:tint">@color/colorPrimary</item>
+    </style>
+
     <style name="BrowserCommandButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">@dimen/tab_layout_height</item>
@@ -52,7 +68,7 @@
         <item name="android:layout_margin">@dimen/tiny_intent</item>
         <item name="android:padding">@dimen/small_intent</item>
         <item name="android:layout_columnWeight">1</item>
-        <item name="android:background">@drawable/browser_command_button_background</item>
-        <item name="android:tint">@color/darkText</item>
+        <item name="android:background">@drawable/tertiary_round_button_background</item>
+        <item name="android:tint">@color/darkGrey</item>
     </style>
 </resources>

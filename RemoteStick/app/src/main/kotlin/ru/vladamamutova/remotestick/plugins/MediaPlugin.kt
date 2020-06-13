@@ -29,7 +29,7 @@ class MediaPlugin(owner: PluginMediator) : Plugin(owner) {
     override val type: PacketTypes
         get() = PacketTypes.MEDIA
 
-    private var mute: Boolean = false
+    var muteChecked: Boolean = false; private set
     private var volume: Int = 0
 
     private fun createPacket(playback: Playback): NetworkPacket {
@@ -46,25 +46,22 @@ class MediaPlugin(owner: PluginMediator) : Plugin(owner) {
                 addProperty(Volume.changeValue, volumeDifference * step)
             }))
             // Если изменяется громкость, беззвучный режим выключается.
-            if (mute) {
-                mute = false
+            if (muteChecked) {
+                muteChecked = false
             }
         }
         volume = value
     }
 
-    fun volumeMute(): Boolean {
+    fun toggleMute() {
+        muteChecked = !muteChecked
         owner.sendPacket(createPacket(JsonObject().apply {
             addProperty(Volume.name, Volume.MUTE.value)
         }))
-        mute = !mute
-        return mute
     }
 
     fun playPause() = owner.sendPacket(createPacket(Playback.PLAY_PAUSE))
     fun nextTrack() = owner.sendPacket(createPacket(Playback.NEXT))
     fun previousTrack() = owner.sendPacket(createPacket(Playback.PREVIOUS))
     fun stop() = owner.sendPacket(createPacket(Playback.STOP))
-
-    fun getMute() = mute
 }

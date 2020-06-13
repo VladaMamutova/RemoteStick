@@ -95,7 +95,7 @@
                      android:layout_height="@dimen/tab_layout_height"
                      android:background="@color/lightBackground"
                      android:src="@drawable/ic_alt_key"
-                     android:tint="@color/pink_selector"
+                     android:tint="@color/grey_pink_selector"
                      android:layout_alignParentEnd="true"
                      android:contentDescription="@string/special_keys_button_description"
                      android:onClick="onSpecialKeysButtonClick"/>

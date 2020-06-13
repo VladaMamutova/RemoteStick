@@ -15,8 +15,6 @@ import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.utils.VolumeListener
 
 class MediaFragment : Fragment() {
-    private var mute: Boolean = false
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,8 +27,8 @@ class MediaFragment : Fragment() {
 
             override fun volumeChanged(value: Int, step: Int) {
                 RemoteStickClient.myInstance.mediaPlugin.changeVolume(value, step)
-                mute = RemoteStickClient.myInstance.mediaPlugin.getMute()
-                muteButton.isSelected = mute
+                muteButton.isSelected =
+                    RemoteStickClient.myInstance.mediaPlugin.muteChecked
             }
 
             override fun afterVolumeChanged(value: Int) {
@@ -54,9 +52,12 @@ class MediaFragment : Fragment() {
             stopButton.setOnClickListener {
                 RemoteStickClient.myInstance.mediaPlugin.stop()
             }
+            muteButton.isSelected =
+                RemoteStickClient.myInstance.mediaPlugin.muteChecked
             muteButton.setOnClickListener {
-                mute = RemoteStickClient.myInstance.mediaPlugin.volumeMute()
-                (it as ImageButton).isSelected = mute
+                RemoteStickClient.myInstance.mediaPlugin.toggleMute()
+                (it as ImageButton).isSelected =
+                    RemoteStickClient.myInstance.mediaPlugin.muteChecked
             }
         }
         return view

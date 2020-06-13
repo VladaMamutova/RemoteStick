@@ -26,26 +26,25 @@
             custom:value_color="@color/colorPrimary"/>
 
     <ImageButton android:id="@+id/playPauseButton"
-                 android:layout_width="@dimen/big_round_button_width"
-                 android:layout_height="@dimen/big_round_button_width"
-                 android:background="@drawable/round_button_background"
+                 style="@style/PrimaryRoundButton"
+                 android:layout_width="@dimen/large_round_button_width"
+                 android:layout_height="@dimen/large_round_button_width"
                  android:src="@drawable/ic_play_pause"
-                 android:tint="@android:color/white"
                  android:layout_centerInParent="true"
                  android:contentDescription="@string/play_pause_button_description"/>
 
     <ImageButton android:id="@+id/previousTrackButton"
+                 style="@style/PrimaryRoundButton"
                  android:layout_width="@dimen/medium_round_button_width"
                  android:layout_height="@dimen/medium_round_button_width"
                  android:layout_alignParentBottom="true"
                  android:layout_marginStart="@dimen/large_intent"
                  android:layout_marginBottom="@dimen/large_intent"
-                 android:background="@drawable/round_button_background"
-                 android:src="@drawable/ic_previous"
-                 android:tint="@android:color/white"
+                 android:src="@drawable/ic_previous_track"
                  android:contentDescription="@string/previous_track_button_description"/>
 
     <ImageButton android:id="@+id/nextTrackButton"
+                 style="@style/PrimaryRoundButton"
                  android:layout_width="@dimen/medium_round_button_width"
                  android:layout_height="@dimen/medium_round_button_width"
                  android:layout_centerVertical="true"
@@ -53,9 +52,7 @@
                  android:layout_alignParentBottom="true"
                  android:layout_marginEnd="@dimen/large_intent"
                  android:layout_marginBottom="@dimen/large_intent"
-                 android:background="@drawable/round_button_background"
-                 android:src="@drawable/ic_next"
-                 android:tint="@android:color/white"
+                 android:src="@drawable/ic_next_track"
                  android:contentDescription="@string/next_track_button_description"/>
 
     <ImageButton android:id="@+id/muteButton"
@@ -64,20 +61,19 @@
                  android:layout_below="@id/volumeControl"
                  android:layout_marginTop="-40dp"
                  android:layout_centerHorizontal="true"
-                 android:background="@android:color/transparent"
                  android:src="@drawable/sound_state_icon"
-                 android:tint="@color/sound_state_color"
+                 android:background="@android:color/transparent"
+                 android:tint="@color/light_grey_blue_selector"
                  android:contentDescription="@string/mute_button_description"/>
 
     <ImageButton android:id="@+id/stopButton"
+                 style="@style/SecondaryRoundButton"
                  android:layout_width="@dimen/small_round_button_width"
                  android:layout_height="@dimen/small_round_button_width"
                  android:layout_centerVertical="true"
                  android:layout_alignParentTop="true"
                  android:layout_marginStart="@dimen/large_intent"
                  android:layout_marginTop="@dimen/large_intent"
-                 android:background="@drawable/light_round_button_background"
                  android:src="@drawable/ic_stop"
-                 android:tint="@color/colorPrimary"
                  android:contentDescription="@string/stop_button_description"/>
 </RelativeLayout>

@@ -5,11 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import kotlinx.android.synthetic.main.fragment_browser.view.*
 import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.service.RemoteStickClient
+import kotlin.math.min
 
-class BrowserFragment : Fragment() {
+class BrowserFragment(private val buttonHeight: Int) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -18,6 +20,10 @@ class BrowserFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_browser, container, false)
 
         with(view) {
+            for (index in 0 until (this as ViewGroup).childCount) {
+                (this.getChildAt(index) as ImageButton).minimumHeight = buttonHeight
+            }
+
             backButton.setOnClickListener {
                 RemoteStickClient.myInstance.browserPlugin.back()
             }

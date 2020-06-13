@@ -58,6 +58,12 @@
     <string name="new_tab_button_description">new tab button</string>
     <string name="close_tab_button_description">close tab button</string>
     <string name="last_tab_button_description">last tab button</string>
+    <string name="start_button_description">start button</string>
+    <string name="continue_button_description">continue button</string>
+    <string name="stop_presentation_button_description">stop presentation button</string>
+    <string name="pointer_button_description">pointer button</string>
+    <string name="previous_slide_button_description">previous slide button</string>
+    <string name="next_slide_button_description">next slide button</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_media_fragment">Hello media fragment</string>

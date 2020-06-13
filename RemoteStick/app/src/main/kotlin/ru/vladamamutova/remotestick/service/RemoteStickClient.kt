@@ -26,6 +26,7 @@ class RemoteStickClient private constructor() : PluginMediator {
     val keyboardPlugin = KeyboardPlugin(this)
     val mediaPlugin = MediaPlugin(this)
     val browserPlugin = BrowserPlugin(this)
+    val presentationPlugin = PresentationPlugin(this)
 
     companion object {
         private const val PORT: Int = 56000

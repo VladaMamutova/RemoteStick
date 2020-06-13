@@ -5,6 +5,11 @@
             <solid android:color="@color/lightBackground" />
         </shape>
     </item>
+    <item android:state_selected="true">
+        <shape android:shape="oval">
+            <solid android:color="@color/lightBackground" />
+        </shape>
+    </item>
     <item>
         <shape android:shape="oval">
             <solid android:color="@android:color/transparent" />
