@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".ui.fragments.PowerFragment">
+
+    <Button android:id="@+id/sleepButton"
+            style="@style/PowerRoundButton"
+            android:text="Спящий режим"
+            android:layout_margin="@dimen/large_intent"
+            android:drawableTop="@drawable/ic_sleep"
+            android:contentDescription="@string/next_slide_button_description"/>
+
+    <Button android:id="@+id/hibernateButton"
+            style="@style/PowerRoundButton"
+            android:layout_margin="@dimen/large_intent"
+            android:layout_alignParentEnd="true"
+            android:drawableTop="@drawable/ic_hibernate"
+            android:text="Гибернация"
+            android:contentDescription="@string/stop_presentation_button_description"/>
+
+    <Button android:id="@+id/lockButton"
+            style="@style/PowerRoundButton"
+            android:layout_width="104dp"
+            android:layout_height="104dp"
+            android:layout_centerInParent="true"
+            android:drawableTop="@drawable/ic_lock"
+            android:text="Блокировка"
+            android:contentDescription="@string/stop_presentation_button_description"/>
+
+    <Button android:id="@+id/restartButton"
+            style="@style/PowerRoundButton"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/large_intent"
+            android:drawableTop="@drawable/ic_restart"
+            android:text="Перезагрузка"
+            android:contentDescription="@string/pointer_button_description"/>
+
+    <Button android:id="@+id/powerOffButton"
+            style="@style/PowerRoundButton"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/large_intent"
+            android:drawableTop="@drawable/ic_power_off"
+            android:text="Завершение работы"
+            android:contentDescription="@string/previous_slide_button_description"/>
+</RelativeLayout>

@@ -153,7 +153,7 @@ class ControlActivity : AppCompatActivity(), OnBackPressedListener {
             addFragment(SpecialKeyboardFragment())
             addFragment(BrowserFragment(this@setupAdapter.layoutParams.height / 6))
             addFragment(PresentationFragment())
-            addFragment(MediaFragment())
+            addFragment(PowerFragment())
         }
         this.adapter = adapter
     }
