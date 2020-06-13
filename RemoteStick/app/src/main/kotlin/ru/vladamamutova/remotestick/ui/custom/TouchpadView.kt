@@ -9,7 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import ru.vladamamutova.remotestick.R
-import ru.vladamamutova.remotestick.utils.MouseActionListener
+import ru.vladamamutova.remotestick.ui.listeners.MouseActionListener
 import kotlin.math.abs
 
 

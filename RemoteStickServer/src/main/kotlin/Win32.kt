@@ -68,4 +68,11 @@ class Win32 {
     external fun nextTrack()
     external fun prevTrack()
     external fun stop()
+
+    external fun setPointer(fileName: String)
+    external fun restoreCursor()
+
+    external fun suspendSystem(hibernate: Boolean) // TODO
+    external fun restart() // TODO
+    external fun powerOff() // TODO
 }

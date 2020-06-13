@@ -3,9 +3,10 @@ package ru.vladamamutova.remotestick.plugins
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
 import ru.vladamamutova.remotestick.service.PacketTypes
-import ru.vladamamutova.remotestick.utils.MouseActionListener
+import ru.vladamamutova.remotestick.ui.listeners.MouseActionListener
 
-class MousePlugin(owner: PluginMediator) : Plugin(owner), MouseActionListener {
+class MousePlugin(owner: PluginMediator) : Plugin(owner),
+    MouseActionListener {
     private enum class Action(val value: String) {
         RIGHT_CLICK("right click"),
         MIDDLE_CLICK("middle click"),

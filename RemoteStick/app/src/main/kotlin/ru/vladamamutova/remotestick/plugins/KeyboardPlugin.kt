@@ -6,9 +6,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
 import ru.vladamamutova.remotestick.service.PacketTypes
-import ru.vladamamutova.remotestick.utils.KeyboardListener
+import ru.vladamamutova.remotestick.ui.listeners.KeyboardListener
 
-class KeyboardPlugin(owner: PluginMediator) : Plugin(owner), KeyboardListener {
+class KeyboardPlugin(owner: PluginMediator) : Plugin(owner),
+    KeyboardListener {
     companion object {
         private const val SHORTCUT_TIME = 500
     }

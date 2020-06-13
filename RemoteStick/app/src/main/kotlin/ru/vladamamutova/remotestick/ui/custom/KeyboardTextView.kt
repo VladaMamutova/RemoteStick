@@ -9,8 +9,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import ru.vladamamutova.remotestick.plugins.SpecialKey
-import ru.vladamamutova.remotestick.utils.KeyboardListener
-import ru.vladamamutova.remotestick.utils.OnBackPressedListener
+import ru.vladamamutova.remotestick.ui.listeners.KeyboardListener
+import ru.vladamamutova.remotestick.ui.listeners.OnBackPressedListener
 
 
 class KeyboardTextView(context: Context?, attrs: AttributeSet?) :

@@ -14,8 +14,7 @@ enum class PacketTypes (val value: Byte) {
     MEDIA(7),
     PRESENTATION(8),
     BROWSER(9),
-    DISPATCHER(10),
-    POWER(11);
+    POWER(10);
 
     override fun toString(): String {
         return value.toString()

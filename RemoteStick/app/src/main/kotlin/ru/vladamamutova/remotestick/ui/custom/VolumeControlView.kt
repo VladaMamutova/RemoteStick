@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import ru.vladamamutova.remotestick.R
-import ru.vladamamutova.remotestick.utils.VolumeListener
+import ru.vladamamutova.remotestick.ui.listeners.VolumeListener
 import kotlin.math.*
 
 

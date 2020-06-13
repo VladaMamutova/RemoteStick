@@ -24,11 +24,12 @@ import ru.vladamamutova.remotestick.plugins.SpecialKey
 import ru.vladamamutova.remotestick.service.RemoteStickClient
 import ru.vladamamutova.remotestick.ui.adapters.ViewPagerAdapter
 import ru.vladamamutova.remotestick.ui.fragments.*
-import ru.vladamamutova.remotestick.utils.OnBackPressedListener
+import ru.vladamamutova.remotestick.ui.listeners.OnBackPressedListener
 import kotlin.concurrent.thread
 
 
-class ControlActivity : AppCompatActivity(), OnBackPressedListener {
+class ControlActivity : AppCompatActivity(),
+    OnBackPressedListener {
     private var disconnectionToast: Toast? = null
     private var isKeyboardVisible: Boolean = false
 

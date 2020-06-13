@@ -1,4 +1,4 @@
-package ru.vladamamutova.remotestick.utils
+package ru.vladamamutova.remotestick.ui.listeners
 
 import ru.vladamamutova.remotestick.plugins.SpecialKey
 

@@ -1,9 +1,6 @@
 package main.kotlin.service
 
-import main.kotlin.plugins.BrowserPlugin
-import main.kotlin.plugins.KeyboardPlugin
-import main.kotlin.plugins.MediaPlugin
-import main.kotlin.plugins.MousePlugin
+import main.kotlin.plugins.*
 import main.kotlin.service.PacketTypes.*
 import java.net.*
 import java.util.concurrent.atomic.AtomicBoolean
@@ -22,6 +19,8 @@ class RemoteStickServer: Runnable {
     private val keyboardPlugin = KeyboardPlugin()
     private val mediaPlugin = MediaPlugin()
     private val browserPlugin = BrowserPlugin()
+    private val presentationPlugin = PresentationPlugin()
+    private val powerPlugin = PowerPlugin()
 
     private fun closeServer() {
         if (server.isBound && !server.isClosed) {
@@ -71,6 +70,8 @@ class RemoteStickServer: Runnable {
                         KEYBOARD -> keyboardPlugin.handlePacket(networkPacket)
                         MEDIA -> mediaPlugin.handlePacket(networkPacket)
                         BROWSER -> browserPlugin.handlePacket(networkPacket)
+                        PRESENTATION -> presentationPlugin.handlePacket(networkPacket)
+                        POWER -> powerPlugin.handlePacket(networkPacket)
                         BYE -> {
                             if (clientMap.containsValue(packet.socketAddress)) {
                                 val name = clientMap.filterValues {

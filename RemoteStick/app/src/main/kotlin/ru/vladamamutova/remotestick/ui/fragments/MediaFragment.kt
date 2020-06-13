@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_media.view.playPauseButton
 
 import ru.vladamamutova.remotestick.R
 import ru.vladamamutova.remotestick.service.RemoteStickClient
-import ru.vladamamutova.remotestick.utils.VolumeListener
+import ru.vladamamutova.remotestick.ui.listeners.VolumeListener
 
 class MediaFragment : Fragment() {
     override fun onCreateView(

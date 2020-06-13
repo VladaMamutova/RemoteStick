@@ -1,4 +1,4 @@
-package ru.vladamamutova.remotestick.utils
+package ru.vladamamutova.remotestick.ui.listeners
 
 interface VolumeListener {
     fun beforeVolumeChanged(value: Int)
