@@ -2,7 +2,7 @@ package main.kotlin.plugins
 
 import main.kotlin.Win32
 import main.kotlin.service.NetworkPacket
-import main.kotlin.service.PacketTypes
+import main.kotlin.service.PacketType
 
 class MediaPlugin : Plugin() {
     private enum class Volume(val value: String) {
@@ -26,8 +26,8 @@ class MediaPlugin : Plugin() {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.MEDIA
+    override val type: PacketType
+        get() = PacketType.MEDIA
 
     override fun handlePacket(packet: NetworkPacket) {
         try {

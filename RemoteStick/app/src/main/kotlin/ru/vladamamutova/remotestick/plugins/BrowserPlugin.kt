@@ -2,7 +2,7 @@ package ru.vladamamutova.remotestick.plugins
 
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
-import ru.vladamamutova.remotestick.service.PacketTypes
+import ru.vladamamutova.remotestick.service.PacketType
 
 class BrowserPlugin(owner: PluginMediator) : Plugin(owner) {
     private enum class Command(val value: String) {
@@ -24,8 +24,8 @@ class BrowserPlugin(owner: PluginMediator) : Plugin(owner) {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.BROWSER
+    override val type: PacketType
+        get() = PacketType.BROWSER
 
     private fun createPacket(command: Command): NetworkPacket {
         return createPacket(JsonObject().apply {

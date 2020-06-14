@@ -3,7 +3,7 @@ package main.kotlin.plugins
 import com.google.gson.Gson
 import main.kotlin.Win32
 import main.kotlin.service.NetworkPacket
-import main.kotlin.service.PacketTypes
+import main.kotlin.service.PacketType
 
 class KeyboardPlugin : Plugin() {
     private enum class Type(val value: String) {
@@ -11,8 +11,8 @@ class KeyboardPlugin : Plugin() {
         SYMBOL("symbol");
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.KEYBOARD
+    override val type: PacketType
+        get() = PacketType.KEYBOARD
 
     override fun handlePacket(packet: NetworkPacket) {
         try {

@@ -2,7 +2,7 @@ package ru.vladamamutova.remotestick.plugins
 
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
-import ru.vladamamutova.remotestick.service.PacketTypes
+import ru.vladamamutova.remotestick.service.PacketType
 import ru.vladamamutova.remotestick.ui.listeners.MouseActionListener
 
 class MousePlugin(owner: PluginMediator) : Plugin(owner),
@@ -21,8 +21,8 @@ class MousePlugin(owner: PluginMediator) : Plugin(owner),
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.MOUSE
+    override val type: PacketType
+        get() = PacketType.MOUSE
 
     private fun createPacket(
         action: Action,

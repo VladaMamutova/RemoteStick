@@ -5,7 +5,7 @@ import android.os.SystemClock
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
-import ru.vladamamutova.remotestick.service.PacketTypes
+import ru.vladamamutova.remotestick.service.PacketType
 import ru.vladamamutova.remotestick.ui.listeners.KeyboardListener
 
 class KeyboardPlugin(owner: PluginMediator) : Plugin(owner),
@@ -19,8 +19,8 @@ class KeyboardPlugin(owner: PluginMediator) : Plugin(owner),
         SYMBOL("symbol");
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.KEYBOARD
+    override val type: PacketType
+        get() = PacketType.KEYBOARD
 
     private var shortcutHandler: Handler? = null
     private var modifiersPressed: HashSet<SpecialKey> = HashSet()

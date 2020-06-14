@@ -1,7 +1,7 @@
 package main.kotlin.service
 
 import main.kotlin.plugins.*
-import main.kotlin.service.PacketTypes.*
+import main.kotlin.service.PacketType.*
 import java.net.*
 import java.util.concurrent.atomic.AtomicBoolean
 

@@ -2,7 +2,7 @@ package main.kotlin.plugins
 
 import main.kotlin.Win32
 import main.kotlin.service.NetworkPacket
-import main.kotlin.service.PacketTypes
+import main.kotlin.service.PacketType
 
 class PowerPlugin : Plugin() {
     private enum class Command(val value: String) {
@@ -17,8 +17,8 @@ class PowerPlugin : Plugin() {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.POWER
+    override val type: PacketType
+        get() = PacketType.POWER
 
     override fun handlePacket(packet: NetworkPacket) {
         try {

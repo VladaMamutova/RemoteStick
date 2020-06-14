@@ -2,7 +2,7 @@ package ru.vladamamutova.remotestick.plugins
 
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
-import ru.vladamamutova.remotestick.service.PacketTypes
+import ru.vladamamutova.remotestick.service.PacketType
 
 class MediaPlugin(owner: PluginMediator) : Plugin(owner) {
     private enum class Volume(val value: String) {
@@ -26,8 +26,8 @@ class MediaPlugin(owner: PluginMediator) : Plugin(owner) {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.MEDIA
+    override val type: PacketType
+        get() = PacketType.MEDIA
 
     var muteChecked: Boolean = false; private set
     private var volume: Int = 0

@@ -3,7 +3,7 @@ package main.kotlin.plugins
 import main.kotlin.Win32
 import main.kotlin.plugins.SpecialKey.*
 import main.kotlin.service.NetworkPacket
-import main.kotlin.service.PacketTypes
+import main.kotlin.service.PacketType
 
 class BrowserPlugin : Plugin() {
     private enum class Command(val value: String) {
@@ -25,8 +25,8 @@ class BrowserPlugin : Plugin() {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.BROWSER
+    override val type: PacketType
+        get() = PacketType.BROWSER
 
     override fun handlePacket(packet: NetworkPacket) {
         try {

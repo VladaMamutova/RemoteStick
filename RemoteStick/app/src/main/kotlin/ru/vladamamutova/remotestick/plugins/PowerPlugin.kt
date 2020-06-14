@@ -2,7 +2,7 @@ package ru.vladamamutova.remotestick.plugins
 
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
-import ru.vladamamutova.remotestick.service.PacketTypes
+import ru.vladamamutova.remotestick.service.PacketType
 
 class PowerPlugin(owner: PluginMediator) : Plugin(owner) {
     private enum class Command(val value: String) {
@@ -17,8 +17,8 @@ class PowerPlugin(owner: PluginMediator) : Plugin(owner) {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.POWER
+    override val type: PacketType
+        get() = PacketType.POWER
 
     private fun createPacket(command: Command): NetworkPacket {
         return createPacket(JsonObject().apply {

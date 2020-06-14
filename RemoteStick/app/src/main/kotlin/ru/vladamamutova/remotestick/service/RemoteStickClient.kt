@@ -2,7 +2,7 @@ package ru.vladamamutova.remotestick.service
 
 import android.os.Build
 import ru.vladamamutova.remotestick.plugins.*
-import ru.vladamamutova.remotestick.service.PacketTypes.*
+import ru.vladamamutova.remotestick.service.PacketType.*
 import java.net.*
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue

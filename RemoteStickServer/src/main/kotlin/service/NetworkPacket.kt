@@ -6,12 +6,12 @@ import com.google.gson.JsonSyntaxException
 
 
 class NetworkPacket {
-    var type: PacketTypes? = null
+    var type: PacketType? = null
     var body: JsonObject = JsonObject()
 
     constructor(data: String) {
         if (data.isNotEmpty()) {
-            type = PacketTypes.fromByte((data[0] - '0').toByte())
+            type = PacketType.fromByte((data[0] - '0').toByte())
             val dataBody = data.removeRange(0, 1)
             body = try {
                 JsonParser().parse(dataBody) as JsonObject
@@ -21,12 +21,12 @@ class NetworkPacket {
         }
     }
 
-    constructor(_type: PacketTypes, _body: JsonObject = JsonObject()) {
+    constructor(_type: PacketType, _body: JsonObject = JsonObject()) {
         type = _type
         body = _body
     }
 
-    constructor(_type: PacketTypes, property: String, value: String) {
+    constructor(_type: PacketType, property: String, value: String) {
         type = _type
         body = JsonObject().apply { addProperty(property, value) }
     }

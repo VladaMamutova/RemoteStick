@@ -2,7 +2,7 @@ package ru.vladamamutova.remotestick.plugins
 
 import com.google.gson.JsonObject
 import ru.vladamamutova.remotestick.service.NetworkPacket
-import ru.vladamamutova.remotestick.service.PacketTypes
+import ru.vladamamutova.remotestick.service.PacketType
 
 class PresentationPlugin(owner: PluginMediator) : Plugin(owner) {
     private enum class Command(val value: String) {
@@ -19,8 +19,8 @@ class PresentationPlugin(owner: PluginMediator) : Plugin(owner) {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.PRESENTATION
+    override val type: PacketType
+        get() = PacketType.PRESENTATION
 
     var pointerChecked: Boolean = false; private set
 

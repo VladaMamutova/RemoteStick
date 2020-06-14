@@ -3,6 +3,7 @@ package ru.vladamamutova.remotestick.utils
 import android.content.Context
 import android.net.wifi.WifiManager
 import ru.vladamamutova.remotestick.model.Device
+import ru.vladamamutova.remotestick.service.RemoteStickClient
 import java.net.InetAddress
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -15,7 +16,7 @@ class NetworkUtils {
 
         fun localDevices() = localDevices
 
-        fun getLocalIpAddress(context: Context) : InetAddress {
+        private fun getLocalIpAddress(context: Context) : InetAddress {
             val manager = context.applicationContext.getSystemService(
                 Context.WIFI_SERVICE) as WifiManager
             val connectionInfo = manager.connectionInfo
@@ -40,7 +41,10 @@ class NetworkUtils {
                     val address: InetAddress = InetAddress.getByName(testIp)
                     if (address.isReachable(100)) {
                         if (address.hostAddress != ipAddress) {
-                            localDevices.add(Device(address.canonicalHostName, testIp))
+                            try {
+                                val serverName = RemoteStickClient.pingServer(address)
+                                localDevices.add(Device(serverName, testIp))
+                            } catch (ex: Exception) { }
                         }
                     }
                 }

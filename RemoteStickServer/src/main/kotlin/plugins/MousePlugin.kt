@@ -2,7 +2,7 @@ package main.kotlin.plugins
 
 import main.kotlin.Win32
 import main.kotlin.service.NetworkPacket
-import main.kotlin.service.PacketTypes
+import main.kotlin.service.PacketType
 
 class MousePlugin : Plugin() {
     enum class Action(val value: String) {
@@ -19,8 +19,8 @@ class MousePlugin : Plugin() {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.MOUSE
+    override val type: PacketType
+        get() = PacketType.MOUSE
 
     override fun handlePacket(packet: NetworkPacket) {
         try {

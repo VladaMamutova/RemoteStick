@@ -3,7 +3,7 @@ package main.kotlin.plugins
 import main.kotlin.Win32
 import main.kotlin.plugins.SpecialKey.*
 import main.kotlin.service.NetworkPacket
-import main.kotlin.service.PacketTypes
+import main.kotlin.service.PacketType
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -27,8 +27,8 @@ class PresentationPlugin : Plugin() {
         }
     }
 
-    override val type: PacketTypes
-        get() = PacketTypes.BROWSER
+    override val type: PacketType
+        get() = PacketType.BROWSER
 
     override fun handlePacket(packet: NetworkPacket) {
         try {

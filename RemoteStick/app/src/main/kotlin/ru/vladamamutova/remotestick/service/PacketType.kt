@@ -3,7 +3,7 @@ package ru.vladamamutova.remotestick.service
 /**
  * Тип пакета, передаваемого между клиентом и сервером.
  * */
-enum class PacketTypes (val value: Byte) {
+enum class PacketType (val value: Byte) {
     PING(0),
     HELLO(1),
     OK(2),
