@@ -1,2 +1,5 @@
-﻿  win32.cpp
+﻿  pch.cpp
+  dllmain.cpp
+  win32.cpp
+  Создание кода...
   win32.vcxproj -> D:\MyApplications\RemoteStick\win32\Debug\win32.dll

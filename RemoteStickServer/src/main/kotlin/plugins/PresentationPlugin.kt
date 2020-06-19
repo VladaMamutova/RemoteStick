@@ -4,15 +4,8 @@ import main.kotlin.Win32
 import main.kotlin.plugins.SpecialKey.*
 import main.kotlin.service.NetworkPacket
 import main.kotlin.service.PacketType
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
 
 class PresentationPlugin : Plugin() {
-    companion object {
-        val pointerFileName: Path = Paths.get("") // todo
-    }
-
     private enum class Command(val value: String) {
         NEXT("next"),
         PREVIOUS("previous"),
@@ -28,7 +21,9 @@ class PresentationPlugin : Plugin() {
     }
 
     override val type: PacketType
-        get() = PacketType.BROWSER
+        get() = PacketType.PRESENTATION
+
+    private var isLaserCursor = false
 
     override fun handlePacket(packet: NetworkPacket) {
         try {
@@ -40,7 +35,7 @@ class PresentationPlugin : Plugin() {
                         Command.START.value -> start()
                         Command.CONTINUE.value -> continuePresentation()
                         Command.STOP.value -> stop()
-                        Command.SET_POINTER.value -> setPointer()
+                        Command.SET_POINTER.value -> setLaserCursor()
                         Command.RESTORE_CURSOR.value -> restoreCursor()
                     }
                 }
@@ -56,11 +51,19 @@ class PresentationPlugin : Plugin() {
     private fun continuePresentation() {
         Win32().sendSpecialKeys(intArrayOf(SHIFT.ordinal, F5.ordinal))
     }
+
     private fun stop() = Win32().sendSpecialKeys(intArrayOf(ESC.ordinal))
-    private fun setPointer() {
-        if (Files.exists(pointerFileName)) {
-            Win32().setPointer(pointerFileName.toString()) // TODO
+    private fun setLaserCursor() {
+        if (!isLaserCursor) {
+            Win32().setLaserCursor()
+            isLaserCursor = true
         }
     }
-    private fun restoreCursor() = Win32().restoreCursor()
+
+    fun restoreCursor() {
+        if (isLaserCursor) {
+            Win32().restoreCursor()
+            isLaserCursor = false
+        }
+    }
 }

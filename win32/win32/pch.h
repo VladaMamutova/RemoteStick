@@ -6,6 +6,7 @@
 
 #ifndef PCH_H
 #define PCH_H
+#define OEMRESOURCE // макрос для получения системного курсора (OCR_NORMAL)
 
 // Добавьте сюда заголовочные файлы для предварительной компиляции
 #include "framework.h"

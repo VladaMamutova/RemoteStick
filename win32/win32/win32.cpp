@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pch.h"
+#include "resource.h"
 #include <jni.h>
 #include <windows.h>
 #include <mmdeviceapi.h>
@@ -14,11 +15,13 @@ using namespace std;
 void SendMouseInput(DWORD flags);
 void SendKeyboardInput(WORD wVK);
 int GetSpecialKeyVk(int specialKey);
+string jstring2string(JNIEnv* env, jstring jStr);
+wstring s2ws(const string& s);
 
 JNIEXPORT jboolean JNICALL Java_main_kotlin_Win32_init
 (JNIEnv* env, jobject obj) {
 	HRESULT result;
-
+		
 	CoInitialize(NULL);
 	IMMDeviceEnumerator* deviceEnumerator = NULL;
 	result = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_INPROC_SERVER,
@@ -281,6 +284,28 @@ JNIEXPORT void JNICALL Java_main_kotlin_Win32_volumeMute
 	SendKeyboardInput(VK_VOLUME_MUTE);
 }
 
+JNIEXPORT jintArray JNICALL Java_main_kotlin_Win32_getVolumeAndMute
+(JNIEnv* env, jobject obj) {
+	jintArray result = env->NewIntArray(SOUND_SETTINGS_NUMBER);
+	jint soundSettings[SOUND_SETTINGS_NUMBER];
+	for (int i = 0; i < SOUND_SETTINGS_NUMBER; i++) {
+		soundSettings[i] = -1;
+	}
+
+	if (isVolumeValid) {
+		float volume = 0;
+		endpointVolume->GetMasterVolumeLevelScalar(&volume);
+		soundSettings[0] = (int)(MAX_VOLUME * volume + 0.5);
+
+		BOOL mute;
+		endpointVolume->GetMute(&mute);
+		soundSettings[1] = mute;
+	}
+
+	env->SetIntArrayRegion(result, 0, SOUND_SETTINGS_NUMBER, soundSettings);
+	return result;
+}
+
 JNIEXPORT void JNICALL Java_main_kotlin_Win32_playPause
 (JNIEnv* env, jobject obj) {
 	SendKeyboardInput(VK_MEDIA_PLAY_PAUSE);
@@ -312,24 +337,24 @@ void SendKeyboardInput(WORD wVK) {
 	SendInput(1, &input, sizeof(INPUT));
 }
 
-JNIEXPORT jintArray JNICALL Java_main_kotlin_Win32_getVolumeAndMute
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_setLaserCursor
 (JNIEnv* env, jobject obj) {
-	jintArray result = env->NewIntArray(SOUND_SETTINGS_NUMBER);
-	jint soundSettings[SOUND_SETTINGS_NUMBER];
-	for (int i = 0; i < SOUND_SETTINGS_NUMBER; i++) {
-		soundSettings[i] = -1;
-	}
+	defaultCursor = CopyCursor(LoadCursor(0, IDC_ARROW));
 
-	if (isVolumeValid) {
-		float volume = 0;
-		endpointVolume->GetMasterVolumeLevelScalar(&volume);
-		soundSettings[0] = (int)(MAX_VOLUME * volume + 0.5);
+	//laserCursor = ;
+	
+	//BOOL res = SetSystemCursor(LoadCursorFromFile(pathWStr.c_str()), OCR_NORMAL);
+	//BOOL res = SetSystemCursor(LoadCursor(0, MAKEINTRESOURCE(IDC_LASER_CURSOR)), OCR_NORMAL);
+	
+	
+	SetSystemCursor(LoadCursor(GetModuleHandle(L"win32.dll"),
+		MAKEINTRESOURCE(IDC_LASER_CURSOR)), OCR_NORMAL);
+	//DestroyCursor(defaultCursor);
+}
 
-		BOOL mute;
-		endpointVolume->GetMute(&mute);
-		soundSettings[1] = mute;
-	}
-
-	env->SetIntArrayRegion(result, 0, SOUND_SETTINGS_NUMBER, soundSettings);
-	return result;
+JNIEXPORT void JNICALL Java_main_kotlin_Win32_restoreCursor
+(JNIEnv*, jobject) {
+	SetSystemCursor(defaultCursor, OCR_NORMAL);
+	//DestroyCursor(defaultCursor);
+	//DestroyCursor(laserCursor);
 }

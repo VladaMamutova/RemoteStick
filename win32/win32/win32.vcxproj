@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="SpecialKeys.h" />
     <ClInclude Include="win32.h" />
   </ItemGroup>
@@ -166,6 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="laser.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="win32.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 ﻿// dllmain.cpp : Определяет точку входа для приложения DLL.
 #include "pch.h"
 
+HINSTANCE hinst;            // handle to current instance
+
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
                        LPVOID lpReserved

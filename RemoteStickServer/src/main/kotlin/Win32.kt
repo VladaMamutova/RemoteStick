@@ -69,7 +69,7 @@ class Win32 {
     external fun prevTrack()
     external fun stop()
 
-    external fun setPointer(fileName: String)
+    external fun setLaserCursor()
     external fun restoreCursor()
 
     external fun suspendSystem(hibernate: Boolean) // TODO

@@ -23,6 +23,9 @@ class RemoteStickServer: Runnable {
     private val powerPlugin = PowerPlugin()
 
     private fun closeServer() {
+        // Восстанавливаем системный курсор, если текущий курсор - лазер.
+        presentationPlugin.restoreCursor()
+
         if (server.isBound && !server.isClosed) {
             for (client in clientMap) {
                 server.sendByePacket(client.value)
@@ -76,8 +79,12 @@ class RemoteStickServer: Runnable {
                             if (clientMap.containsValue(packet.socketAddress)) {
                                 val name = clientMap.filterValues {
                                     it == packet.socketAddress
-                                }
-                                    .keys.first()
+                                }.keys.first()
+
+                                // Восстанавливаем системный курсор,
+                                // если текущий курсор - лазер.
+                                presentationPlugin.restoreCursor()
+
                                 println("\nClient $name disconnected")
                                 println("Number of clients: ${clientMap.size}")
                                 clientMap.remove(name)

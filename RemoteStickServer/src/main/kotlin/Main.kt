@@ -23,8 +23,8 @@ class Main : Application() {
         // Установливаем сцену для объекта Stage.
         stage?.scene = Scene(load(Main::class.java.getResource(layout)))
         stage?.title = "Remote Stick"
-        stage?.width = 400.0
-        stage?.height = 200.0
+        stage?.width = 370.0
+        stage?.height = 180.0
         stage?.show() // Отображаем окно на экране.
 
         println("Host address: " + InetAddress.getLocalHost().hostAddress)
